@@ -66,9 +66,6 @@ public class Board {
 	}
 	private void AddPropsFromBoardData (BoardData bd) {
         player = new Player(this, bd.playerData);
-        foreach (WallData objData in bd.wallDatas) {
-            AddWall (objData);
-        }
 		foreach (BoardObjectData objData in bd.allObjectDatas) {
             System.Type type = objData.GetType();
             if (type == typeof(CrateData)) {
@@ -82,10 +79,6 @@ public class Board {
         allObjects.Add (prop);
         objectsAddedThisMove.Add(prop);
         return prop;
-    }
-    private void AddWall(WallData data) {
-        BoardSpace space = GetSpace(data.boardPos);
-        space.AddWall(data.sideFacing);
     }
 
 

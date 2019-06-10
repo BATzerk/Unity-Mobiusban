@@ -4,7 +4,6 @@ using UnityEngine;
 
 public enum FlipTypes { Horizontal, Vertical }
 
-
 public class BoardData {
 	// Constants
 	private readonly char[] LINE_BREAKS_CHARS = { ',' }; // our board layouts are comma-separated (because XML's don't encode line breaks).
@@ -14,9 +13,9 @@ public class BoardData {
     public PlayerData playerData;// { get; private set; }
     public BoardSpaceData[,] spaceDatas { get; private set; }
     public List<BoardObjectData> allObjectDatas;
-    public List<WallData> wallDatas { get; private set; }
     private BoardOccupantData[,] occupantsInBoard; // this is SOLELY so we can go easily back and modify properties of an occupant we've already announced.
-
+    
+    // Getters
 	private string[] GetLevelStringArrayFromLayoutString (string layout) {
 		List<string> stringList = new List<string>(layout.Split (LINE_BREAKS_CHARS, System.StringSplitOptions.None));
 		// Remove the last element, which will be just empty space (because of how we format the layout in the XML).
@@ -27,9 +26,15 @@ public class BoardData {
 		}
 		return stringList.ToArray();
 	}
+    private bool IsInBounds(int col,int row) {
+        return col>=0 && col<numCols  &&  row>=0 && row<numRows;
+    }
 	
 
 
+    // ----------------------------------------------------------------
+    //  Initialize
+    // ----------------------------------------------------------------
 	public BoardData (LevelDataXML ldxml) {
         //numColors = ldxml.numColors;
         
@@ -65,18 +70,21 @@ public class BoardData {
 						Debug.LogError ("Whoops! Mismatch in layout in a board layout XML. " + stringArrayIndex + ", " + i);
 						continue;
 					}
-					char spaceChar = (char) levelStringArray[stringArrayIndex][i];
+                    char spaceChar = (char) levelStringArray[stringArrayIndex][i];
+                    //char spaceChar = (char) levelStringArray[j][i];
+                    int col = i;
+                    int row = numRows-1 - j;
                     switch (spaceChar) {
                     // BoardSpace properties!
-                    case '~': GetSpaceData (i,j).isPlayable = false; break;
+                    case '~': GetSpaceData (col,row).isPlayable = false; break;
 					// Player!
-					case '@': SetPlayerData(i,j); break;
+					case '@': SetPlayerData(col,row); break;
                     // Crates!
-                    case 'o': AddCrateData (i,j, true); break;
-                    case 'O': AddCrateData (i,j, false); break;
+                    case 'o': AddCrateData (col,row, true); break;
+                    case 'O': AddCrateData (col,row, false); break;
 					// Walls!
-					case '_': AddWallData (i,j+1, Sides.T); break; // note: because the underscore looks lower, consider it in the next row (so layout text file looks more intuitive).
-					case '|': AddWallData (i,j,   Sides.L); break;
+					case '_': SetIsWallT (col,row-1); break; // note: because the underscore looks lower, consider it in the next row (so layout text file looks more intuitive).
+					case '|': SetIsWallL (col,row); break;
 					}
 				}
 			}
@@ -101,7 +109,6 @@ public class BoardData {
         playerData = null;
 		allObjectDatas = new List<BoardObjectData>();
 		occupantsInBoard = new BoardOccupantData[numCols,numRows];
-        wallDatas = new List<WallData>();
 	}
 	private void MakeEmptyBoardSpaces () {
 		spaceDatas = new BoardSpaceData[numCols,numRows];
@@ -118,7 +125,7 @@ public class BoardData {
 
     
     void SetPlayerData(int col,int row) {
-        if (playerData != null) { Debug.LogError("Whoa! Two players defined in Level XML layout. :P"); return; } // Safety check.
+        if (playerData != null) { Debug.LogError("Whoa! Two players defined in Level XML layout."); return; } // Safety check.
         playerData = new PlayerData(new Vector2Int(col,row));
         //allObjectDatas.Add (playerData);
         SetOccupantInBoard (playerData);
@@ -128,10 +135,13 @@ public class BoardData {
 		allObjectDatas.Add (newData);
         SetOccupantInBoard (newData);
 	}
-    void AddWallData (int col,int row, int sideFacing) {
-        WallData newData = new WallData (new Vector2Int(col,row), sideFacing);
-        wallDatas.Add (newData);
-        allObjectDatas.Add (newData);
+    void SetIsWallL(int col,int row) {
+        if (!IsInBounds(col,row)) { return; } // Safety check.
+        spaceDatas[col,row].isWallL = true;
+    }
+    void SetIsWallT(int col,int row) {
+        if (!IsInBounds(col,row)) { return; } // Safety check.
+        spaceDatas[col,row].isWallT = true;
     }
 
 

@@ -10,10 +10,9 @@ public class Level : MonoBehaviour {
     // Properties
     public bool IsLevelOver { get; private set; }
     public LevelAddress MyAddress { get; private set; }
-	private Vector2Int touchGridPos;
-    public Vector2 TouchPosBoard { get; private set; }
+    private List<BoardData> boardSnapshots = new List<BoardData>(); // note: There's always ONE value in here. These are added immediately AFTER a move.
 	// References
-	private GameController gameController;
+	//private GameController gameController;
     private RectTransform rt_boardArea; // a RectTransform that ONLY informs us how the BoardView's size should be, so we can make layout changes in the editor.
 
     // Getters (Public)
@@ -21,14 +20,23 @@ public class Level : MonoBehaviour {
     // Getters (Private)
 	private InputController inputController { get { return InputController.Instance; } }
 	private PackData myPackData { get { return GameManagers.Instance.DataManager.GetPackData(MyAddress); } }
+    private bool CanUndo() { return boardSnapshots.Count >= 2; }
 
 
 
-	// ----------------------------------------------------------------
-	//  Initialize / Destroy
-	// ----------------------------------------------------------------
+    // ----------------------------------------------------------------
+    //  Initialize / Destroy
+    // ----------------------------------------------------------------
+    private void Awake() {
+        // Add event listeners!
+        GameManagers.Instance.EventManager.BoardExecutedMoveEvent += OnBoardExecutedMove;
+    }
+    private void OnDestroy() {
+        // Remove event listeners!
+        GameManagers.Instance.EventManager.BoardExecutedMoveEvent -= OnBoardExecutedMove;
+    }
     public void Initialize (GameController _gameController, Transform tf_parent, RectTransform _rt_boardArea, LevelData _levelData) {
-		this.gameController = _gameController;
+		//this.gameController = _gameController;
 		this.MyAddress = _levelData.myAddress;
         this.rt_boardArea = _rt_boardArea;
 
@@ -39,6 +47,8 @@ public class Level : MonoBehaviour {
 
 		// Reset!
 		RemakeModelAndViewFromData (_levelData.boardData);
+        // Take first snapshot.
+        boardSnapshots.Add(Board.ToData());
 	}
 
 	private void RemakeModelAndViewFromData (BoardData bd) {
@@ -58,7 +68,30 @@ public class Level : MonoBehaviour {
 			BoardView = null;
 		}
 	}
+    
+    
+    // ----------------------------------------------------------------
+    //  Events
+    // ----------------------------------------------------------------
+    private void OnBoardExecutedMove(Board _board) {
+        if (_board != Board) { return; } // Not mine? Ignore.
+        
+        // Take a snapshot!
+        boardSnapshots.Add(Board.ToData());
+    }
 
+    
+    
+    // ----------------------------------------------------------------
+    //  Doers
+    // ----------------------------------------------------------------
+    private void UndoMoveAttempt() {
+        if (CanUndo()) {
+            BoardData snapshot = boardSnapshots[boardSnapshots.Count-2]; // take the previous snapshot (the latest one is the CURRENT version of the board).
+            boardSnapshots.RemoveAt(boardSnapshots.Count-1);
+            RemakeModelAndViewFromData(snapshot);
+        }
+    }
 
     
 
@@ -66,30 +99,19 @@ public class Level : MonoBehaviour {
 	//  Update
 	// ----------------------------------------------------------------
 	private void Update() {
-        if (!IsLevelOver) { // Level's not over? Update stuff!
-    		//UpdateTouchPos();
-    		RegisterButtonInput();
-        }
+        RegisterButtonInput();
 	}
-	//private void UpdateTouchPos() {
-	//	TouchPosBoard = Input.mousePosition/MainCanvas.Canvas.scaleFactor;
-	//	float canvasHeight = MainCanvas.Height;
- //       TouchPosBoard -= BoardView.Pos;
- //       TouchPosBoard = new Vector2(TouchPosBoard.x, canvasHeight-TouchPosBoard.y); // convert to top-left space.
- //       int col = Mathf.FloorToInt(TouchPosBoard.x / BoardView.UnitSize);
- //       int row = Mathf.FloorToInt(TouchPosBoard.y / BoardView.UnitSize);
- //       // Grid-pos changed? Update it!
- //       if (touchGridPos.x!=col || touchGridPos.y!=row) {
- //           touchGridPos = new Vector2Int(col, row);
- //           OnTouchGridPosChanged();
- //       }
-	//}
 
 	private void RegisterButtonInput() {
+        // Arrow Keys = Move Player
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) { Board.MovePlayerAttempt(Vector2Int.L); }
         else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) { Board.MovePlayerAttempt(Vector2Int.R); }
-        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) { Board.MovePlayerAttempt(Vector2Int.T); } // TODO: Decide which way's UP.
-        else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) { Board.MovePlayerAttempt(Vector2Int.B); }
+        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) { Board.MovePlayerAttempt(Vector2Int.B); }
+        else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) { Board.MovePlayerAttempt(Vector2Int.T); }
+        // Z = Undo
+        else if (Input.GetKeyDown(KeyCode.Z)) {
+            UndoMoveAttempt();
+        }
 	}
     
     

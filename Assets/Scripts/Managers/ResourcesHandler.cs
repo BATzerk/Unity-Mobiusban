@@ -13,7 +13,6 @@ public class ResourcesHandler : MonoBehaviour {
     [SerializeField] public GameObject BoardSpaceView;
 	[SerializeField] public GameObject CrateView;
     [SerializeField] public GameObject PlayerView;
-    [SerializeField] public GameObject WallView;
     // Instance
     static public ResourcesHandler Instance { get; private set; }
 

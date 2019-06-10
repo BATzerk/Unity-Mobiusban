@@ -6,7 +6,7 @@ public class BoardSpace {
 	// Properties
 	public Vector2Int BoardPos { get; private set; }
 	private bool isPlayable = true;
-    private bool[] isWall; // index is side.
+    private bool isWallL, isWallT; // walls can only be on the LEFT and TOP of spaces.
 	// References
     public BoardOccupant MyOccupant { get; private set; } // occupants sit on my face. Only one Occupant occupies each space.
 
@@ -20,13 +20,23 @@ public class BoardSpace {
     //}
     public bool HasOccupant { get { return MyOccupant!=null; } }
     public bool HasImmovableOccupant { get { return MyOccupant!=null && !MyOccupant.IsMovable; } }
-    private bool IsWall(int side) { return isWall[side]; }
-    /** Side: Relative to ME. */
+    public bool IsWall(int side) {
+        switch(side) {
+            case Sides.L: return isWallL;
+            case Sides.T: return isWallT;
+            default: return false;
+        }
+    }
+    public bool MayOccupantEverExit(Vector2Int posTo) {
+        int side = MathUtils.GetSide(posTo - BoardPos);
+        if (IsWall(side)) { return false; }
+        return true;
+    }
     public bool MayOccupantEverEnter(Vector2Int posFrom) {
-        Vector2Int dir = posFrom - BoardPos;
-        int side = MathUtils.GetSide(dir);
+        int side = MathUtils.GetSide(posFrom - BoardPos);
         return MayOccupantEverEnter(side);
     }
+    /** Side: Relative to ME. */
     private bool MayOccupantEverEnter(int side) {
         if (!IsPlayable) { return false; }
         if (HasImmovableOccupant) { return false; }
@@ -41,11 +51,14 @@ public class BoardSpace {
 	public BoardSpace (BoardSpaceData _data) {
         BoardPos = _data.boardPos;
         isPlayable = _data.isPlayable;
-        isWall = new bool[4];
+        isWallL = _data.isWallL;
+        isWallT = _data.isWallT;
 	}
 	public BoardSpaceData ToData () {
         BoardSpaceData data = new BoardSpaceData(Col, Row) {
-            isPlayable = isPlayable
+            isPlayable = isPlayable,
+            isWallL = isWallL,
+            isWallT = isWallT,
         };
         return data;
 	}
@@ -55,7 +68,11 @@ public class BoardSpace {
     //  Doers
     // ----------------------------------------------------------------
     public void AddWall(int side) {
-        isWall[side] = true;
+        switch(side) {
+            case Sides.L: isWallL = true; break;
+            case Sides.T: isWallT = true; break;
+            default: Debug.LogError("Whoa, we're calling AddWall for a side that's NOT Top or Left: " + side); break;
+        }
     }
 	public void SetMyOccupant (BoardOccupant _bo) {
 		if (MyOccupant != null) {

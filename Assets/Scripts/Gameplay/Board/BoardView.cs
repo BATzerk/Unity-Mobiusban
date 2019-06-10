@@ -12,6 +12,7 @@ public class BoardView : MonoBehaviour {
     [SerializeField] private RectTransform myRectTransform=null;
     [SerializeField] private Transform tf_boardObjects=null;
     [SerializeField] private Transform tf_boardSpaces=null;
+    [SerializeField] public Transform rt_walls=null;
 	// Objects
 	private BoardSpaceView[,] spaceViews;
 	private List<BoardObjectView> allObjectViews; // includes EVERY single BoardObjectView!
@@ -28,8 +29,8 @@ public class BoardView : MonoBehaviour {
     public Transform tf_BoardObjects { get { return tf_boardObjects; } }
     public Transform tf_BoardSpaces { get { return tf_boardSpaces; } }
     public Vector2 Pos { get { return myRectTransform.anchoredPosition; } }
-	public float BoardToX(float col) { return  (col+0.5f)*UnitSize; } // +0.5f to center.
-	public float BoardToY(float row) { return -(row+0.5f)*UnitSize; } // +0.5f to center.
+	public float BoardToX(float col) { return (col+0.5f)*UnitSize; } // +0.5f to center.
+	public float BoardToY(float row) { return (row+0.5f)*UnitSize; } // +0.5f to center.
 	public float BoardToXGlobal(float col) { return BoardToX(col) + Pos.x; }
 	public float BoardToYGlobal(float row) { return BoardToY(row) + Pos.y; }
     public Vector2 BoardToPos(Vector2Int pos) { return new Vector2(BoardToX(pos.x),BoardToY(pos.y)); }
@@ -92,8 +93,8 @@ public class BoardView : MonoBehaviour {
 		Vector2 mySize = new Vector2(UnitSize*numCols, UnitSize*numRows);
 		myRectTransform.sizeDelta = mySize;
 		// Set my position.
-        float xOffset =  (rt_availableArea.rect.width -mySize.x) * 0.5f; // nudge me so I'm centered!
-        float yOffset = -(rt_availableArea.rect.height-mySize.y) * 0.5f; // nudge me so I'm centered!
+        float xOffset = (rt_availableArea.rect.width -mySize.x) * 0.5f; // nudge me so I'm centered!
+        float yOffset = (rt_availableArea.rect.height-mySize.y) * 0.5f; // nudge me so I'm centered!
         myRectTransform.anchoredPosition = new Vector2(xOffset,yOffset);
         // Now that the suit fits, sneak be back onto my Level! I'll be transformed great.
         transform.SetParent(MyLevel.transform);

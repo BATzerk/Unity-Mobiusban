@@ -71,16 +71,15 @@ public static class BoardUtils {
     
     public static MoveResults MoveOccupant(Board b, Vector2Int occPos, Vector2Int dir) {
         BoardOccupant bo = GetOccupant(b, occPos);
+        BoardSpace spaceFrom = GetSpace(b, occPos);
         BoardSpace spaceTo = GetSpace(b, occPos+dir);
         
         // Someone's null? Return Fail.
-        if (bo==null || spaceTo==null) {
-            return MoveResults.Fail;
-        }
-        // We may NOT move into this space? Return Fail.
-        if (!spaceTo.MayOccupantEverEnter(occPos)) {
-            return MoveResults.Fail;
-        }
+        if (bo==null || spaceTo==null) { return MoveResults.Fail; }
+        // We can't EXIT this space? Return Fail.
+        if (!spaceFrom.MayOccupantEverExit(spaceTo.BoardPos)) { return MoveResults.Fail; }
+        // We can't ENTER this space? Return Fail.
+        if (!spaceTo.MayOccupantEverEnter(occPos)) { return MoveResults.Fail; }
 
         // Always remove its footprint first. We're about to move it!
         bo.RemoveMyFootprint();

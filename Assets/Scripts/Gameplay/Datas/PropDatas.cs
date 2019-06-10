@@ -15,6 +15,7 @@ public class BoardOccupantData : BoardObjectData {
 }
 public class BoardSpaceData : BoardObjectData {
     public bool isPlayable = true;
+    public bool isWallL=false, isWallT=false;
 	public BoardSpaceData (int _col,int _row) {
 		this.boardPos.x = _col;
 		this.boardPos.y = _row;
@@ -32,10 +33,10 @@ public class PlayerData : BoardOccupantData {
         this.boardPos = boardPos;
     }
 }
-public class WallData : BoardObjectData {
-    public int sideFacing { get; private set; }// = -1;
-	public WallData (Vector2Int boardPos, int sideFacing) {
-		this.boardPos = boardPos;
-        this.sideFacing = sideFacing;
-	}
-}
+//public class WallData : BoardObjectData {
+//    public int sideFacing { get; private set; }// = -1;
+//	public WallData (Vector2Int boardPos, int sideFacing) {
+//		this.boardPos = boardPos;
+//        this.sideFacing = sideFacing;
+//	}
+//}
