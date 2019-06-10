@@ -16,6 +16,9 @@ abstract public class BoardObject {
 	protected BoardSpace GetSpace (int _col,int _row) { return BoardUtils.GetSpace (BoardRef, _col,_row); }
 	public BoardSpace MySpace { get { return GetSpace (Col,Row); } }
     
+    // Serializing
+    abstract public BoardObjectData ToData();
+    
     
 	// ----------------------------------------------------------------
 	//  Initialize
@@ -32,10 +35,10 @@ abstract public class BoardObject {
 	// ----------------------------------------------------------------
 	//  Doers
 	// ----------------------------------------------------------------
-	virtual public void SetColRow (int _col, int _row) {
-        RemoveMyFootprint();
-		BoardPos = new Vector2Int(_col,_row);
-        AddMyFootprint();
+    public void SetColRow(Vector2Int _pos) {
+        //RemoveMyFootprint();
+		BoardPos = _pos;//new Vector2Int(_col,_row);
+        //AddMyFootprint();
 	}
 
 	/** This removes me from the Board completely and permanently. */
@@ -48,8 +51,8 @@ abstract public class BoardObject {
 	}
 
 	// Override these!
-	virtual public void AddMyFootprint () {}//abstract 
-	virtual public void RemoveMyFootprint () {}//abstract 
+	virtual public void AddMyFootprint () {}
+	virtual public void RemoveMyFootprint () {}
 
 
 }

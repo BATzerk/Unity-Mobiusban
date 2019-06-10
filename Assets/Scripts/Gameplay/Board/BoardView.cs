@@ -9,7 +9,6 @@ public class BoardView : MonoBehaviour {
     // Visual Properties
     public float UnitSize { get; private set; } // how big each board space is in pixels
     // Components
-    [SerializeField] private DragPathView pathView=null;
     [SerializeField] private RectTransform myRectTransform=null;
     [SerializeField] private Transform tf_boardObjects=null;
     [SerializeField] private Transform tf_boardSpaces=null;
@@ -37,11 +36,11 @@ public class BoardView : MonoBehaviour {
     public Vector2 BoardToPosGlobal(Vector2Int pos) { return new Vector2(BoardToXGlobal(pos.x),BoardToYGlobal(pos.y)); }
     
     /** Brute-force finds the corresponding TileView. */
-    private TileView GetTileView(Vector2Int pos) {
+    private CrateView GetTileView(Vector2Int pos) {
         foreach (BoardObjectView objectView in allObjectViews) {
             BoardObject bo = objectView.MyBoardObject;
-            if (bo is Tile && bo.BoardPos==pos) {
-                return objectView as TileView;
+            if (bo is Crate && bo.BoardPos==pos) {
+                return objectView as CrateView;
             }
         }
         return null; // oops.
@@ -59,6 +58,10 @@ public class BoardView : MonoBehaviour {
 		// Determine unitSize and other board-specific visual stuff
         UpdatePosAndSize(rt_availableArea);
 
+        // Clear out all my lists!
+        allObjectViews = new List<BoardObjectView>();
+        // Make Player!
+        AddPlayerView(MyBoard.player);
 		// Make spaces!
 		spaceViews = new BoardSpaceView[numCols,numRows];
 		for (int i=0; i<numCols; i++) {
@@ -67,24 +70,16 @@ public class BoardView : MonoBehaviour {
 				spaceViews[i,j].Initialize (this, MyBoard.GetSpace(i,j));
 			}
 		}
-		// Clear out all my lists!
-		allObjectViews = new List<BoardObjectView>();
 
 		// Look right right away!
 		UpdateViewsPostMove();
         
         // Add event listeners!
-        GameManagers.Instance.EventManager.ClearPathEvent += OnClearPath;
-        GameManagers.Instance.EventManager.AddPathSpaceEvent += OnAddPathSpace;
-        GameManagers.Instance.EventManager.RemovePathSpaceEvent += OnRemovePathSpace;
-        GameManagers.Instance.EventManager.SubmitPathEvent += OnSubmitPath;
+        GameManagers.Instance.EventManager.BoardExecutedMoveEvent += OnBoardExecutedMove;
 	}
     private void OnDestroy() {
         // Remove event listeners!
-        GameManagers.Instance.EventManager.ClearPathEvent -= OnClearPath;
-        GameManagers.Instance.EventManager.AddPathSpaceEvent -= OnAddPathSpace;
-        GameManagers.Instance.EventManager.RemovePathSpaceEvent -= OnRemovePathSpace;
-        GameManagers.Instance.EventManager.SubmitPathEvent -= OnSubmitPath;
+        GameManagers.Instance.EventManager.BoardExecutedMoveEvent -= OnBoardExecutedMove;
     }
 
     private void UpdatePosAndSize(RectTransform rt_availableArea) {
@@ -105,14 +100,21 @@ public class BoardView : MonoBehaviour {
 	}
 
 	private BoardObjectView AddObjectView (BoardObject sourceObject) {
-		if (sourceObject is Tile) { return AddTileView (sourceObject as Tile); }
+		if (sourceObject is Crate) { return AddCrateView (sourceObject as Crate); }
+        //else if (sourceObject is Player) { return AddPlayerView (sourceObject as Player); }
 		else {
             Debug.LogError ("Trying to add BoardObjectView from BoardObject, but no clause to handle this type! " + sourceObject.GetType().ToString());
             return null;
         }
 	}
-    private TileView AddTileView (Tile data) {
-        TileView newObj = Instantiate(resourcesHandler.TileView).GetComponent<TileView>();
+    private CrateView AddCrateView (Crate data) {
+        CrateView newObj = Instantiate(resourcesHandler.CrateView).GetComponent<CrateView>();
+        newObj.Initialize (this, data);
+        allObjectViews.Add (newObj);
+        return newObj;
+    }
+    private PlayerView AddPlayerView (Player data) {
+        PlayerView newObj = Instantiate(resourcesHandler.PlayerView).GetComponent<PlayerView>();
         newObj.Initialize (this, data);
         allObjectViews.Add (newObj);
         return newObj;
@@ -132,9 +134,7 @@ public class BoardView : MonoBehaviour {
 	}
 	private void AddNewViews() {
 		foreach (BoardObject bo in MyBoard.objectsAddedThisMove) {
-			BoardObjectView newView = AddObjectView(bo);
-            // Start it way above the board.
-            newView.Pos = new Vector2(newView.Pos.x, 500);
+			AddObjectView(bo);
 		}
 		// Clear out the list! We've used 'em.
 		MyBoard.objectsAddedThisMove.Clear();
@@ -149,41 +149,16 @@ public class BoardView : MonoBehaviour {
 			}
 		}
 	}
-    
-    private void AnimateRippleForTileViewsOfColor(int colorID) {
-        for (int i=0; i<allObjectViews.Count; i++) {
-            TileView tileView = allObjectViews[i] as TileView;
-            if (tileView != null && tileView.MyTile.ColorID==colorID) {
-                tileView.AnimateRipple();
-            }
-        }
-    }
 
     
 
     // ----------------------------------------------------------------
     //  Events
     // ----------------------------------------------------------------
-    private void OnClearPath() {
-        pathView.RemakeVisuals();
-    }
-    private void OnAddPathSpace(BoardSpace space) {
-        pathView.RemakeVisuals();
-        // Tell the TileView that's been added!
-        TileView tileView = GetTileView(space.BoardPos);
-        if (tileView != null) {
-            tileView.AnimateRipple();
+    public void OnBoardExecutedMove(Board board) {
+        if (board == MyBoard) { // It's MY Board! Update views!
+            UpdateViewsPostMove();
         }
-        // Has this completed the circuit?? Tell all tiles of this color!
-        if (MyBoard.dragPath.IsCircuitComplete) {
-            AnimateRippleForTileViewsOfColor(MyBoard.dragPath.ColorID);
-        }
-    }
-    private void OnRemovePathSpace() {
-        pathView.RemakeVisuals();
-    }
-    private void OnSubmitPath() {
-        UpdateViewsPostMove();
     }
 
 

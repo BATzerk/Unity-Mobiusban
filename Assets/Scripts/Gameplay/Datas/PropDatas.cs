@@ -9,34 +9,33 @@ public class PropData {
 
 public class BoardObjectData : PropData {
 	public Vector2Int boardPos;
-//	public BoardObjectData (BoardPos _boardPos) {
-//		boardPos = _boardPos;
-//	}
 }
 public class BoardOccupantData : BoardObjectData {
+    public bool isMovable = true;
 }
 public class BoardSpaceData : BoardObjectData {
     public bool isPlayable = true;
 	public BoardSpaceData (int _col,int _row) {
-		boardPos.x = _col;
-		boardPos.y = _row;
+		this.boardPos.x = _col;
+		this.boardPos.y = _row;
 	}
 }
 
-//public class ObstacleData : BoardOccupantData {
-//	public ObstacleData (BoardPos _boardPos) {
-//		boardPos = _boardPos;
-//	}
-//}
-public class TileData : BoardOccupantData {
-	public int colorID;
-	public TileData (Vector2Int _boardPos, int _colorID) {
-		boardPos = _boardPos;
-		colorID = _colorID;
+public class CrateData : BoardOccupantData {
+    public CrateData (Vector2Int boardPos, bool isMovable) {
+        this.boardPos = boardPos;
+        this.isMovable = isMovable;
+    }
+}
+public class PlayerData : BoardOccupantData {
+    public PlayerData (Vector2Int boardPos) {
+        this.boardPos = boardPos;
+    }
+}
+public class WallData : BoardObjectData {
+    public int sideFacing { get; private set; }// = -1;
+	public WallData (Vector2Int boardPos, int sideFacing) {
+		this.boardPos = boardPos;
+        this.sideFacing = sideFacing;
 	}
 }
-//public class WallData : BoardObjectData {
-//	public WallData (BoardPos _boardPos) {
-//		boardPos = _boardPos;
-//	}
-//}

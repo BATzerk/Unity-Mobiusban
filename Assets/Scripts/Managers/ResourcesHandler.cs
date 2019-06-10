@@ -7,11 +7,13 @@ public class ResourcesHandler : MonoBehaviour {
     [Header ("Common")]
     [SerializeField] public GameObject ImageLine;
     [SerializeField] public GameObject ImageLinesJoint;
-    [Header ("DotsClone")]
+    [Header ("Mobiusban")]
     [SerializeField] public GameObject Level;
     [SerializeField] public GameObject BoardView;
     [SerializeField] public GameObject BoardSpaceView;
-	[SerializeField] public GameObject TileView;
+	[SerializeField] public GameObject CrateView;
+    [SerializeField] public GameObject PlayerView;
+    [SerializeField] public GameObject WallView;
     // Instance
     static public ResourcesHandler Instance { get; private set; }
 

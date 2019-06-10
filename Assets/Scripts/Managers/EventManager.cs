@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class EventManager {
 	// Actions and Event Variables
 	public delegate void NoParamAction ();
+    public delegate void BoardAction (Board board);
     public delegate void BoardSpaceAction (BoardSpace space);
 	public delegate void BoolAction (bool _bool);
 	public delegate void StringAction (string _str);
@@ -17,25 +18,17 @@ public class EventManager {
     public void OnScreenSizeChanged () { if (ScreenSizeChangedEvent!=null) { ScreenSizeChangedEvent (); } }
     
     // Gameplay
-    public event NoParamAction CompleteMoveEvent;
+    public event BoardAction BoardExecutedMoveEvent;
     public event BoolAction SetIsLevelCompletedEvent;
     public event IntAction NumMovesMadeChangedEvent;
     public event LevelAction StartLevelEvent;
 
-	public void OnCompleteMove () { if (CompleteMoveEvent!=null) { CompleteMoveEvent (); } }
+    public void OnStartLevel (Level _level) { if (StartLevelEvent!=null) { StartLevelEvent(_level); } }
+    public void OnSetIsLevelCompleted (bool isLevelComplete) { if (SetIsLevelCompletedEvent!=null) { SetIsLevelCompletedEvent (isLevelComplete); } }
+	public void OnBoardExecutedMove (Board board) { if (BoardExecutedMoveEvent!=null) { BoardExecutedMoveEvent (board); } }
 	public void OnNumMovesMadeChanged (int numMovesMade) { if (NumMovesMadeChangedEvent!=null) { NumMovesMadeChangedEvent (numMovesMade); } }
-	public void OnSetIsLevelCompleted (bool isLevelComplete) { if (SetIsLevelCompletedEvent!=null) { SetIsLevelCompletedEvent (isLevelComplete); } }
-	public void OnStartLevel (Level _level) { if (StartLevelEvent!=null) { StartLevelEvent(_level); } }
     
     
-    public event NoParamAction ClearPathEvent;
-    public event BoardSpaceAction AddPathSpaceEvent;
-    public event NoParamAction RemovePathSpaceEvent;
-    public event NoParamAction SubmitPathEvent;
-    public void OnClearPath() { if (ClearPathEvent!=null) { ClearPathEvent(); } }
-    public void OnAddPathSpace(BoardSpace space) { if (AddPathSpaceEvent!=null) { AddPathSpaceEvent(space); } }
-    public void OnRemovePathSpace() { if (RemovePathSpaceEvent!=null) { RemovePathSpaceEvent(); } }
-    public void OnSubmitPath() { if (SubmitPathEvent!=null) { SubmitPathEvent(); } }
     
 
 

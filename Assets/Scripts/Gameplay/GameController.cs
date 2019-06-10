@@ -108,11 +108,11 @@ public class GameController : MonoBehaviour {
 	private void RegisterButtonInput () {
 		// ~~~~ DEBUG ~~~~
 		// R = Reload current scene!
-		if (Input.GetKeyDown(KeyCode.R)) { SceneHelper.ReloadScene(); return; }
+		if (Input.GetKeyDown(KeyCode.R)) { StartLevel(currLevelAddress); return; }
 		if (CurrLevel != null) {
-			// LEFT/RIGHT arrow keys to change levels.
-			if (Input.GetKeyDown(KeyCode.LeftArrow)) { StartPrevLevel(); return; }
-			if (Input.GetKeyDown(KeyCode.RightArrow)) { StartNextLevel(); return; }
+			// BRACKET keys to change levels.
+			if (Input.GetKeyDown(KeyCode.LeftBracket)) { StartPrevLevel(); return; }
+			if (Input.GetKeyDown(KeyCode.RightBracket)) { StartNextLevel(); return; }
 		}
 		//// P = Toggle pause
 		//else if (Input.GetKeyDown (KeyCode.P)) {

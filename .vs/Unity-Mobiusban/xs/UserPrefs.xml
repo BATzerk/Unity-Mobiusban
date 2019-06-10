@@ -1,11 +1,24 @@
 ﻿<Properties StartupConfiguration="{3FDD85B3-B610-CF63-499B-FB4F578BED93}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Gameplay/Board/BoardSpaceView.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Gameplay/GameUI.cs">
     <Files>
       <File FileName="Assets/Scripts/Gameplay/GameController.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Gameplay/Board/Board.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Gameplay/Datas/BoardData.cs" Line="12" Column="32" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BoardSpaceView.cs" Line="28" Column="27" />
+      <File FileName="Assets/Scripts/Gameplay/Level.cs" Line="19" Column="24" />
+      <File FileName="Assets/Scripts/Gameplay/Board/Board.cs" Line="115" Column="52" />
+      <File FileName="Assets/Scripts/Gameplay/Datas/BoardData.cs" Line="125" Column="30" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardSpaceView.cs" Line="9" Column="62" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/CrateView.cs" Line="7" Column="43" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardObjectView.cs" Line="78" Column="43" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Player.cs" Line="14" Column="1" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/PlayerView.cs" Line="16" Column="22" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardOccupant.cs" Line="13" Column="69" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardObject.cs" Line="40" Column="21" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Crate.cs" Line="4" Column="1" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardView.cs" Line="158" Column="36" />
+      <File FileName="Assets/Scripts/Gameplay/BoardUtils.cs" Line="89" Column="32" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardSpace.cs" Line="21" Column="65" />
+      <File FileName="Assets/Scripts/Gameplay/Datas/PropDatas.cs" Line="30" Column="46" />
+      <File FileName="Assets/Scripts/Gameplay/GameUI.cs" Line="23" Column="76" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

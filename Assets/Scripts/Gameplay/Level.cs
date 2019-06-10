@@ -19,7 +19,6 @@ public class Level : MonoBehaviour {
     // Getters (Public)
     public int LevelIndex { get { return MyAddress.level; } }
     // Getters (Private)
-    private bool IsDraggingPath() { return Board.dragPath.HasSpaces; }
 	private InputController inputController { get { return InputController.Instance; } }
 	private PackData myPackData { get { return GameManagers.Instance.DataManager.GetPackData(MyAddress); } }
 
@@ -68,85 +67,30 @@ public class Level : MonoBehaviour {
 	// ----------------------------------------------------------------
 	private void Update() {
         if (!IsLevelOver) { // Level's not over? Update stuff!
-    		UpdateTouchPos();
-    		RegisterTouches();
+    		//UpdateTouchPos();
+    		RegisterButtonInput();
         }
 	}
-	private void UpdateTouchPos() {
-		TouchPosBoard = Input.mousePosition/MainCanvas.Canvas.scaleFactor;
-		float canvasHeight = MainCanvas.Height;
-        TouchPosBoard -= BoardView.Pos;
-        TouchPosBoard = new Vector2(TouchPosBoard.x, canvasHeight-TouchPosBoard.y); // convert to top-left space.
-        int col = Mathf.FloorToInt(TouchPosBoard.x / BoardView.UnitSize);
-        int row = Mathf.FloorToInt(TouchPosBoard.y / BoardView.UnitSize);
-        // Grid-pos changed? Update it!
-        if (touchGridPos.x!=col || touchGridPos.y!=row) {
-            touchGridPos = new Vector2Int(col, row);
-            OnTouchGridPosChanged();
-        }
-	}
+	//private void UpdateTouchPos() {
+	//	TouchPosBoard = Input.mousePosition/MainCanvas.Canvas.scaleFactor;
+	//	float canvasHeight = MainCanvas.Height;
+ //       TouchPosBoard -= BoardView.Pos;
+ //       TouchPosBoard = new Vector2(TouchPosBoard.x, canvasHeight-TouchPosBoard.y); // convert to top-left space.
+ //       int col = Mathf.FloorToInt(TouchPosBoard.x / BoardView.UnitSize);
+ //       int row = Mathf.FloorToInt(TouchPosBoard.y / BoardView.UnitSize);
+ //       // Grid-pos changed? Update it!
+ //       if (touchGridPos.x!=col || touchGridPos.y!=row) {
+ //           touchGridPos = new Vector2Int(col, row);
+ //           OnTouchGridPosChanged();
+ //       }
+	//}
 
-	private void RegisterTouches() {
-		if (InputController.IsTouchUp()) { OnTouchUp(); }
-		else if (InputController.IsTouchDown()) { OnTouchDown(); }
+	private void RegisterButtonInput() {
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) { Board.MovePlayerAttempt(Vector2Int.L); }
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) { Board.MovePlayerAttempt(Vector2Int.R); }
+        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) { Board.MovePlayerAttempt(Vector2Int.T); } // TODO: Decide which way's UP.
+        else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) { Board.MovePlayerAttempt(Vector2Int.B); }
 	}
-	private void OnTouchDown() {
-        BoardSpace spaceOver = Board.GetSpace(touchGridPos);
-        if (Board.MayBeginPath(spaceOver)) {
-            Board.BeginDragPath(spaceOver);
-        }
-	}
-	private void OnTouchUp() {
-        if (Board.MaySubmitPath()) {
-            Board.SubmitPath();
-        }
-        else {
-            Board.ClearDragPath();
-        }
-	}
-
-	private void OnTouchGridPosChanged() {
-        if (IsDraggingPath()) {
-            UpdatePathToTouch();
-        }
-	}
-    
-    /// Tries to get the path as close to the touch as possible.
-    private void UpdatePathToTouch() {
-        Vector2Int nextSpacePos;
-        int safetyCount=0;
-        // Loop through to keep adding/removing spaces until we A) Can't do anything, or B) We're at the touch!
-        while (safetyCount++<20) {
-            nextSpacePos = GetNextSpacePosFromTouchPos();
-            // Is this the PREVIOUS space?? Step back!
-            if (nextSpacePos == Board.dragPath.SecondLastPos) {
-                Board.RemovePathSpace();
-            }
-            // NEW space??
-            else {
-                // We CAN add it! Do that!
-                if (Board.dragPath.MayAddSpaceToPath(nextSpacePos)) {
-                    Board.AddPathSpace(nextSpacePos);
-                }
-                // We CAN'T add it. Get outta the loop.
-                else {
-                    break;
-                }
-            }
-            // If the nextSpacePos is AT the touch, we can get outta the loop.
-            if (nextSpacePos == touchGridPos) { break; }
-        }
-    }
-    private Vector2Int GetNextSpacePosFromTouchPos() {
-        Vector2Int prevSpacePos = Board.dragPath.LastPos;
-        Vector2Int dir = Vector2Int.zero;
-        dir = new Vector2Int(MathUtils.Sign(touchGridPos.x-prevSpacePos.x), MathUtils.Sign(touchGridPos.y-prevSpacePos.y));
-        if (dir.x!=0 && dir.y!=0) { // Trying to move diagonally? Ah-ah.
-            dir.y = 0;
-        }
-        Vector2Int nextSpacePos = new Vector2Int(prevSpacePos.x+dir.x, prevSpacePos.y+dir.y);
-        return nextSpacePos;
-    }
     
     
     

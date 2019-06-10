@@ -4,12 +4,16 @@ using UnityEngine;
 
 [System.Serializable]
 abstract public class BoardOccupant : BoardObject {
+    // Properties
+    public bool IsMovable { get; private set; }
+    
 
 	// ----------------------------------------------------------------
 	//  Initialize
 	// ----------------------------------------------------------------
 	protected void InitializeAsBoardOccupant (Board _boardRef, BoardOccupantData _data) {
 		base.InitializeAsBoardObject (_boardRef, _data.boardPos);
+        IsMovable = _data.isMovable;
 	}
 
 
@@ -22,8 +26,6 @@ abstract public class BoardOccupant : BoardObject {
 	override public void RemoveMyFootprint () {
 		MySpace.RemoveMyOccupant (this);
 	}
-
-
 
 
 

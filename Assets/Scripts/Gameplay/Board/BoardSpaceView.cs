@@ -29,27 +29,4 @@ public class BoardSpaceView : MonoBehaviour {
 	}
 
 
-	// ----------------------------------------------------------------
-	//  Update
-	// ----------------------------------------------------------------
-	//public void Update() {
- //       if (mySpace==null) { return; } // Safety check.
-
-	//	UpdateHighlight();
-	//}
-	//private void UpdateHighlight() {
-		//if (highlightAlpha == 0) {
-		//	i_highlight.enabled = false;
-		//}
-		//// YES highlight!
-		//else {
-		//	i_highlight.enabled = true;
-		//	if (!mySpace.IsPathOnMe) {
-		//		highlightAlpha += (0-highlightAlpha) * 0.3f;
-		//		if (Mathf.Approximately(highlightAlpha, 0)) { highlightAlpha = 0; } // Almost there? Get it, hunty!
-		//	}
-		//	ApplyHighlightAlpha();
-		//}
-	//}
-
 }

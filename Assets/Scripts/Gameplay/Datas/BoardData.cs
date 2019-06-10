@@ -7,15 +7,15 @@ public enum FlipTypes { Horizontal, Vertical }
 
 public class BoardData {
 	// Constants
-	private readonly char[] LINE_BREAKS_CHARS = new char[] { ',' }; // our board layouts are comma-separated (because XML's don't encode line breaks).
+	private readonly char[] LINE_BREAKS_CHARS = { ',' }; // our board layouts are comma-separated (because XML's don't encode line breaks).
 	// Properties
     public int numCols,numRows;
-    public int numColors;
     // BoardObjects
-	public BoardSpaceData[,] spaceDatas { get; private set; }
-	private BoardOccupantData[,] occupantsInBoard; // this is SOLELY so we can go easily back and modify properties of an occupant we've already announced.
-	private List<BoardObjectData> allObjectDatas;
-	public List<TileData> tileDatas { get; private set; }
+    public PlayerData playerData;// { get; private set; }
+    public BoardSpaceData[,] spaceDatas { get; private set; }
+    public List<BoardObjectData> allObjectDatas;
+    public List<WallData> wallDatas { get; private set; }
+    private BoardOccupantData[,] occupantsInBoard; // this is SOLELY so we can go easily back and modify properties of an occupant we've already announced.
 
 	private string[] GetLevelStringArrayFromLayoutString (string layout) {
 		List<string> stringList = new List<string>(layout.Split (LINE_BREAKS_CHARS, System.StringSplitOptions.None));
@@ -28,129 +28,10 @@ public class BoardData {
 		return stringList.ToArray();
 	}
 	
-    /*
-	static private BoardPos GetRotatedBoardPos (BoardPos _boardPos, int rotOffset, int _numCols,int _numRows) {
-		if (rotOffset < 0) { rotOffset += 4; } // keep it in bounds between 1-3.
-		// Simple check.
-		if (rotOffset==0) { return _boardPos; }
-
-		BoardPos newBoardPos = _boardPos;
-		int sin = (int)Mathf.Sin(rotOffset*Mathf.PI*0.5f);
-		int cos = (int)Mathf.Cos(rotOffset*Mathf.PI*0.5f);
-
-		int fullColOffset=0;
-		int fullRowOffset=0;
-		switch(rotOffset) {
-		case 1:
-			fullColOffset = _numCols-1; break;
-		case 2:
-			fullColOffset = _numCols-1;
-			fullRowOffset = _numRows-1; break;
-		case 3:
-			fullRowOffset = _numRows-1; break;
-		default:
-			Debug.LogError ("Passed in an invalid value into GetRotatedBoardPos: " + rotOffset +". Only 1, 2, or 3 are allowed."); break;
-		}
-		// 0,0 -> numCols,0
-		// numCols,0 -> numCols,numRows
-		// numCols,numRows -> 0,numRows
-		// 0,numRows -> 0,0
-
-		// 0,1 -> 1,numRows
-		//		{{1,0},{0,1},{-1,0},{0,-1}}
-
-		// col,row!
-		newBoardPos.col = fullColOffset + _boardPos.col*cos - _boardPos.row*sin;
-		newBoardPos.row = fullRowOffset + _boardPos.col*sin + _boardPos.row*cos;
-		// sideFacing!
-		newBoardPos.sideFacing += rotOffset*2; // DOUBLE the rotOffset for this. rotOffset is cardinal directions, but sideFacing is 8-dir.
-		return newBoardPos;
-	}
-	static private BoardPos GetFlippedBoardPos (BoardPos _boardPos, FlipTypes flipType, int numCols,int numRows) {
-		BoardPos newPos = _boardPos;
-		switch (flipType) {
-			case FlipTypes.Horizontal:
-				newPos.col = numCols-1 - newPos.col;
-				newPos.sideFacing = Sides.GetHorzFlipped(newPos.sideFacing);
-				break;
-			case FlipTypes.Vertical:
-				newPos.row = numRows-1 - _boardPos.row;
-				newPos.sideFacing = Sides.GetVertFlipped(newPos.sideFacing);
-				break;
-		}
-		return newPos;
-	}
-
-	public void RandomlyRotateOrFlip(bool doPreserveDimensions=true) {
-		int rand;
-		if (numCols==numRows || !doPreserveDimensions) { // If we're a square, OR we don't care about our dimensions...!
-			rand = Random.Range(0, 5); // 0-7 inclusive. There are 8 unique ways to rotate/flip a board.
-		}
-		else {
-			rand = Random.Range(0, 3); // 0-3 inclusive. There are only 4 unique ways to rotate/flip a board *without* changing its dimensions.
-		}
-		switch (rand) {
-			case 0: break; // Do nothin'. ;)
-			case 1: FlipHorizontal(); break;
-			case 2: FlipVertical(); break;
-			case 3: Rotate180(); break;
-			case 4: RotateCW(); break;
-			case 5: RotateCCW(); break;
-			case 6: FlipHorizontal(); RotateCW(); break;
-			case 7: FlipHorizontal(); RotateCCW(); break;
-		}
-	}
-	public void FlipHorizontal() { Flip(FlipTypes.Horizontal); }
-	public void FlipVertical() { Flip(FlipTypes.Vertical); }
-	public void RotateCW () { Rotate (1); }
-	public void Rotate180 () { Rotate (2); }
-	public void RotateCCW () { Rotate (3); }
-	private void Rotate (int rotOffset) {
-		int pnumCols = numCols;
-		int pnumRows = numRows;
-		// Update my # of cols/rows!
-		if (rotOffset%2==1) {
-			numCols = pnumRows;
-			numRows = pnumCols;
-		}
-		// Remake grid spaces!
-		BoardSpaceData[,] newSpaces = new BoardSpaceData[numCols,numRows];
-		for (int col=0; col<numCols; col++) {
-			for (int row=0; row<numRows; row++) {
-				BoardPos oldSpacePos = GetRotatedBoardPos (new BoardPos(col,row), -rotOffset, pnumCols,pnumRows); // -rotOffset because we're starting with the *new* col/row and looking for the old one.
-				newSpaces[col,row] = GetSpaceData(oldSpacePos.col, oldSpacePos.row); // set the new guy to EXACTLY the old guy!
-				newSpaces[col,row].boardPos = new BoardPos(col,row); // Update its col/row, of course (that hasn't been done yet)!
-			}
-		}
-		spaceDatas = newSpaces;
-
-		// Update BoardPos of all BoardObjects!
-		foreach (BoardObjectData data in allObjectDatas) {
-			data.boardPos = GetRotatedBoardPos (data.boardPos, rotOffset, numCols,numRows);
-		}
-	}
-	private void Flip (FlipTypes flipType) {
-		// Remake grid spaces!
-		BoardSpaceData[,] newSpaces = new BoardSpaceData[numCols,numRows];
-		for (int col=0; col<numCols; col++) {
-			for (int row=0; row<numRows; row++) {
-				Vector2Int oldSpacePos = GetFlippedBoardPos (new Vector2Int(col,row), flipType, numCols,numRows);
-				newSpaces[col,row] = GetSpaceData(oldSpacePos.x, oldSpacePos.y); // set the new guy to EXACTLY the old guy!
-				newSpaces[col,row].boardPos = new Vector2Int(col,row); // Update its col/row, of course (that hasn't been done yet)!
-			}
-		}
-		spaceDatas = newSpaces;
-
-		// Update BoardPos of all BoardObjects!
-		foreach (BoardObjectData data in allObjectDatas) {
-			data.boardPos = GetFlippedBoardPos (data.boardPos, flipType, numCols,numRows);
-		}
-	}
-    */
 
 
 	public BoardData (LevelDataXML ldxml) {
-        numColors = ldxml.numColors;
+        //numColors = ldxml.numColors;
         
 		// Layout!
 		string[] levelStringArray = GetLevelStringArrayFromLayoutString (ldxml.layout);
@@ -173,7 +54,7 @@ public class BoardData {
 		// Add all gameplay objects!
 		MakeEmptyBoardSpaces ();
 		MakeEmptyLists ();
-
+        
 		occupantsInBoard = new BoardOccupantData[numCols,numRows];
 
 		for (int layer=0; layer<numLayoutLayers; layer++) {
@@ -188,26 +69,21 @@ public class BoardData {
                     switch (spaceChar) {
                     // BoardSpace properties!
                     case '~': GetSpaceData (i,j).isPlayable = false; break;
-					//	// Obstacles!
-					//case '#': AddObstacleData (i,j); break;
-					//	// Walls!
-					//case '_': AddWallData (i,j+1, Sides.T); break; // note: because the underscore looks lower, consider it in the next row (so layout text file looks more intuitive).
-					//case '|': AddWallData (i,j,   Sides.L); break;
-						// Tiles
-					case '0': AddTileData (i,j, 0); break;
-					case '1': AddTileData (i,j, 1); break;
-					case '2': AddTileData (i,j, 2); break;
-					case '3': AddTileData (i,j, 3); break;
-					case '4': AddTileData (i,j, 4); break;
-					case '5': AddTileData (i,j, 5); break;
-					case '6': AddTileData (i,j, 6); break;
-					case '7': AddTileData (i,j, 7); break;
-					case '8': AddTileData (i,j, 8); break;
-					case '9': AddTileData (i,j, 9); break;
+					// Player!
+					case '@': SetPlayerData(i,j); break;
+                    // Crates!
+                    case 'o': AddCrateData (i,j, true); break;
+                    case 'O': AddCrateData (i,j, false); break;
+					// Walls!
+					case '_': AddWallData (i,j+1, Sides.T); break; // note: because the underscore looks lower, consider it in the next row (so layout text file looks more intuitive).
+					case '|': AddWallData (i,j,   Sides.L); break;
 					}
 				}
 			}
 		}
+        
+        // Safety check.
+        if (playerData == null) { SetPlayerData(0,0); }
 
 		// We can empty out those lists now.
 		occupantsInBoard = null;
@@ -222,8 +98,10 @@ public class BoardData {
 	}
 
 	private void MakeEmptyLists () {
+        playerData = null;
 		allObjectDatas = new List<BoardObjectData>();
-		tileDatas = new List<TileData>();
+		occupantsInBoard = new BoardOccupantData[numCols,numRows];
+        wallDatas = new List<WallData>();
 	}
 	private void MakeEmptyBoardSpaces () {
 		spaceDatas = new BoardSpaceData[numCols,numRows];
@@ -238,13 +116,143 @@ public class BoardData {
 	private BoardOccupantData GetOccupantInBoard (int col,int row) { return occupantsInBoard[col,row]; }
 	private void SetOccupantInBoard (BoardOccupantData data) { occupantsInBoard[data.boardPos.x,data.boardPos.y] = data; }
 
-
-	void AddTileData (int col,int row, int colorID) {
-		TileData newData = new TileData (new Vector2Int(col,row), colorID);
-		tileDatas.Add (newData);
+    
+    void SetPlayerData(int col,int row) {
+        if (playerData != null) { Debug.LogError("Whoa! Two players defined in Level XML layout. :P"); return; } // Safety check.
+        playerData = new PlayerData(new Vector2Int(col,row));
+        //allObjectDatas.Add (playerData);
+        SetOccupantInBoard (playerData);
+    }
+	void AddCrateData (int col,int row, bool isMovable) {
+		CrateData newData = new CrateData (new Vector2Int(col,row), isMovable);
 		allObjectDatas.Add (newData);
+        SetOccupantInBoard (newData);
 	}
+    void AddWallData (int col,int row, int sideFacing) {
+        WallData newData = new WallData (new Vector2Int(col,row), sideFacing);
+        wallDatas.Add (newData);
+        allObjectDatas.Add (newData);
+    }
 
 
 
 }
+    /*
+    static private BoardPos GetRotatedBoardPos (BoardPos _boardPos, int rotOffset, int _numCols,int _numRows) {
+        if (rotOffset < 0) { rotOffset += 4; } // keep it in bounds between 1-3.
+        // Simple check.
+        if (rotOffset==0) { return _boardPos; }
+
+        BoardPos newBoardPos = _boardPos;
+        int sin = (int)Mathf.Sin(rotOffset*Mathf.PI*0.5f);
+        int cos = (int)Mathf.Cos(rotOffset*Mathf.PI*0.5f);
+
+        int fullColOffset=0;
+        int fullRowOffset=0;
+        switch(rotOffset) {
+        case 1:
+            fullColOffset = _numCols-1; break;
+        case 2:
+            fullColOffset = _numCols-1;
+            fullRowOffset = _numRows-1; break;
+        case 3:
+            fullRowOffset = _numRows-1; break;
+        default:
+            Debug.LogError ("Passed in an invalid value into GetRotatedBoardPos: " + rotOffset +". Only 1, 2, or 3 are allowed."); break;
+        }
+        // 0,0 -> numCols,0
+        // numCols,0 -> numCols,numRows
+        // numCols,numRows -> 0,numRows
+        // 0,numRows -> 0,0
+
+        // 0,1 -> 1,numRows
+        //      {{1,0},{0,1},{-1,0},{0,-1}}
+
+        // col,row!
+        newBoardPos.col = fullColOffset + _boardPos.col*cos - _boardPos.row*sin;
+        newBoardPos.row = fullRowOffset + _boardPos.col*sin + _boardPos.row*cos;
+        // sideFacing!
+        newBoardPos.sideFacing += rotOffset*2; // DOUBLE the rotOffset for this. rotOffset is cardinal directions, but sideFacing is 8-dir.
+        return newBoardPos;
+    }
+    static private BoardPos GetFlippedBoardPos (BoardPos _boardPos, FlipTypes flipType, int numCols,int numRows) {
+        BoardPos newPos = _boardPos;
+        switch (flipType) {
+            case FlipTypes.Horizontal:
+                newPos.col = numCols-1 - newPos.col;
+                newPos.sideFacing = Sides.GetHorzFlipped(newPos.sideFacing);
+                break;
+            case FlipTypes.Vertical:
+                newPos.row = numRows-1 - _boardPos.row;
+                newPos.sideFacing = Sides.GetVertFlipped(newPos.sideFacing);
+                break;
+        }
+        return newPos;
+    }
+
+    public void RandomlyRotateOrFlip(bool doPreserveDimensions=true) {
+        int rand;
+        if (numCols==numRows || !doPreserveDimensions) { // If we're a square, OR we don't care about our dimensions...!
+            rand = Random.Range(0, 5); // 0-7 inclusive. There are 8 unique ways to rotate/flip a board.
+        }
+        else {
+            rand = Random.Range(0, 3); // 0-3 inclusive. There are only 4 unique ways to rotate/flip a board *without* changing its dimensions.
+        }
+        switch (rand) {
+            case 0: break; // Do nothin'. ;)
+            case 1: FlipHorizontal(); break;
+            case 2: FlipVertical(); break;
+            case 3: Rotate180(); break;
+            case 4: RotateCW(); break;
+            case 5: RotateCCW(); break;
+            case 6: FlipHorizontal(); RotateCW(); break;
+            case 7: FlipHorizontal(); RotateCCW(); break;
+        }
+    }
+    public void FlipHorizontal() { Flip(FlipTypes.Horizontal); }
+    public void FlipVertical() { Flip(FlipTypes.Vertical); }
+    public void RotateCW () { Rotate (1); }
+    public void Rotate180 () { Rotate (2); }
+    public void RotateCCW () { Rotate (3); }
+    private void Rotate (int rotOffset) {
+        int pnumCols = numCols;
+        int pnumRows = numRows;
+        // Update my # of cols/rows!
+        if (rotOffset%2==1) {
+            numCols = pnumRows;
+            numRows = pnumCols;
+        }
+        // Remake grid spaces!
+        BoardSpaceData[,] newSpaces = new BoardSpaceData[numCols,numRows];
+        for (int col=0; col<numCols; col++) {
+            for (int row=0; row<numRows; row++) {
+                BoardPos oldSpacePos = GetRotatedBoardPos (new BoardPos(col,row), -rotOffset, pnumCols,pnumRows); // -rotOffset because we're starting with the *new* col/row and looking for the old one.
+                newSpaces[col,row] = GetSpaceData(oldSpacePos.col, oldSpacePos.row); // set the new guy to EXACTLY the old guy!
+                newSpaces[col,row].boardPos = new BoardPos(col,row); // Update its col/row, of course (that hasn't been done yet)!
+            }
+        }
+        spaceDatas = newSpaces;
+
+        // Update BoardPos of all BoardObjects!
+        foreach (BoardObjectData data in allObjectDatas) {
+            data.boardPos = GetRotatedBoardPos (data.boardPos, rotOffset, numCols,numRows);
+        }
+    }
+    private void Flip (FlipTypes flipType) {
+        // Remake grid spaces!
+        BoardSpaceData[,] newSpaces = new BoardSpaceData[numCols,numRows];
+        for (int col=0; col<numCols; col++) {
+            for (int row=0; row<numRows; row++) {
+                Vector2Int oldSpacePos = GetFlippedBoardPos (new Vector2Int(col,row), flipType, numCols,numRows);
+                newSpaces[col,row] = GetSpaceData(oldSpacePos.x, oldSpacePos.y); // set the new guy to EXACTLY the old guy!
+                newSpaces[col,row].boardPos = new Vector2Int(col,row); // Update its col/row, of course (that hasn't been done yet)!
+            }
+        }
+        spaceDatas = newSpaces;
+
+        // Update BoardPos of all BoardObjects!
+        foreach (BoardObjectData data in allObjectDatas) {
+            data.boardPos = GetFlippedBoardPos (data.boardPos, flipType, numCols,numRows);
+        }
+    }
+    */

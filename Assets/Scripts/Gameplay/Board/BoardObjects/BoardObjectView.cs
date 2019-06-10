@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BoardObjectView : MonoBehaviour {
 	// Components
-	[SerializeField] protected RectTransform myRectTransform=null;
+	protected RectTransform myRectTransform { get; private set; } // Set in Awake.
 	// Properties
 	private float _rotation; // so we can use the ease-ier (waka waka) system between -180 and 180 with minimal processing effort.
 	private float _scale=1;
@@ -46,10 +46,13 @@ public class BoardObjectView : MonoBehaviour {
 	virtual protected void OnSetScale () { }
 
 
-	// ----------------------------------------------------------------
-	//  Initialize / Destroy
-	// ----------------------------------------------------------------
-	protected void InitializeAsBoardObjectView (BoardView _myBoardView, BoardObject _myObject) {
+    // ----------------------------------------------------------------
+    //  Initialize / Destroy
+    // ----------------------------------------------------------------
+    private void Awake() {
+        myRectTransform = GetComponent<RectTransform>();
+    }
+    protected void InitializeAsBoardObjectView (BoardView _myBoardView, BoardObject _myObject) {
 		MyBoardView = _myBoardView;
 		MyBoardObject = _myObject;
 
@@ -73,8 +76,12 @@ public class BoardObjectView : MonoBehaviour {
 	// ----------------------------------------------------------------
     protected void SetPos(Vector2 _pos) { this.Pos = _pos; }
     
-	/** This is called when we submit a path! */
-	virtual public void UpdateVisualsPostMove() { }
+	virtual public void UpdateVisualsPostMove() {
+        // Animate into new pos!
+        LeanTween.cancel(this.gameObject);
+        Vector2 newPos = GetPosFromMyObject();
+        LeanTween.value(this.gameObject,SetPos, Pos,newPos, 0.18f).setEaseOutQuint();
+    }
     
     virtual public void OnRemovedFromPlay() {
         DestroySelf();
