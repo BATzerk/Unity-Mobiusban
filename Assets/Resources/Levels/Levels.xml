@@ -1,0 +1,37 @@
+<PackCollection>
+<Packs>
+
+
+<LevelPack packName="Pack #1">
+<Levels>
+    <Level wrapH="0" layout="
+        ....,
+        @...,
+        ..o.,
+        ....,
+    " />
+    <Level layout="
+        ......,
+        .~..~.,
+        ......,
+        ......,
+        .~..~.,
+        ......,
+    " />
+
+
+    
+</Levels>
+</LevelPack>
+
+
+
+
+
+</Packs>
+</PackCollection>
+
+
+
+
+
