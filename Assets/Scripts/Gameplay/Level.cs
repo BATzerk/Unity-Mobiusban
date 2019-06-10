@@ -69,7 +69,7 @@ public class Level : MonoBehaviour {
                 if (col==2 && row==2) { continue; } // HARDCODED Ignore the middle one. That's what my main BoardView is.
                 BoardView view = Instantiate (ResourcesHandler.Instance.BoardView).GetComponent<BoardView>();
                 view.Initialize (this, Board, rt_boardArea);
-                view.MyCanvasGroup.alpha = 0.69f;
+                view.MyCanvasGroup.alpha = 0.6f;
                 view.transform.localPosition += new Vector3((col-cols*0.5f)*bvSize.x, (row-rows*0.5f)*bvSize.y, 0);
                 if (col%2==1) {
                     view.transform.localScale = new Vector3(view.transform.localScale.x, -view.transform.localScale.y, 1);

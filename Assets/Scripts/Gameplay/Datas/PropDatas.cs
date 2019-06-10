@@ -8,7 +8,8 @@ public class PropData {
 }
 
 public class BoardObjectData : PropData {
-	public Vector2Int boardPos;
+    public int sideFacing;
+    public Vector2Int boardPos;
 }
 public class BoardOccupantData : BoardObjectData {
     public bool isMovable = true;

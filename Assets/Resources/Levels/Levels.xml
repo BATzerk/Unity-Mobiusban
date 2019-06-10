@@ -4,11 +4,24 @@
 
 <LevelPack packName="Pack #1">
 <Levels>
+    <Level wrapV="0" wrapH="1" layout="
+        ....,
+        ....,
+        @.o.,
+        ....,
+    " />
+    <Level wrapV="1" wrapH="0" layout="
+        ....,
+        ....,
+        @.o.,
+        ....,
+    " />
     <Level layout="
-        ....,
-        ....,
-        @...,
-        ....,
+        @.o..,
+        ..o..,
+        ..ooo,
+        .....,
+        .....,
     " />
     <Level layout="
         _.___,

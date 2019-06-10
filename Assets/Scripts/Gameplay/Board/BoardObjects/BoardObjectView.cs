@@ -40,6 +40,16 @@ public class BoardObjectView : MonoBehaviour {
     protected Vector2 GetPosFromMyObject () {
         return new Vector2 (MyBoardView.BoardToX (MyBoardObject.Col), MyBoardView.BoardToY (MyBoardObject.Row));
     }
+    private float GetRotationFromMyObject () {
+        float returnValue = -90 * MyBoardObject.SideFacing;
+        if (returnValue<-180) returnValue += 360;
+        if (returnValue> 180) returnValue -= 360;
+        if (Mathf.Abs (returnValue-Rotation) > 180) {
+            if (Rotation<returnValue) { Rotation += 360; }
+            else { Rotation -= 360; }
+        }
+        return returnValue;
+    }
 
 	virtual protected void OnSetPos () { }
 	virtual protected void OnSetRotation () { }
@@ -63,7 +73,7 @@ public class BoardObjectView : MonoBehaviour {
 
 		// Start me in the right spot!
 		Pos = GetPosFromMyObject();
-		//Rotation = GetRotationFromBO(myObject);
+		Rotation = GetRotationFromMyObject();
 		Scale = 1;
 	}
     protected void DestroySelf() {
@@ -80,7 +90,9 @@ public class BoardObjectView : MonoBehaviour {
         // Animate into new pos!
         LeanTween.cancel(this.gameObject);
         Vector2 newPos = GetPosFromMyObject();
-        SetPos(newPos); // TEMP DISABLED animation.
+        // TEMP DISABLED animation.
+        SetPos(newPos);
+        Rotation = GetRotationFromMyObject();
         //LeanTween.value(this.gameObject,SetPos, Pos,newPos, 0.18f).setEaseOutQuint();
     }
     

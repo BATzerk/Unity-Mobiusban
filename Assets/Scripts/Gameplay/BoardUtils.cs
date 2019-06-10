@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum MoveResults { Undefined, Success, Fail }
+
 public static class BoardUtils {
 	// ----------------------------------------------------------------
 	//  Basic Getters
@@ -42,42 +44,32 @@ public static class BoardUtils {
 		if (space==null) { return null; }
 		return space.MyOccupant;
 	}
-	//public static Crate GetTile(Board b, int col,int row) {
-	//	return GetOccupant(b, col,row) as Crate;
-	//}
-
-	//public static bool IsSpaceOpen(Board b, int col,int row) {
-	//	BoardSpace bs = GetSpace (b, col,row);
-	//	return bs!=null && bs.IsOpen();
-	//}
 	public static bool IsSpacePlayable(Board b, int col,int row) {
 		BoardSpace bs = GetSpace (b, col,row);
 		return bs!=null && bs.IsPlayable;
 	}
+    private static int GetNewSideFacing(Board b, int sideFacing, Vector2Int posFrom, Vector2Int dir) {
+        int col = posFrom.x + dir.x;
+        int row = posFrom.y + dir.y;
+        if (col < 0) {
+            return Sides.GetOpposite(sideFacing);
+        }
+        else if (col >= b.NumCols) {
+            return Sides.GetOpposite(sideFacing);
+        }
+        if (row < 0) {
+            return sideFacing;
+        }
+        else if (row >= b.NumRows) {
+            return sideFacing;
+        }
+        return sideFacing;
+    }
     
     
     // ----------------------------------------------------------------
-    //  Doers
+    //  Moving Occupants
     // ----------------------------------------------------------------
-    //static public void ApplyGravity(Board b) {
-    //    for (int row=b.NumRows-1; row>0; --row) {
-    //        for (int col=0; col<b.NumCols; col++) {
-    //            if (IsSpaceOpen(b, col,row)) {
-    //                PullTileAboveIntoSpace(b, col,row);
-    //            }
-    //        }
-    //    }
-    //}
-    //static public void PullTileAboveIntoSpace(Board b, int colTo,int rowTo) {
-    //    // Look up until we find a Tile to pull down into this space. Then move it to this space!
-    //    for (int row=rowTo-1; row>=0; --row) {
-    //        Crate tile = GetTile(b, colTo,row);
-    //        if (tile != null) {
-    //            tile.SetColRow(colTo,rowTo);
-    //            break;
-    //        }
-    //    }
-    //}
     public static bool MayMoveOccupant(Board b, Vector2Int occPos, Vector2Int dir) {
         if (b==null) { return false; } // Safety check.
         // Clone the Board!
@@ -107,8 +99,10 @@ public static class BoardUtils {
             if (result!=MoveResults.Success) { return result; }
         }
         
-        // Okay, we're clear to move our original fella! Do!
+        // Okay, we're good to move our original fella! Do!
+        int newSideFacing = GetNewSideFacing(b, bo.SideFacing, occPos, dir);
         bo.SetColRow(spaceTo.BoardPos);
+        bo.SetSideFacing(newSideFacing);
         // Put footprint back down.
         bo.AddMyFootprint();
         
@@ -118,4 +112,3 @@ public static class BoardUtils {
 
 
 }
-public enum MoveResults { Undefined, Success, Fail }
