@@ -9,6 +9,7 @@ public class BoardData {
 	private readonly char[] LINE_BREAKS_CHARS = { ',' }; // our board layouts are comma-separated (because XML's don't encode line breaks).
 	// Properties
     public int numCols,numRows;
+    public WrapType wrapH,wrapV;
     // BoardObjects
     public PlayerData playerData;// { get; private set; }
     public BoardSpaceData[,] spaceDatas { get; private set; }
@@ -36,7 +37,8 @@ public class BoardData {
     //  Initialize
     // ----------------------------------------------------------------
 	public BoardData (LevelDataXML ldxml) {
-        //numColors = ldxml.numColors;
+        wrapH = Board.IntToWrapType(ldxml.wrapH);
+        wrapV = Board.IntToWrapType(ldxml.wrapV);
         
 		// Layout!
 		string[] levelStringArray = GetLevelStringArrayFromLayoutString (ldxml.layout);

@@ -60,21 +60,29 @@ public class Level : MonoBehaviour {
 		BoardView = Instantiate (ResourcesHandler.Instance.BoardView).GetComponent<BoardView>();
         BoardView.Initialize (this, Board, rt_boardArea);
         // Make BoardViewEchoes!
-        int cols=4;
-        int rows=4;
+        int cols = Board.DoWrapH ? 3 : 1;
+        int rows = Board.DoWrapV ? 3 : 1;
         Vector2 bvSize = BoardView.Size;
         BoardViewEchoes = new BoardView[cols,rows];
         for (int col=0; col<cols; col++) {
             for (int row=0; row<rows; row++) {
-                if (col==2 && row==2) { continue; } // HARDCODED Ignore the middle one. That's what my main BoardView is.
+                if (col==Mathf.FloorToInt(cols*0.5f) && row==Mathf.FloorToInt(rows*0.5f)) { continue; } // HARDCODED Ignore the middle one. That's what my main BoardView is.
+                //if (col==2 && row==2) { continue; } // HARDCODED Ignore the middle one. That's what my main BoardView is.
+                
+                
                 BoardView view = Instantiate (ResourcesHandler.Instance.BoardView).GetComponent<BoardView>();
                 view.Initialize (this, Board, rt_boardArea);
                 view.MyCanvasGroup.alpha = 0.6f;
-                view.transform.localPosition += new Vector3((col-cols*0.5f)*bvSize.x, (row-rows*0.5f)*bvSize.y, 0);
-                if (col%2==1) {
+                if (cols > 1) {
+                    view.transform.localPosition += new Vector3(Mathf.Ceil(col-cols*0.5f)*bvSize.x, 0, 0);
+                }
+                if (rows > 1) {
+                    view.transform.localPosition += new Vector3(0, Mathf.Ceil(row-rows*0.5f)*bvSize.y, 0);
+                }
+                if (col%2==0 && Board.WrapH==WrapType.Flip) {
                     view.transform.localScale = new Vector3(view.transform.localScale.x, -view.transform.localScale.y, 1);
                 }
-                if (row%2==1) {
+                if (row%2==0 && Board.WrapV==WrapType.Flip) {
                     view.transform.localScale = new Vector3(-view.transform.localScale.x, view.transform.localScale.y, 1);
                 }
                 BoardViewEchoes[col,row] = view;

@@ -18,24 +18,34 @@ public static class BoardUtils {
 
     public static BoardSpace GetSpace(Board b, Vector2Int pos) { return GetSpace(b, pos.x,pos.y); }
     public static BoardSpace GetSpace(Board b, int col,int row) {
-        // Wrapped?? Convert!
+        // Wrap!
         if (col < 0) {
-            col += b.NumCols;
-            row = b.NumRows-1 - row;
+            if (b.DoWrapH) { col += b.NumCols; }
+            if (b.WrapH == WrapType.Flip) {
+                row = b.NumRows-1 - row;
+            }
         }
         else if (col >= b.NumCols) {
-            col -= b.NumCols;
-            row = b.NumRows-1 - row;
+            if (b.DoWrapH) { col -= b.NumCols; }
+            if (b.WrapH == WrapType.Flip) {
+                row = b.NumRows-1 - row;
+            }
         }
         if (row < 0) {
-            row += b.NumRows;
-            col = b.NumCols-1 - col;
+            if (b.DoWrapV) { row += b.NumRows; }
+            if (b.WrapV == WrapType.Flip) {
+                col = b.NumCols-1 - col;
+            }
         }
         else if (row >= b.NumRows) {
-            row -= b.NumRows;
-            col = b.NumCols-1 - col;
+            if (b.DoWrapV) { row -= b.NumRows; }
+            if (b.WrapV == WrapType.Flip) {
+                col = b.NumCols-1 - col;
+            }
         }
-        //if (col<0 || row<0  ||  col>=b.NumCols || row>=b.NumRows) { return null; }
+        // Outta bounds? Return NULL.
+        if (col<0 || row<0  ||  col>=b.NumCols || row>=b.NumRows) { return null; }
+        // In bounds! Return space!
 		return b.Spaces[col,row];
 	}
     public static BoardOccupant GetOccupant(Board b, Vector2Int pos) { return GetOccupant(b, pos.x,pos.y); }
@@ -52,16 +62,14 @@ public static class BoardUtils {
         int col = posFrom.x + dir.x;
         int row = posFrom.y + dir.y;
         if (col < 0) {
-            return Sides.GetOpposite(sideFacing);
+            if (b.WrapH == WrapType.Flip) {
+                return Sides.GetOpposite(sideFacing);
+            }
         }
         else if (col >= b.NumCols) {
-            return Sides.GetOpposite(sideFacing);
-        }
-        if (row < 0) {
-            return sideFacing;
-        }
-        else if (row >= b.NumRows) {
-            return sideFacing;
+            if (b.WrapH == WrapType.Flip) {
+                return Sides.GetOpposite(sideFacing);
+            }
         }
         return sideFacing;
     }

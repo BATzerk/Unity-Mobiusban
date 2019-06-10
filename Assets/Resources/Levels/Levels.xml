@@ -4,18 +4,62 @@
 
 <LevelPack packName="Pack #1">
 <Levels>
-    <Level wrapV="0" wrapH="1" layout="
+    <Level wrapH="0" wrapV="0" layout="
         ....,
         ....,
         @.o.,
         ....,
     " />
-    <Level wrapV="1" wrapH="0" layout="
+    <Level wrapH="1" wrapV="0" layout="
         ....,
         ....,
         @.o.,
         ....,
     " />
+    <Level wrapH="0" wrapV="1" layout="
+        ....,
+        ....,
+        @.o.,
+        ....,
+    " />
+    <Level wrapH="1" wrapV="1" layout="
+        ....,
+        ....,
+        @.o.,
+        ....,
+    " />
+    <Level wrapH="2" wrapV="0" layout="
+        ....,
+        ....,
+        @.o.,
+        ....,
+    " />
+    <Level wrapH="0" wrapV="2" layout="
+        ....,
+        ....,
+        @.o.,
+        ....,
+    " />
+    <Level wrapH="2" wrapV="2" layout="
+        ....,
+        ....,
+        @.o.,
+        ....,
+    " />
+    <Level wrapH="1" wrapV="2" layout="
+        ....,
+        ....,
+        @.o.,
+        ....,
+    " />
+    <Level wrapH="2" wrapV="1" layout="
+        ....,
+        ....,
+        @.o.,
+        ....,
+    " />
+
+
     <Level layout="
         @.o..,
         ..o..,
@@ -23,6 +67,9 @@
         .....,
         .....,
     " />
+
+
+
     <Level layout="
         _.___,
         .||..,

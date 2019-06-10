@@ -2,10 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum WrapType {
+    Undefined,
+    
+    None,
+    Parallel,
+    Flip,
+}
+
 public class Board {
     // Properties
     public int NumCols { get; private set; }
     public int NumRows { get; private set; }
+    public WrapType WrapH { get; private set; }
+    public WrapType WrapV { get; private set; }
     // Objects
     public Player player;
 	public BoardSpace[,] spaces;
@@ -14,12 +24,30 @@ public class Board {
     public List<BoardObject> objectsAddedThisMove;
 
 	// Getters
+    public bool DoWrapH { get { return WrapH != WrapType.None; } }
+    public bool DoWrapV { get { return WrapV != WrapType.None; } }
     public BoardSpace GetSpace(Vector2Int pos) { return GetSpace(pos.x, pos.y); }
     public BoardSpace GetSpace(int col,int row) { return BoardUtils.GetSpace(this, col,row); }
     public BoardOccupant GetOccupant(int col,int row) { return BoardUtils.GetOccupant(this, col,row); }
     //public Crate GetTile(Vector2Int pos) { return GetTile(pos.x,pos.y); }
     //public Crate GetTile(int col,int row) { return BoardUtils.GetTile(this, col,row); }
 	public BoardSpace[,] Spaces { get { return spaces; } }
+    static public int WrapTypeToInt(WrapType wt) { // TODO: Move this out of this class.
+        switch (wt) {
+            case WrapType.None: return 0;
+            case WrapType.Parallel: return 1;
+            case WrapType.Flip: return 2;
+            default: return -1; // Hmm.
+        }
+    }
+    static public WrapType IntToWrapType(int wt) {
+        switch (wt) {
+            case 0: return WrapType.None;
+            case 1: return WrapType.Parallel;
+            case 2: return WrapType.Flip;
+            default: return WrapType.Undefined;; // Hmm.
+        }
+    }
 
     // Serializing
 	public Board Clone () {
@@ -28,6 +56,8 @@ public class Board {
 	}
 	public BoardData ToData() {
 		BoardData bd = new BoardData(NumCols,NumRows);
+        bd.wrapH = WrapH;
+        bd.wrapV = WrapV;
         bd.playerData = player.ToData() as PlayerData;
 		foreach (BoardObject obj in allObjects) { bd.allObjectDatas.Add(obj.ToData()); }
 		for (int col=0; col<NumCols; col++) {
@@ -46,6 +76,8 @@ public class Board {
 	public Board (BoardData bd) {
 		NumCols = bd.numCols;
 		NumRows = bd.numRows;
+        WrapH = bd.wrapH;
+        WrapV = bd.wrapV;
         
         // Empty out lists.
         allObjects = new List<BoardObject>();
