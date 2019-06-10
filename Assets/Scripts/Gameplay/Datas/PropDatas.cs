@@ -29,6 +29,18 @@ public class CrateData : BoardOccupantData {
         this.isMovable = isMovable;
     }
 }
+public class CrateGoalData : BoardObjectData {
+    public CrateGoalData(Vector2Int boardPos, int sideFacing) {
+        this.boardPos = boardPos;
+        this.sideFacing = sideFacing;
+    }
+}
+public class ExitSpotData : BoardObjectData {
+    public ExitSpotData(Vector2Int boardPos, int sideFacing) {
+        this.boardPos = boardPos;
+        this.sideFacing = sideFacing;
+    }
+}
 public class PlayerData : BoardOccupantData {
     public PlayerData (Vector2Int boardPos) {
         this.boardPos = boardPos;

@@ -33,10 +33,10 @@ abstract public class BoardObject {
 	// ----------------------------------------------------------------
 	//  Initialize
 	// ----------------------------------------------------------------
-	protected void InitializeAsBoardObject (Board _boardRef, Vector2Int _boardPos, int _sideFacing) {
+	protected void InitializeAsBoardObject (Board _boardRef, BoardObjectData data) {
 		this.BoardRef = _boardRef;
-		this.BoardPos = _boardPos;
-        this.SideFacing = _sideFacing;
+		this.BoardPos = data.boardPos;
+        this.SideFacing = data.sideFacing;
         
 		// Automatically add me to the board!
 		AddMyFootprint ();

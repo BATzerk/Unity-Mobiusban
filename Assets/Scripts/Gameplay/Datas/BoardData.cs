@@ -79,11 +79,14 @@ public class BoardData {
                     switch (spaceChar) {
                     // BoardSpace properties!
                     case '~': GetSpaceData (col,row).isPlayable = false; break;
+                    // ExitSpot!
+                    case '$': AddExitSpotData (i,j); break;
 					// Player!
 					case '@': SetPlayerData(col,row); break;
                     // Crates!
-                    case 'o': AddCrateData (col,row, true); break;
-                    case 'O': AddCrateData (col,row, false); break;
+                    case 'o': AddCrateGoalData (col,row, 0); break;// TODO: Do sideFacing.
+                    case 'O': AddCrateData (col,row, true); break;
+                    case '#': AddCrateData (col,row, false); break;
 					// Walls!
 					case '_': SetIsWallT (col,row-1); break; // note: because the underscore looks lower, consider it in the next row (so layout text file looks more intuitive).
 					case '|': SetIsWallL (col,row); break;
@@ -125,6 +128,7 @@ public class BoardData {
 	private BoardOccupantData GetOccupantInBoard (int col,int row) { return occupantsInBoard[col,row]; }
 	private void SetOccupantInBoard (BoardOccupantData data) { occupantsInBoard[data.boardPos.x,data.boardPos.y] = data; }
 
+
     
     void SetPlayerData(int col,int row) {
         if (playerData != null) { Debug.LogError("Whoa! Two players defined in Level XML layout."); return; } // Safety check.
@@ -132,11 +136,21 @@ public class BoardData {
         //allObjectDatas.Add (playerData);
         SetOccupantInBoard (playerData);
     }
-	void AddCrateData (int col,int row, bool isMovable) {
-		CrateData newData = new CrateData (new Vector2Int(col,row), isMovable);
-		allObjectDatas.Add (newData);
+    
+    void AddCrateData (int col,int row, bool isMovable) {
+        CrateData newData = new CrateData (new Vector2Int(col,row), isMovable);
+        allObjectDatas.Add (newData);
         SetOccupantInBoard (newData);
-	}
+    }
+    void AddExitSpotData (int col,int row) {
+        ExitSpotData newData = new ExitSpotData (new Vector2Int(col,row), 0);
+        allObjectDatas.Add (newData);
+    }
+    void AddCrateGoalData (int col,int row, int sideFacing) {
+        CrateGoalData newData = new CrateGoalData (new Vector2Int(col,row), sideFacing);
+        allObjectDatas.Add (newData);
+    }
+    
     void SetIsWallL(int col,int row) {
         if (!IsInBounds(col,row)) { return; } // Safety check.
         spaceDatas[col,row].isWallL = true;

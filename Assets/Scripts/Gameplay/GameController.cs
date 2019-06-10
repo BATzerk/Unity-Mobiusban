@@ -38,21 +38,16 @@ public class GameController : MonoBehaviour {
 	//  Doers - Loading Level
 	// ----------------------------------------------------------------
 	public void RestartCurrLevel () { StartLevel (currLevelAddress); }
-	public void StartPrevLevel () {
-		LevelData data = dataManager.GetLevelData (currLevelAddress.PreviousLevel);
-		if (data != null) { StartLevel (data); }
-	}
-	public void StartNextLevel () {
-		LevelData data = dataManager.GetLevelData (currLevelAddress.NextLevel);
-		if (data != null) { StartLevel (data); }
-		//else { OnCompleteLastLevelInPack(); } // If we've reached the end of this world...
-	}
+    private void StartPrevPack() { StartLevel(currLevelAddress.PrevPack); }
+    private void StartNextPack() { StartLevel(currLevelAddress.NextPack); }
+    private void StartPrevLevel() { StartLevel(currLevelAddress.PrevLevel); }
+    private void StartNextLevel() { StartLevel(currLevelAddress.NextLevel); }
 	public void StartLevel (LevelAddress address) {
         #if UNITY_EDITOR // In editor? Noice. Reload all levels from file so we can update during runtime!
         dataManager.ReloadLevels ();
         #endif
 		LevelData ld = dataManager.GetLevelData (address);
-		if (ld == null) { Debug.LogError ("Requested LevelData doesn't exist! address: " + address.ToString()); } // Useful feedback for dev.
+		if (ld == null) { Debug.LogError ("Requested LevelData doesn't exist! address: " + address.ToString()); return; } // Useful feedback for dev.
 		StartLevel (ld);
 	}
 	private void StartLevel (LevelData ld) {
@@ -110,9 +105,16 @@ public class GameController : MonoBehaviour {
 		// R = Reload current scene!
 		if (Input.GetKeyDown(KeyCode.R)) { StartLevel(currLevelAddress); return; }
 		if (CurrLevel != null) {
-			// BRACKET keys to change levels.
-			if (Input.GetKeyDown(KeyCode.LeftBracket)) { StartPrevLevel(); return; }
-			if (Input.GetKeyDown(KeyCode.RightBracket)) { StartNextLevel(); return; }
+            // ALT + BRACKET keys to change packs.
+            if (InputController.IsKey_alt) {
+                if (Input.GetKeyDown(KeyCode.LeftBracket)) { StartPrevPack(); return; }
+                if (Input.GetKeyDown(KeyCode.RightBracket)) { StartNextPack(); return; }
+            }
+            // BRACKET keys to change levels.
+            else {
+                if (Input.GetKeyDown(KeyCode.LeftBracket)) { StartPrevLevel(); return; }
+                if (Input.GetKeyDown(KeyCode.RightBracket)) { StartNextLevel(); return; }
+            }
 		}
 		//// P = Toggle pause
 		//else if (Input.GetKeyDown (KeyCode.P)) {

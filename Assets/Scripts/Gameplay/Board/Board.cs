@@ -8,7 +8,9 @@ public enum WrapType {
     None,
     Parallel,
     Flip,
+    CW, // clockwise
 }
+
 
 public class Board {
     // Properties
@@ -16,10 +18,12 @@ public class Board {
     public int NumRows { get; private set; }
     public WrapType WrapH { get; private set; }
     public WrapType WrapV { get; private set; }
+    public bool AreGoalsSatisfied { get; private set; }
     // Objects
     public Player player;
 	public BoardSpace[,] spaces;
     // Reference Lists
+    public List<IGoalObject> goalObjects; // contain BeamGoals and CrateGoals
     public List<BoardObject> allObjects; // includes EVERY BoardObject in every other list!
     public List<BoardObject> objectsAddedThisMove;
 
@@ -37,6 +41,7 @@ public class Board {
             case WrapType.None: return 0;
             case WrapType.Parallel: return 1;
             case WrapType.Flip: return 2;
+            case WrapType.CW: return 3;
             default: return -1; // Hmm.
         }
     }
@@ -45,8 +50,20 @@ public class Board {
             case 0: return WrapType.None;
             case 1: return WrapType.Parallel;
             case 2: return WrapType.Flip;
+            case 3: return WrapType.CW;
             default: return WrapType.Undefined;; // Hmm.
         }
+    }
+    public bool IsPlayerOnExitSpot () {
+        return false;
+        //return player.MySpace.HasExitSpot;// TODO: This
+    }
+    private bool CheckAreGoalsSatisfied () {
+        if (goalObjects.Count == 0) { return true; } // If there's NO criteria, then sure, we're satisfied! For levels that're just about getting to the exit.
+        for (int i=0; i<goalObjects.Count; i++) {
+            if (!goalObjects[i].IsOn) { return false; } // return false if any of these guys aren't on.
+        }
+        return true; // Looks like we're soooo satisfied!!
     }
 
     // Serializing
@@ -81,6 +98,7 @@ public class Board {
         
         // Empty out lists.
         allObjects = new List<BoardObject>();
+        goalObjects = new List<IGoalObject>();
         objectsAddedThisMove = new List<BoardObject>();
 
 		// Add all gameplay objects!
@@ -103,24 +121,29 @@ public class Board {
             if (type == typeof(CrateData)) {
                 AddCrate (objData as CrateData);
             }
+            else if (type == typeof(CrateGoalData)) {
+                AddCrateGoal (objData as CrateGoalData);
+            }
+            else if (type == typeof(ExitSpotData)) {
+                AddExitSpot (objData as ExitSpotData);
+            }
         }
 	}
     
-    private Crate AddCrate (CrateData data) {
+    private void AddCrate (CrateData data) {
         Crate prop = new Crate (this, data);
         allObjects.Add (prop);
         objectsAddedThisMove.Add(prop);
-        return prop;
     }
-
-
-    // ----------------------------------------------------------------
-    //  Doers
-    // ----------------------------------------------------------------
-    //private void ClearTile(Crate tile) {
-    //    if (tile == null) { return; } // Safety check.
-    //    tile.RemoveFromPlay();
-    //}
+    private void AddCrateGoal (CrateGoalData data) {
+        CrateGoal prop = new CrateGoal (this, data);
+        allObjects.Add (prop);
+        goalObjects.Add (prop);
+    }
+    private void AddExitSpot (ExitSpotData data) {
+        ExitSpot prop = new ExitSpot (this, data);
+        allObjects.Add (prop);
+    }
 
 
 	// ----------------------------------------------------------------

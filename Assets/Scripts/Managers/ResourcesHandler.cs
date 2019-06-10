@@ -11,7 +11,9 @@ public class ResourcesHandler : MonoBehaviour {
     [SerializeField] public GameObject Level;
     [SerializeField] public GameObject BoardView;
     [SerializeField] public GameObject BoardSpaceView;
-	[SerializeField] public GameObject CrateView;
+    [SerializeField] public GameObject CrateView;
+    [SerializeField] public GameObject CrateGoalView;
+    [SerializeField] public GameObject ExitSpotView;
     [SerializeField] public GameObject PlayerView;
     // Instance
     static public ResourcesHandler Instance { get; private set; }

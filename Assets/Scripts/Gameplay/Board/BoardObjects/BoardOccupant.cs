@@ -12,7 +12,7 @@ abstract public class BoardOccupant : BoardObject {
 	//  Initialize
 	// ----------------------------------------------------------------
 	protected void InitializeAsBoardOccupant (Board _boardRef, BoardOccupantData _data) {
-		base.InitializeAsBoardObject (_boardRef, _data.boardPos, _data.sideFacing);
+		base.InitializeAsBoardObject (_boardRef, _data);
         IsMovable = _data.isMovable;
 	}
 

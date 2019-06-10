@@ -23,8 +23,9 @@ public class BoardView : MonoBehaviour {
 
     // Getters (Private)
     private ResourcesHandler resourcesHandler { get { return ResourcesHandler.Instance; } }
-    private int numCols { get { return MyBoard.NumCols; } }
-    private int numRows { get { return MyBoard.NumRows; } }
+    private int NumCols { get { return MyBoard.NumCols; } }
+    private int NumRows { get { return MyBoard.NumRows; } }
+    public bool AreGoalsSatisfied { get { return MyBoard.AreGoalsSatisfied; } }
     // Getters (Public)
     public List<BoardObjectView> AllObjectViews { get { return allObjectViews; } }
     public Transform tf_BoardObjects { get { return tf_boardObjects; } }
@@ -66,9 +67,9 @@ public class BoardView : MonoBehaviour {
         // Make Player!
         AddPlayerView(MyBoard.player);
 		// Make spaces!
-		spaceViews = new BoardSpaceView[numCols,numRows];
-		for (int i=0; i<numCols; i++) {
-			for (int j=0; j<numRows; j++) {
+		spaceViews = new BoardSpaceView[NumCols,NumRows];
+		for (int i=0; i<NumCols; i++) {
+			for (int j=0; j<NumRows; j++) {
 				spaceViews[i,j] = Instantiate(resourcesHandler.BoardSpaceView).GetComponent<BoardSpaceView>();
 				spaceViews[i,j].Initialize (this, MyBoard.GetSpace(i,j));
 			}
@@ -89,10 +90,10 @@ public class BoardView : MonoBehaviour {
         // Temporarily parent me to this fella!
         transform.SetParent(rt_availableArea);
 		// Determine unitSize.
-        UnitSize = Mathf.Min(rt_availableArea.rect.size.x/numCols, rt_availableArea.rect.size.y/numRows);
+        UnitSize = Mathf.Min(rt_availableArea.rect.size.x/NumCols, rt_availableArea.rect.size.y/NumRows);
 		UnitSize = Mathf.Min(MAX_UNIT_SIZE, UnitSize); // don't let it get TOO big. (Just for the 3x3 lvls, really.)
 		// Apply the board size to my rectTransform.
-		Vector2 mySize = new Vector2(UnitSize*numCols, UnitSize*numRows);
+		Vector2 mySize = new Vector2(UnitSize*NumCols, UnitSize*NumRows);
 		myRectTransform.sizeDelta = mySize;
 		// Set my position.
         //float xOffset = (rt_availableArea.rect.width -mySize.x) * 0.5f; // nudge me so I'm centered!
@@ -103,27 +104,35 @@ public class BoardView : MonoBehaviour {
         transform.SetParent(MyLevel.transform);
 	}
 
-	private BoardObjectView AddObjectView (BoardObject sourceObject) {
-		if (sourceObject is Crate) { return AddCrateView (sourceObject as Crate); }
-        //else if (sourceObject is Player) { return AddPlayerView (sourceObject as Player); }
+	private void AddObjectView (BoardObject sourceObject) {
+		if (sourceObject is Crate) { AddCrateView (sourceObject as Crate); }
+        else if (sourceObject is CrateGoal) { AddCrateGoalView (sourceObject as CrateGoal); }
+        else if (sourceObject is ExitSpot) { AddExitSpotView (sourceObject as ExitSpot); }
 		else {
             Debug.LogError ("Trying to add BoardObjectView from BoardObject, but no clause to handle this type! " + sourceObject.GetType().ToString());
-            return null;
+            return;
         }
 	}
-    private CrateView AddCrateView (Crate data) {
+    private void AddCrateView (Crate obj) {
         CrateView newObj = Instantiate(resourcesHandler.CrateView).GetComponent<CrateView>();
-        newObj.Initialize (this, data);
+        newObj.Initialize (this, obj);
         allObjectViews.Add (newObj);
-        return newObj;
     }
-    private PlayerView AddPlayerView (Player data) {
+    private void AddCrateGoalView (CrateGoal obj) {
+        CrateGoalView newObj = Instantiate(resourcesHandler.CrateGoalView).GetComponent<CrateGoalView>();
+        newObj.Initialize (this, obj);
+        allObjectViews.Add (newObj);
+    }
+    private void AddExitSpotView (ExitSpot obj) {
+        ExitSpotView newObj = Instantiate(resourcesHandler.ExitSpotView).GetComponent<ExitSpotView>();
+        newObj.Initialize (this, obj);
+        allObjectViews.Add (newObj);
+    }
+    private void AddPlayerView (Player obj) {
         PlayerView newObj = Instantiate(resourcesHandler.PlayerView).GetComponent<PlayerView>();
-        newObj.Initialize (this, data);
+        newObj.Initialize (this, obj);
         allObjectViews.Add (newObj);
-        return newObj;
     }
-
 
 
 	// ----------------------------------------------------------------

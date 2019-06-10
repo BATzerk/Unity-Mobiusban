@@ -60,6 +60,7 @@ public class Level : MonoBehaviour {
 		BoardView = Instantiate (ResourcesHandler.Instance.BoardView).GetComponent<BoardView>();
         BoardView.Initialize (this, Board, rt_boardArea);
         // Make BoardViewEchoes!
+        // NOTE: This is all pretty hacked in!! VERY hardcoded values.
         int cols = Board.DoWrapH ? 3 : 1;
         int rows = Board.DoWrapV ? 3 : 1;
         Vector2 bvSize = BoardView.Size;
@@ -84,6 +85,13 @@ public class Level : MonoBehaviour {
                 }
                 if (row%2==0 && Board.WrapV==WrapType.Flip) {
                     view.transform.localScale = new Vector3(-view.transform.localScale.x, view.transform.localScale.y, 1);
+                }
+                
+                if (col%2==0 && Board.WrapH==WrapType.CW) {
+                    view.transform.localEulerAngles += new Vector3(0, 0, col==0 ? -90 : 90);
+                }
+                if (row%2==0 && Board.WrapV==WrapType.CW) {
+                    view.transform.localEulerAngles += new Vector3(0, 0, row==0 ? -90 : 90);
                 }
                 BoardViewEchoes[col,row] = view;
             }

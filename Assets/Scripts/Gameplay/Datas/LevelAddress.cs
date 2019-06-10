@@ -14,8 +14,10 @@ public struct LevelAddress {
 	}
 
 	//public bool IsTutorial { get { return mode == GameModes.TutorialIndex; } }
-	public LevelAddress NextLevel { get { return new LevelAddress(pack, level+1); } }
-	public LevelAddress PreviousLevel { get { return new LevelAddress(pack, level-1); } }
+    public LevelAddress NextPack { get { return new LevelAddress(pack+1, level); } }
+    public LevelAddress PrevPack { get { return new LevelAddress(pack-1, level); } }
+    public LevelAddress NextLevel { get { return new LevelAddress(pack, level+1); } }
+    public LevelAddress PrevLevel { get { return new LevelAddress(pack, level-1); } }
 
 	public override string ToString() { return pack + "," + level; }
 	static public LevelAddress FromString(string str) {
