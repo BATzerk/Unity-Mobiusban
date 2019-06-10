@@ -80,7 +80,8 @@ public class BoardObjectView : MonoBehaviour {
         // Animate into new pos!
         LeanTween.cancel(this.gameObject);
         Vector2 newPos = GetPosFromMyObject();
-        LeanTween.value(this.gameObject,SetPos, Pos,newPos, 0.18f).setEaseOutQuint();
+        SetPos(newPos); // TEMP DISABLED animation.
+        //LeanTween.value(this.gameObject,SetPos, Pos,newPos, 0.18f).setEaseOutQuint();
     }
     
     virtual public void OnRemovedFromPlay() {

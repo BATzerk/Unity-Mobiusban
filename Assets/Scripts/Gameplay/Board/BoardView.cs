@@ -9,6 +9,7 @@ public class BoardView : MonoBehaviour {
     // Visual Properties
     public float UnitSize { get; private set; } // how big each board space is in pixels
     // Components
+    [SerializeField] public CanvasGroup MyCanvasGroup=null;
     [SerializeField] private RectTransform myRectTransform=null;
     [SerializeField] private Transform tf_boardObjects=null;
     [SerializeField] private Transform tf_boardSpaces=null;
@@ -29,6 +30,7 @@ public class BoardView : MonoBehaviour {
     public Transform tf_BoardObjects { get { return tf_boardObjects; } }
     public Transform tf_BoardSpaces { get { return tf_boardSpaces; } }
     public Vector2 Pos { get { return myRectTransform.anchoredPosition; } }
+    public Vector2 Size { get { return myRectTransform.rect.size; } }
 	public float BoardToX(float col) { return (col+0.5f)*UnitSize; } // +0.5f to center.
 	public float BoardToY(float row) { return (row+0.5f)*UnitSize; } // +0.5f to center.
 	public float BoardToXGlobal(float col) { return BoardToX(col) + Pos.x; }
@@ -93,9 +95,10 @@ public class BoardView : MonoBehaviour {
 		Vector2 mySize = new Vector2(UnitSize*numCols, UnitSize*numRows);
 		myRectTransform.sizeDelta = mySize;
 		// Set my position.
-        float xOffset = (rt_availableArea.rect.width -mySize.x) * 0.5f; // nudge me so I'm centered!
-        float yOffset = (rt_availableArea.rect.height-mySize.y) * 0.5f; // nudge me so I'm centered!
-        myRectTransform.anchoredPosition = new Vector2(xOffset,yOffset);
+        //float xOffset = (rt_availableArea.rect.width -mySize.x) * 0.5f; // nudge me so I'm centered!
+        //float yOffset = (rt_availableArea.rect.height-mySize.y) * 0.5f; // nudge me so I'm centered!
+        //myRectTransform.anchoredPosition = new Vector2(xOffset,yOffset);
+        myRectTransform.anchoredPosition = new Vector2(0,0);
         // Now that the suit fits, sneak be back onto my Level! I'll be transformed great.
         transform.SetParent(MyLevel.transform);
 	}
@@ -137,8 +140,6 @@ public class BoardView : MonoBehaviour {
 		foreach (BoardObject bo in MyBoard.objectsAddedThisMove) {
 			AddObjectView(bo);
 		}
-		// Clear out the list! We've used 'em.
-		MyBoard.objectsAddedThisMove.Clear();
 	}
 	private void RemoveOldViews() {
 		for (int i=allObjectViews.Count-1; i>=0; --i) { // Go through backwards, as objects can be removed from the list as we go!

@@ -16,7 +16,24 @@ public static class BoardUtils {
 
     public static BoardSpace GetSpace(Board b, Vector2Int pos) { return GetSpace(b, pos.x,pos.y); }
     public static BoardSpace GetSpace(Board b, int col,int row) {
-		if (col<0 || row<0  ||  col>=b.NumCols || row>=b.NumRows) return null;
+        // Wrapped?? Convert!
+        if (col < 0) {
+            col += b.NumCols;
+            row = b.NumRows-1 - row;
+        }
+        else if (col >= b.NumCols) {
+            col -= b.NumCols;
+            row = b.NumRows-1 - row;
+        }
+        if (row < 0) {
+            row += b.NumRows;
+            col = b.NumCols-1 - col;
+        }
+        else if (row >= b.NumRows) {
+            row -= b.NumRows;
+            col = b.NumCols-1 - col;
+        }
+        //if (col<0 || row<0  ||  col>=b.NumCols || row>=b.NumRows) { return null; }
 		return b.Spaces[col,row];
 	}
     public static BoardOccupant GetOccupant(Board b, Vector2Int pos) { return GetOccupant(b, pos.x,pos.y); }

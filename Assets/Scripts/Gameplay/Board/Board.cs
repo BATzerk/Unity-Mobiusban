@@ -107,6 +107,8 @@ public class Board {
 	// ----------------------------------------------------------------
     public void MovePlayerAttempt(Vector2Int dir) {
         if (BoardUtils.MayMoveOccupant(this, player.BoardPos, dir)) {
+            // Clear out the list NOW.
+            objectsAddedThisMove.Clear();
             // Move it!
             BoardUtils.MoveOccupant(this, player.BoardPos, dir);
             

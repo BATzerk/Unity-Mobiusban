@@ -7,6 +7,7 @@ public class Level : MonoBehaviour {
     [SerializeField] private RectTransform myRectTransform=null;
     public Board Board { get; private set; } // this reference ONLY changes when we undo a move, where we remake-from-scratch both board and boardView.
     public BoardView BoardView { get; private set; }
+    private BoardView[,] BoardViewEchoes; // TEST for rendering flipping etc.!
     // Properties
     public bool IsLevelOver { get; private set; }
     public LevelAddress MyAddress { get; private set; }
@@ -58,6 +59,27 @@ public class Level : MonoBehaviour {
 		Board = new Board (bd);
 		BoardView = Instantiate (ResourcesHandler.Instance.BoardView).GetComponent<BoardView>();
         BoardView.Initialize (this, Board, rt_boardArea);
+        // Make BoardViewEchoes!
+        int cols=4;
+        int rows=4;
+        Vector2 bvSize = BoardView.Size;
+        BoardViewEchoes = new BoardView[cols,rows];
+        for (int col=0; col<cols; col++) {
+            for (int row=0; row<rows; row++) {
+                if (col==2 && row==2) { continue; } // HARDCODED Ignore the middle one. That's what my main BoardView is.
+                BoardView view = Instantiate (ResourcesHandler.Instance.BoardView).GetComponent<BoardView>();
+                view.Initialize (this, Board, rt_boardArea);
+                view.MyCanvasGroup.alpha = 0.69f;
+                view.transform.localPosition += new Vector3((col-cols*0.5f)*bvSize.x, (row-rows*0.5f)*bvSize.y, 0);
+                if (col%2==1) {
+                    view.transform.localScale = new Vector3(view.transform.localScale.x, -view.transform.localScale.y, 1);
+                }
+                if (row%2==1) {
+                    view.transform.localScale = new Vector3(-view.transform.localScale.x, view.transform.localScale.y, 1);
+                }
+                BoardViewEchoes[col,row] = view;
+            }
+        }
 	}
 	private void DestroyBoardModelAndView () {
 		// Nullify the model (there's nothing to destroy).
@@ -66,6 +88,14 @@ public class Level : MonoBehaviour {
 		if (BoardView != null) {
 			Destroy(BoardView.gameObject);
 			BoardView = null;
+            for (int i=0; i<BoardViewEchoes.GetLength(0); i++) {
+                for (int j=0; j<BoardViewEchoes.GetLength(1); j++) {
+                    if (BoardViewEchoes[i,j] != null) {
+                        Destroy(BoardViewEchoes[i,j].gameObject);
+                    }
+                }
+            }
+            BoardViewEchoes = null;
 		}
 	}
     
