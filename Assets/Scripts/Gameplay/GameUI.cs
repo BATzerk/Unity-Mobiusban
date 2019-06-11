@@ -6,6 +6,7 @@ using TMPro;
 
 public class GameUI : MonoBehaviour {
     // Components
+    [SerializeField] private GameObject go_levelIsWon=null;
     [SerializeField] private TextMeshProUGUI t_levelName=null;
     // References
     private Level currLevel;
@@ -16,10 +17,12 @@ public class GameUI : MonoBehaviour {
     // ----------------------------------------------------------------
     private void Start() {
         // Add event listeners!
+        GameManagers.Instance.EventManager.LevelSetIsWonEvent += OnLevelSetIsWon;
         GameManagers.Instance.EventManager.StartLevelEvent += OnStartLevel;
     }
     private void OnDestroy() {
         // Remove event listeners!
+        GameManagers.Instance.EventManager.LevelSetIsWonEvent -= OnLevelSetIsWon;
         GameManagers.Instance.EventManager.StartLevelEvent -= OnStartLevel;
     }
     
@@ -29,7 +32,11 @@ public class GameUI : MonoBehaviour {
     // ----------------------------------------------------------------
     private void OnStartLevel(Level level) {
         this.currLevel = level;
-        t_levelName.text = "LV " + (currLevel.MyAddress.level+1);
+        LevelAddress addr = this.currLevel.MyAddress;
+        t_levelName.text = addr.pack + "-" + addr.level;
+    }
+    private void OnLevelSetIsWon(bool isWon) {
+        go_levelIsWon.SetActive(isWon);
     }
 
 

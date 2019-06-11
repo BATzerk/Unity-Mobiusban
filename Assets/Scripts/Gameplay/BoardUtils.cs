@@ -3,8 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum MoveResults { Undefined, Success, Fail }
+public enum WrapTypes {
+    Undefined,
+    
+    None,
+    Parallel,
+    Flip,
+    CW, // clockwise
+}
 
 public static class BoardUtils {
+    // ----------------------------------------------------------------
+    //  Wrap Types
+    // ----------------------------------------------------------------
+    static public int WrapTypeToInt(WrapTypes wt) {
+        switch (wt) {
+            case WrapTypes.None: return 0;
+            case WrapTypes.Parallel: return 1;
+            case WrapTypes.Flip: return 2;
+            case WrapTypes.CW: return 3;
+            default: return -1; // Hmm.
+        }
+    }
+    static public WrapTypes IntToWrapType(int wt) {
+        switch (wt) {
+            case 0: return WrapTypes.None;
+            case 1: return WrapTypes.Parallel;
+            case 2: return WrapTypes.Flip;
+            case 3: return WrapTypes.CW;
+            default: return WrapTypes.Undefined;; // Hmm.
+        }
+    }
+    
+    
+    
 	// ----------------------------------------------------------------
 	//  Basic Getters
 	// ----------------------------------------------------------------
@@ -21,25 +53,25 @@ public static class BoardUtils {
         // Wrap!
         if (col < 0) {
             if (b.DoWrapH) { col += b.NumCols; }
-            if (b.WrapH == WrapType.Flip) {
+            if (b.WrapH == WrapTypes.Flip) {
                 row = b.NumRows-1 - row;
             }
         }
         else if (col >= b.NumCols) {
             if (b.DoWrapH) { col -= b.NumCols; }
-            if (b.WrapH == WrapType.Flip) {
+            if (b.WrapH == WrapTypes.Flip) {
                 row = b.NumRows-1 - row;
             }
         }
         if (row < 0) {
             if (b.DoWrapV) { row += b.NumRows; }
-            if (b.WrapV == WrapType.Flip) {
+            if (b.WrapV == WrapTypes.Flip) {
                 col = b.NumCols-1 - col;
             }
         }
         else if (row >= b.NumRows) {
             if (b.DoWrapV) { row -= b.NumRows; }
-            if (b.WrapV == WrapType.Flip) {
+            if (b.WrapV == WrapTypes.Flip) {
                 col = b.NumCols-1 - col;
             }
         }
@@ -62,12 +94,12 @@ public static class BoardUtils {
         int col = posFrom.x + dir.x;
         int row = posFrom.y + dir.y;
         if (col < 0) {
-            if (b.WrapH == WrapType.Flip) {
+            if (b.WrapH == WrapTypes.Flip) {
                 return Sides.GetOpposite(sideFacing);
             }
         }
         else if (col >= b.NumCols) {
-            if (b.WrapH == WrapType.Flip) {
+            if (b.WrapH == WrapTypes.Flip) {
                 return Sides.GetOpposite(sideFacing);
             }
         }

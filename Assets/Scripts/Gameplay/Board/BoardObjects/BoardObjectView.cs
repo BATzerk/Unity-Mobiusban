@@ -67,7 +67,7 @@ public class BoardObjectView : MonoBehaviour {
 		MyBoardObject = _myObject;
 
 		// Parent me!
-        GameUtils.ParentAndReset(this.gameObject, MyBoardView.tf_BoardObjects);
+        GameUtils.ParentAndReset(this.gameObject, MyBoardView.tf_boardObjects);
 		float diameter = MyBoardView.UnitSize;
 		myRectTransform.sizeDelta = new Vector2(diameter, diameter);
 

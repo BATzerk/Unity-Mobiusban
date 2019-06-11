@@ -9,16 +9,14 @@ public class BoardSpace {
     private bool isWallL, isWallT; // walls can only be on the LEFT and TOP of spaces.
 	// References
     public BoardOccupant MyOccupant { get; private set; } // occupants sit on my face. Only one Occupant occupies each space.
+    private ExitSpot MyExitSpot;
 
     // Getters
     public bool IsPlayable { get { return isPlayable; } }
-	public int Col { get { return BoardPos.x; } }
-	public int Row { get { return BoardPos.y; } }
-    ///** I'm open if I'm playable and there's nothing on me. :) */
-    //public bool IsOpen() {
-    //    return isPlayable && MyOccupant==null;
-    //}
-    public bool HasOccupant { get { return MyOccupant!=null; } }
+    public int Col { get { return BoardPos.x; } }
+    public int Row { get { return BoardPos.y; } }
+    public bool HasExitSpot { get { return MyExitSpot != null; } }
+    public bool HasOccupant { get { return MyOccupant != null; } }
     public bool HasImmovableOccupant { get { return MyOccupant!=null && !MyOccupant.IsMovable; } }
     public bool IsWall(int side) {
         switch(side) {
@@ -73,6 +71,12 @@ public class BoardSpace {
             case Sides.T: isWallT = true; break;
             default: Debug.LogError("Whoa, we're calling AddWall for a side that's NOT Top or Left: " + side); break;
         }
+    }
+    public void SetMyExitSpot(ExitSpot bo) {
+        if (MyExitSpot != null) {
+            throw new UnityException ("Oops! Trying to set a Space's MyExitSpot, but that Space already has an ExitSpot! " + Col + ", " + Row);
+        }
+        MyExitSpot = bo;
     }
 	public void SetMyOccupant (BoardOccupant _bo) {
 		if (MyOccupant != null) {

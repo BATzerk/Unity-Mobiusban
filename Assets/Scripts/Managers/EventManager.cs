@@ -19,12 +19,12 @@ public class EventManager {
     
     // Gameplay
     public event BoardAction BoardExecutedMoveEvent;
-    public event BoolAction SetIsLevelCompletedEvent;
+    public event BoolAction LevelSetIsWonEvent;
     public event IntAction NumMovesMadeChangedEvent;
     public event LevelAction StartLevelEvent;
 
     public void OnStartLevel (Level _level) { if (StartLevelEvent!=null) { StartLevelEvent(_level); } }
-    public void OnSetIsLevelCompleted (bool isLevelComplete) { if (SetIsLevelCompletedEvent!=null) { SetIsLevelCompletedEvent (isLevelComplete); } }
+    public void OnLevelSetIsWon (bool isWon) { if (LevelSetIsWonEvent!=null) { LevelSetIsWonEvent (isWon); } }
 	public void OnBoardExecutedMove (Board board) { if (BoardExecutedMoveEvent!=null) { BoardExecutedMoveEvent (board); } }
 	public void OnNumMovesMadeChanged (int numMovesMade) { if (NumMovesMadeChangedEvent!=null) { NumMovesMadeChangedEvent (numMovesMade); } }
     

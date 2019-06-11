@@ -9,11 +9,11 @@ public class Level : MonoBehaviour {
     public BoardView BoardView { get; private set; }
     private BoardView[,] BoardViewEchoes; // TEST for rendering flipping etc.!
     // Properties
-    public bool IsLevelOver { get; private set; }
+    public bool IsWon { get; private set; }
     public LevelAddress MyAddress { get; private set; }
     private List<BoardData> boardSnapshots = new List<BoardData>(); // note: There's always ONE value in here. These are added immediately AFTER a move.
 	// References
-	//private GameController gameController;
+	private GameController gameController;
     private RectTransform rt_boardArea; // a RectTransform that ONLY informs us how the BoardView's size should be, so we can make layout changes in the editor.
 
     // Getters (Public)
@@ -37,7 +37,7 @@ public class Level : MonoBehaviour {
         GameManagers.Instance.EventManager.BoardExecutedMoveEvent -= OnBoardExecutedMove;
     }
     public void Initialize (GameController _gameController, Transform tf_parent, RectTransform _rt_boardArea, LevelData _levelData) {
-		//this.gameController = _gameController;
+		this.gameController = _gameController;
 		this.MyAddress = _levelData.myAddress;
         this.rt_boardArea = _rt_boardArea;
 
@@ -80,22 +80,23 @@ public class Level : MonoBehaviour {
                 if (rows > 1) {
                     view.transform.localPosition += new Vector3(0, Mathf.Ceil(row-rows*0.5f)*bvSize.y, 0);
                 }
-                if (col%2==0 && Board.WrapH==WrapType.Flip) {
+                if (col%2==0 && Board.WrapH==WrapTypes.Flip) {
                     view.transform.localScale = new Vector3(view.transform.localScale.x, -view.transform.localScale.y, 1);
                 }
-                if (row%2==0 && Board.WrapV==WrapType.Flip) {
+                if (row%2==0 && Board.WrapV==WrapTypes.Flip) {
                     view.transform.localScale = new Vector3(-view.transform.localScale.x, view.transform.localScale.y, 1);
                 }
                 
-                if (col%2==0 && Board.WrapH==WrapType.CW) {
+                if (col%2==0 && Board.WrapH==WrapTypes.CW) {
                     view.transform.localEulerAngles += new Vector3(0, 0, col==0 ? -90 : 90);
                 }
-                if (row%2==0 && Board.WrapV==WrapType.CW) {
+                if (row%2==0 && Board.WrapV==WrapTypes.CW) {
                     view.transform.localEulerAngles += new Vector3(0, 0, row==0 ? -90 : 90);
                 }
                 BoardViewEchoes[col,row] = view;
             }
         }
+        UpdateIsWon();
 	}
 	private void DestroyBoardModelAndView () {
 		// Nullify the model (there's nothing to destroy).
@@ -124,6 +125,11 @@ public class Level : MonoBehaviour {
         
         // Take a snapshot!
         boardSnapshots.Add(Board.ToData());
+        UpdateIsWon();
+    }
+    private void UpdateIsWon() {
+        IsWon = Board.AreGoalsSatisfied && Board.IsPlayerOnExitSpot();
+        GameManagers.Instance.EventManager.OnLevelSetIsWon(IsWon);
     }
 
     
@@ -149,14 +155,17 @@ public class Level : MonoBehaviour {
 	}
 
 	private void RegisterButtonInput() {
-        // Arrow Keys = Move Player
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) { Board.MovePlayerAttempt(Vector2Int.L); }
-        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) { Board.MovePlayerAttempt(Vector2Int.R); }
-        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) { Board.MovePlayerAttempt(Vector2Int.B); }
-        else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) { Board.MovePlayerAttempt(Vector2Int.T); }
         // Z = Undo
-        else if (Input.GetKeyDown(KeyCode.Z)) {
+        if (Input.GetKeyDown(KeyCode.Z)) {
             UndoMoveAttempt();
+        }
+        // Level's NOT won...!
+        if (!IsWon) {
+            // Arrow Keys = Move Player
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) { Board.MovePlayerAttempt(Vector2Int.L); }
+            else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) { Board.MovePlayerAttempt(Vector2Int.R); }
+            else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) { Board.MovePlayerAttempt(Vector2Int.B); }
+            else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) { Board.MovePlayerAttempt(Vector2Int.T); }
         }
 	}
     

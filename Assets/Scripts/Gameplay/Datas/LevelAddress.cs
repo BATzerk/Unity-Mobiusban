@@ -14,8 +14,8 @@ public struct LevelAddress {
 	}
 
 	//public bool IsTutorial { get { return mode == GameModes.TutorialIndex; } }
-    public LevelAddress NextPack { get { return new LevelAddress(pack+1, level); } }
-    public LevelAddress PrevPack { get { return new LevelAddress(pack-1, level); } }
+    //public LevelAddress NextPack { get { return new LevelAddress(pack+1, level); } }
+    //public LevelAddress PrevPack { get { return new LevelAddress(pack-1, level); } }
     public LevelAddress NextLevel { get { return new LevelAddress(pack, level+1); } }
     public LevelAddress PrevLevel { get { return new LevelAddress(pack, level-1); } }
 

@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CrateGoalView : BoardObjectView {
 	// Constants
 	static public readonly Color color_on = new ColorHSB(60/255f,255/255f,200/255f, 1).ToColor();
 	static public readonly Color color_off = new Color(0.9f,0.9f,0.9f, 0.84f);
 	// Components
-	[SerializeField] private SpriteRenderer sr_body;
+	[SerializeField] private Image i_body=null;
 	// References
 	private CrateGoal myCrateGoal;
 
@@ -17,8 +18,6 @@ public class CrateGoalView : BoardObjectView {
 	public void Initialize (BoardView _myBoardView, CrateGoal _myCrateGoal) {
 		base.InitializeAsBoardObjectView (_myBoardView, _myCrateGoal);
 		myCrateGoal = _myCrateGoal;
-
-//		UpdateBodyColor ();
 	}
 
 	// ----------------------------------------------------------------
@@ -29,6 +28,6 @@ public class CrateGoalView : BoardObjectView {
 		UpdateBodyColor ();
 	}
 	private void UpdateBodyColor () {
-		sr_body.color = myCrateGoal.IsOn ? color_on : color_off;
+		i_body.color = myCrateGoal.IsOn ? color_on : color_off;
 	}
 }

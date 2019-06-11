@@ -9,7 +9,7 @@ public class BoardData {
 	private readonly char[] LINE_BREAKS_CHARS = { ',' }; // our board layouts are comma-separated (because XML's don't encode line breaks).
 	// Properties
     public int numCols,numRows;
-    public WrapType wrapH,wrapV;
+    public WrapTypes wrapH,wrapV;
     // BoardObjects
     public PlayerData playerData;// { get; private set; }
     public BoardSpaceData[,] spaceDatas { get; private set; }
@@ -37,8 +37,8 @@ public class BoardData {
     //  Initialize
     // ----------------------------------------------------------------
 	public BoardData (LevelDataXML ldxml) {
-        wrapH = Board.IntToWrapType(ldxml.wrapH);
-        wrapV = Board.IntToWrapType(ldxml.wrapV);
+        wrapH = BoardUtils.IntToWrapType(ldxml.wrapH);
+        wrapV = BoardUtils.IntToWrapType(ldxml.wrapV);
         
 		// Layout!
 		string[] levelStringArray = GetLevelStringArrayFromLayoutString (ldxml.layout);
@@ -80,7 +80,7 @@ public class BoardData {
                     // BoardSpace properties!
                     case '~': GetSpaceData (col,row).isPlayable = false; break;
                     // ExitSpot!
-                    case '$': AddExitSpotData (i,j); break;
+                    case '$': AddExitSpotData (col,row); break;
 					// Player!
 					case '@': SetPlayerData(col,row); break;
                     // Crates!
@@ -134,7 +134,7 @@ public class BoardData {
         if (playerData != null) { Debug.LogError("Whoa! Two players defined in Level XML layout."); return; } // Safety check.
         playerData = new PlayerData(new Vector2Int(col,row));
         //allObjectDatas.Add (playerData);
-        SetOccupantInBoard (playerData);
+        //SetOccupantInBoard (playerData);
     }
     
     void AddCrateData (int col,int row, bool isMovable) {

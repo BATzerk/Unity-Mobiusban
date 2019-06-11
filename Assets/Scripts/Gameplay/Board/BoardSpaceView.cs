@@ -19,7 +19,7 @@ public class BoardSpaceView : MonoBehaviour {
 		int row = mySpace.Row;
 
 		// Parent me to my boooard!
-		GameUtils.ParentAndReset(this.gameObject, _boardView.tf_BoardSpaces);
+		GameUtils.ParentAndReset(this.gameObject, _boardView.tf_boardSpaces);
 		this.gameObject.name = "BoardSpace_" + col + "," + row;
 
         // Size/position me right!

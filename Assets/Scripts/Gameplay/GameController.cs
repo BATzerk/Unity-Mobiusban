@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour {
     [SerializeField] private RectTransform rt_boardArea=null; // FYI: This GO stays empty; it's for layout reference. This is sized EXACTLY as big as the BoardView can be-- so make those layout changes in the editor!
 
     // Getters (Private)
-    private LevelAddress currLevelAddress { get { return CurrLevel.MyAddress; } }
+    private LevelAddress currAddress { get { return CurrLevel.MyAddress; } }
 	private DataManager dataManager { get { return GameManagers.Instance.DataManager; } }
 
 
@@ -37,11 +37,15 @@ public class GameController : MonoBehaviour {
 	// ----------------------------------------------------------------
 	//  Doers - Loading Level
 	// ----------------------------------------------------------------
-	public void RestartCurrLevel () { StartLevel (currLevelAddress); }
-    private void StartPrevPack() { StartLevel(currLevelAddress.PrevPack); }
-    private void StartNextPack() { StartLevel(currLevelAddress.NextPack); }
-    private void StartPrevLevel() { StartLevel(currLevelAddress.PrevLevel); }
-    private void StartNextLevel() { StartLevel(currLevelAddress.NextLevel); }
+	public void RestartCurrLevel() { StartLevel (currAddress); }
+    private void StartPrevLevel() { StartLevel(currAddress.PrevLevel); }
+    private void StartNextLevel() { StartLevel(currAddress.NextLevel); }
+    private void StartPrevPack() { StartPack(currAddress.pack - 1); }
+    private void StartNextPack() { StartPack(currAddress.pack + 1); }
+    private void StartPack(int packIndex) {
+        int levelIndex = SaveStorage.GetInt(SaveKeys.LastPlayedLevelInPack(packIndex));
+        StartLevel(new LevelAddress(packIndex, levelIndex));
+    }
 	public void StartLevel (LevelAddress address) {
         #if UNITY_EDITOR // In editor? Noice. Reload all levels from file so we can update during runtime!
         dataManager.ReloadLevels ();
@@ -65,7 +69,9 @@ public class GameController : MonoBehaviour {
 		// Instantiate the Level from the provided LevelData!
 		CurrLevel = Instantiate (ResourcesHandler.Instance.Level).GetComponent<Level>();
         CurrLevel.Initialize (this, MainCanvas.Canvas.transform, rt_boardArea, ld);
-		SaveStorage.SetString (SaveKeys.LastPlayedLevelAddress, currLevelAddress.ToString());
+        SaveStorage.SetInt (SaveKeys.LastPlayedLevelInPack(currAddress.pack), currAddress.level);
+        SaveStorage.SetString (SaveKeys.LastPlayedLevelAddress, currAddress.ToString());
+        ExpandLevelHierarchy();
         
 		// Dispatch event!
 		GameManagers.Instance.EventManager.OnStartLevel (CurrLevel);
@@ -101,9 +107,14 @@ public class GameController : MonoBehaviour {
 		RegisterButtonInput ();
 	}
 	private void RegisterButtonInput () {
+        // SPACE = Start next level!
+        if (CurrLevel.IsWon && Input.GetKeyDown(KeyCode.Space)) {
+            StartNextLevel();
+        }
+        
 		// ~~~~ DEBUG ~~~~
 		// R = Reload current scene!
-		if (Input.GetKeyDown(KeyCode.R)) { StartLevel(currLevelAddress); return; }
+		if (Input.GetKeyDown(KeyCode.R)) { StartLevel(currAddress); return; }
 		if (CurrLevel != null) {
             // ALT + BRACKET keys to change packs.
             if (InputController.IsKey_alt) {
@@ -135,6 +146,16 @@ public class GameController : MonoBehaviour {
         }
     }
 #endif
+    
+    private void ExpandLevelHierarchy() {
+        if (!GameUtils.IsEditorWindowMaximized()) { // If we're maximized, do nothing (we don't want to open up the Hierarchy if it's not already open).
+            GameUtils.SetExpandedRecursive(CurrLevel.gameObject, true); // Open up Level all the way down.
+            for (int i=0; i<CurrLevel.transform.childCount; i++) { // Ok, now (messily) close all its children.
+                GameUtils.SetExpandedRecursive(CurrLevel.transform.GetChild(i).gameObject, false);
+            }
+            GameUtils.FocusOnWindow("Game"); // focus back on Game window.
+        }
+    }
 
 
 

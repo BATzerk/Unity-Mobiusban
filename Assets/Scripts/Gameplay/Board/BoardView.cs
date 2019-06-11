@@ -11,12 +11,12 @@ public class BoardView : MonoBehaviour {
     // Components
     [SerializeField] public CanvasGroup MyCanvasGroup=null;
     [SerializeField] private RectTransform myRectTransform=null;
-    [SerializeField] private Transform tf_boardObjects=null;
-    [SerializeField] private Transform tf_boardSpaces=null;
+    [SerializeField] public Transform tf_boardObjects=null;
+    [SerializeField] public Transform tf_boardSpaces=null;
     [SerializeField] public Transform rt_walls=null;
 	// Objects
 	private BoardSpaceView[,] spaceViews;
-	private List<BoardObjectView> allObjectViews; // includes EVERY single BoardObjectView!
+	private List<BoardObjectView> allObjectViews = new List<BoardObjectView>(); // includes EVERY single BoardObjectView!
     // References
     public Board MyBoard { get; private set; } // this reference does NOT change during our existence! (If we undo a move, I'm destroyed completely and a new BoardView is made along with a new Board.)
     public Level MyLevel { get; private set; }
@@ -28,8 +28,6 @@ public class BoardView : MonoBehaviour {
     public bool AreGoalsSatisfied { get { return MyBoard.AreGoalsSatisfied; } }
     // Getters (Public)
     public List<BoardObjectView> AllObjectViews { get { return allObjectViews; } }
-    public Transform tf_BoardObjects { get { return tf_boardObjects; } }
-    public Transform tf_BoardSpaces { get { return tf_boardSpaces; } }
     public Vector2 Pos { get { return myRectTransform.anchoredPosition; } }
     public Vector2 Size { get { return myRectTransform.rect.size; } }
 	public float BoardToX(float col) { return (col+0.5f)*UnitSize; } // +0.5f to center.
@@ -39,16 +37,16 @@ public class BoardView : MonoBehaviour {
     public Vector2 BoardToPos(Vector2Int pos) { return new Vector2(BoardToX(pos.x),BoardToY(pos.y)); }
     public Vector2 BoardToPosGlobal(Vector2Int pos) { return new Vector2(BoardToXGlobal(pos.x),BoardToYGlobal(pos.y)); }
     
-    /** Brute-force finds the corresponding TileView. */
-    private CrateView GetTileView(Vector2Int pos) {
-        foreach (BoardObjectView objectView in allObjectViews) {
-            BoardObject bo = objectView.MyBoardObject;
-            if (bo is Crate && bo.BoardPos==pos) {
-                return objectView as CrateView;
-            }
-        }
-        return null; // oops.
-    }
+    ///** Brute-force finds the corresponding TileView. */
+    //private CrateView GetTileView(Vector2Int pos) {
+    //    foreach (BoardObjectView objectView in allObjectViews) {
+    //        BoardObject bo = objectView.MyBoardObject;
+    //        if (bo is Crate && bo.BoardPos==pos) {
+    //            return objectView as CrateView;
+    //        }
+    //    }
+    //    return null; // oops.
+    //}
 
 
 	// ----------------------------------------------------------------
@@ -62,11 +60,8 @@ public class BoardView : MonoBehaviour {
 		// Determine unitSize and other board-specific visual stuff
         UpdatePosAndSize(rt_availableArea);
 
-        // Clear out all my lists!
-        allObjectViews = new List<BoardObjectView>();
-        // Make Player!
+        // Add Player and Spaces!
         AddPlayerView(MyBoard.player);
-		// Make spaces!
 		spaceViews = new BoardSpaceView[NumCols,NumRows];
 		for (int i=0; i<NumCols; i++) {
 			for (int j=0; j<NumRows; j++) {
@@ -74,8 +69,7 @@ public class BoardView : MonoBehaviour {
 				spaceViews[i,j].Initialize (this, MyBoard.GetSpace(i,j));
 			}
 		}
-
-		// Look right right away!
+		// Add all other views, and look right right away!
 		UpdateViewsPostMove();
         
         // Add event listeners!
