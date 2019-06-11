@@ -14,7 +14,7 @@ public class BoardData {
     public PlayerData playerData;// { get; private set; }
     public BoardSpaceData[,] spaceDatas { get; private set; }
     public List<BoardObjectData> allObjectDatas;
-    private BoardOccupantData[,] occupantsInBoard; // this is SOLELY so we can go easily back and modify properties of an occupant we've already announced.
+    private BoardObjectData[,] objectsInBoard; // this is SOLELY so we can go easily back and modify properties of an object we've already announced.
     
     // Getters
 	private string[] GetLevelStringArrayFromLayoutString (string layout) {
@@ -62,7 +62,7 @@ public class BoardData {
 		MakeEmptyBoardSpaces ();
 		MakeEmptyLists ();
         
-		occupantsInBoard = new BoardOccupantData[numCols,numRows];
+		objectsInBoard = new BoardObjectData[numCols,numRows];
 
 		for (int layer=0; layer<numLayoutLayers; layer++) {
 			for (int i=0; i<numCols; i++) {
@@ -73,7 +73,6 @@ public class BoardData {
 						continue;
 					}
                     char spaceChar = (char) levelStringArray[stringArrayIndex][i];
-                    //char spaceChar = (char) levelStringArray[j][i];
                     int col = i;
                     int row = numRows-1 - j;
                     switch (spaceChar) {
@@ -98,6 +97,9 @@ public class BoardData {
 					case '_': SetIsWallT (col,row-1); break; // note: because the underscore looks lower, consider it in the next row (so layout text file looks more intuitive).
 					case '|': SetIsWallL (col,row); break;
                     
+                    // MODIFYING properties...
+                    case 'H': FlipChirH(col,row); break;
+                    case 'V': FlipChirV(col,row); break;
 					}
 				}
 			}
@@ -107,7 +109,7 @@ public class BoardData {
         if (playerData == null) { SetPlayerData(0,0); }
 
 		// We can empty out those lists now.
-		occupantsInBoard = null;
+		objectsInBoard = null;
 	}
 
 	/** Initializes a totally empty BoardData. */
@@ -121,7 +123,7 @@ public class BoardData {
 	private void MakeEmptyLists () {
         playerData = null;
 		allObjectDatas = new List<BoardObjectData>();
-		occupantsInBoard = new BoardOccupantData[numCols,numRows];
+		objectsInBoard = new BoardObjectData[numCols,numRows];
 	}
 	private void MakeEmptyBoardSpaces () {
 		spaceDatas = new BoardSpaceData[numCols,numRows];
@@ -133,22 +135,22 @@ public class BoardData {
 	}
 
 	private BoardSpaceData GetSpaceData (int col,int row) { return spaceDatas[col,row]; }
-	private BoardOccupantData GetOccupantInBoard (int col,int row) { return occupantsInBoard[col,row]; }
-	private void SetOccupantInBoard (BoardOccupantData data) { occupantsInBoard[data.boardPos.x,data.boardPos.y] = data; }
+	private BoardObjectData GetObjectInBoard (int col,int row) { return objectsInBoard[col,row]; }
+	private void SetOccupantInBoard (BoardObjectData data) { objectsInBoard[data.boardPos.ColRow.x,data.boardPos.ColRow.y] = data; }
 
 
     
     void SetPlayerData(int col,int row) {
         if (playerData != null) { Debug.LogError("Whoa! Two players defined in Level XML layout."); return; } // Safety check.
-        playerData = new PlayerData(new Vector2Int(col,row));
+        playerData = new PlayerData(new BoardPos(col,row));
         //allObjectDatas.Add (playerData);
-        //SetOccupantInBoard (playerData);
+        SetOccupantInBoard (playerData);
     }
     
     void AddCrateData (int col,int row, int dimpleCorner) {
         bool[] isDimple = new bool[Corners.NumCorners];
         isDimple[dimpleCorner] = true;
-        CrateData newData = new CrateData (new Vector2Int(col,row), 1,1, 0, isDimple);
+        CrateData newData = new CrateData (new BoardPos(col,row), isDimple);
         allObjectDatas.Add (newData);
         SetOccupantInBoard (newData);
     }
@@ -158,12 +160,14 @@ public class BoardData {
     //    SetOccupantInBoard (newData);
     //}
     void AddExitSpotData (int col,int row) {
-        ExitSpotData newData = new ExitSpotData (new Vector2Int(col,row), 0);
+        ExitSpotData newData = new ExitSpotData (new BoardPos(col,row));
         allObjectDatas.Add (newData);
+        SetOccupantInBoard (newData);
     }
     void AddCrateGoalData (int col,int row, int corner) {
-        CrateGoalData newData = new CrateGoalData (new Vector2Int(col,row), corner);
+        CrateGoalData newData = new CrateGoalData (new BoardPos(col,row), corner);
         allObjectDatas.Add (newData);
+        SetOccupantInBoard (newData);
     }
     
     void SetIsWallL(int col,int row) {
@@ -174,6 +178,15 @@ public class BoardData {
         if (row<0) { row += numRows; } // Hardcoded. Wrap bottom walls to top of screen.
         if (!IsInBounds(col,row)) { return; } // Safety check.
         spaceDatas[col,row].isWallT = true;
+    }
+    
+    private void FlipChirH(int col,int row) {
+        BoardObjectData bo = GetObjectInBoard(col,row);
+        if (bo != null) { bo.boardPos.ChirH *= -1; }
+    }
+    private void FlipChirV(int col,int row) {
+        BoardObjectData bo = GetObjectInBoard(col,row);
+        if (bo != null) { bo.boardPos.ChirV *= -1; }
     }
 
 

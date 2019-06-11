@@ -22,12 +22,13 @@ public class Board {
 	// Getters
     public bool DoWrapH { get { return WrapH != WrapTypes.None; } }
     public bool DoWrapV { get { return WrapV != WrapTypes.None; } }
+    public int NumGoalObjects { get { return goalObjects.Count; } }
     public BoardSpace GetSpace(Vector2Int pos) { return GetSpace(pos.x, pos.y); }
     public BoardSpace GetSpace(int col,int row) { return BoardUtils.GetSpace(this, col,row); }
     public BoardOccupant GetOccupant(int col,int row) { return BoardUtils.GetOccupant(this, col,row); }
 	public BoardSpace[,] Spaces { get { return spaces; } }
     public bool IsPlayerOnExitSpot () {
-        return player.MySpace.HasExitSpot;
+        return player.MySpace.HasExitSpot && player.MySpace.MyExitSpot.IsOrientationMatch(player);
     }
     private bool CheckAreGoalsSatisfied () {
         if (goalObjects.Count == 0) { return true; } // If there's NO criteria, then sure, we're satisfied! For levels that're just about getting to the exit.
@@ -144,13 +145,13 @@ public class Board {
 	//  Doers
 	// ----------------------------------------------------------------
     public void MovePlayerAttempt(Vector2Int dir) {
-        if (BoardUtils.MayMoveOccupant(this, player.BoardPos, dir)) {
+        if (BoardUtils.MayMoveOccupant(this, player.ColRow, dir)) {
             // Clear out the list NOW.
             objectsAddedThisMove.Clear();
             // Reset PrevMoveDelta.
             for (int i=0; i<allObjects.Count; i++) { allObjects[i].ResetPrevMoveDelta(); }
             // Move it!
-            BoardUtils.MoveOccupant(this, player.BoardPos, dir);
+            BoardUtils.MoveOccupant(this, player.ColRow, dir);
             // Update goals!
             UpdateAreGoalsSatisfied();
             

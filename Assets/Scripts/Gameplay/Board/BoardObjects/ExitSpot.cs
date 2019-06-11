@@ -6,7 +6,7 @@ public class ExitSpot : BoardObject {
 
     // Serializing
     override public BoardObjectData ToData() {
-        return new ExitSpotData (BoardPos, SideFacing);
+        return new ExitSpotData (BoardPos);
     }
 
 	// ----------------------------------------------------------------

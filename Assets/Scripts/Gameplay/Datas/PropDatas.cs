@@ -3,54 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-
 public class PropData {
 }
 
 public class BoardObjectData : PropData {
-    public int chirH=1;
-    public int chirV=1;
-    public int sideFacing;
-    public Vector2Int boardPos;
+    public BoardPos boardPos;
 }
 public class BoardOccupantData : BoardObjectData {
     public bool isMovable = true;
 }
-public class BoardSpaceData : BoardObjectData {
+public class BoardSpaceData {
+    public Vector2Int ColRow;
     public bool isPlayable = true;
     public bool isWallL=false, isWallT=false;
 	public BoardSpaceData (int _col,int _row) {
-		this.boardPos.x = _col;
-		this.boardPos.y = _row;
+		this.ColRow.x = _col;
+		this.ColRow.y = _row;
 	}
 }
 
 public class CrateData : BoardOccupantData {
     public bool[] isDimple;
-    public CrateData (Vector2Int boardPos, int chirH,int chirV, int sideFacing, bool[] isDimple) {
+    public CrateData (BoardPos boardPos, bool[] isDimple) {
         this.boardPos = boardPos;
-        this.chirH = chirH;
-        this.chirV = chirV;
-        this.sideFacing = sideFacing;
         this.isDimple = isDimple;
         //this.isMovable = isMovable;
     }
 }
 public class CrateGoalData : BoardObjectData {
     public int corner;
-    public CrateGoalData(Vector2Int boardPos, int corner) {
+    public CrateGoalData(BoardPos boardPos, int corner) {
         this.boardPos = boardPos;
         this.corner = corner;
     }
 }
 public class ExitSpotData : BoardObjectData {
-    public ExitSpotData(Vector2Int boardPos, int sideFacing) {
+    public ExitSpotData(BoardPos boardPos) {
         this.boardPos = boardPos;
-        this.sideFacing = sideFacing;
     }
 }
 public class PlayerData : BoardOccupantData {
-    public PlayerData (Vector2Int boardPos) {
+    public PlayerData (BoardPos boardPos) {
         this.boardPos = boardPos;
     }
 }

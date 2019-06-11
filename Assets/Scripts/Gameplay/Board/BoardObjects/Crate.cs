@@ -17,7 +17,7 @@ public class Crate : BoardOccupant {
     
     // Serializing
 	override public BoardObjectData ToData() {
-        return new CrateData(BoardPos, ChirH,ChirV,SideFacing, GameUtils.CopyBoolArray(IsDimple));
+        return new CrateData(BoardPos, GameUtils.CopyBoolArray(IsDimple));
 	}
 
 

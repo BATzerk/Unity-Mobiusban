@@ -75,8 +75,8 @@ public static class BoardUtils {
             dirOut = dir,
             dirIn = Vector2Int.Opposite(dir),
             sideDelta = sideDelta,
-            chiralityDeltaH = chirH,
-            chiralityDeltaV = chirV,
+            chirDeltaH = chirH,
+            chirDeltaV = chirV,
         };
     }
     //private static int GetNewSideFacing(Board b, int sideFacing, Vector2Int posFrom, Vector2Int dir) {
@@ -154,7 +154,7 @@ public static class BoardUtils {
         
         // Next space is OCCUPIED? Ok, try to move THAT fella, and return if fail!
         if (spaceTo.HasOccupant) {
-            MoveResults result = MoveOccupant(b, spaceTo.BoardPos, dir);
+            MoveResults result = MoveOccupant(b, spaceTo.ColRow, dir);
             if (result!=MoveResults.Success) { return result; }
         }
         
@@ -162,7 +162,7 @@ public static class BoardUtils {
         //int newSideFacing = GetNewSideFacing(b, bo.SideFacing, occPos, dir);
         bo.SetColRow(ti.to, ti.dirOut);
         bo.ChangeSideFacing(ti.sideDelta);
-        bo.ChangeChirality(ti.chiralityDeltaH, ti.chiralityDeltaV);
+        bo.ChangeChirality(ti.chirDeltaH, ti.chirDeltaV);
         // Put footprint back down.
         bo.AddMyFootprint();
         
@@ -175,7 +175,7 @@ public static class BoardUtils {
 public class TranslationInfo {
     public Vector2Int from, to;
     public Vector2Int dirOut, dirIn;
-    public int chiralityDeltaH, chiralityDeltaV;
+    public int chirDeltaH, chirDeltaV;
     public int sideDelta;
     //public TranslationInfo(
 }

@@ -129,6 +129,7 @@ public class Level : MonoBehaviour {
     }
     private void UpdateIsWon() {
         IsWon = Board.AreGoalsSatisfied && (Board.NumExitSpots==0 || Board.IsPlayerOnExitSpot());
+        if (Board.NumExitSpots==0 && Board.NumGoalObjects==0) { IsWon = false; } // FOR TESTING. No criteria? We're never satisfied.
         GameManagers.Instance.EventManager.OnLevelSetIsWon(IsWon);
     }
 

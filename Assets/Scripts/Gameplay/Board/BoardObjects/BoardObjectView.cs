@@ -39,7 +39,7 @@ public class BoardObjectView : MonoBehaviour {
 		}
 	}
     protected Vector2 GetPosFromMyObject () {
-        return MyBoardView.BoardToPos (MyBoardObject.BoardPos);
+        return MyBoardView.BoardToPos (MyBoardObject.ColRow);
     }
     private float GetRotationFromMyObject () {
         float returnValue = -90 * MyBoardObject.SideFacing;
@@ -95,7 +95,7 @@ public class BoardObjectView : MonoBehaviour {
         Rotation = GetRotationFromMyObject();
         Scale = GetScaleFromMyObject();
         // Animate from old to new pos!
-        Vector2 posFrom = MyBoardView.BoardToPos(MyBoardObject.BoardPos - MyBoardObject.PrevMoveDelta);
+        Vector2 posFrom = MyBoardView.BoardToPos(MyBoardObject.ColRow - MyBoardObject.PrevMoveDelta);
         Vector2 posTo = GetPosFromMyObject();
         LeanTween.cancel(this.gameObject);
         SetPos(posFrom); // start there now.

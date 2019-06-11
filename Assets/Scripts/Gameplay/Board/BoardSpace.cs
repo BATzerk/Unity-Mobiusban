@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class BoardSpace {
 	// Properties
-	public Vector2Int BoardPos { get; private set; }
+	public Vector2Int ColRow { get; private set; }
 	private bool isPlayable = true;
     private bool isWallL, isWallT; // walls can only be on the LEFT and TOP of spaces.
 	// References
     public BoardOccupant MyOccupant { get; private set; } // occupants sit on my face. Only one Occupant occupies each space.
-    private ExitSpot MyExitSpot;
+    public ExitSpot MyExitSpot { get; private set; }
 
     // Getters
     public bool IsPlayable { get { return isPlayable; } }
-    public int Col { get { return BoardPos.x; } }
-    public int Row { get { return BoardPos.y; } }
+    public int Col { get { return ColRow.x; } }
+    public int Row { get { return ColRow.y; } }
     public bool HasExitSpot { get { return MyExitSpot != null; } }
     public bool HasOccupant { get { return MyOccupant != null; } }
     public bool HasImmovableOccupant { get { return MyOccupant!=null && !MyOccupant.IsMovable; } }
@@ -47,7 +47,7 @@ public class BoardSpace {
 	//  Initialize
 	// ----------------------------------------------------------------
 	public BoardSpace (BoardSpaceData _data) {
-        BoardPos = _data.boardPos;
+        ColRow = _data.ColRow;
         isPlayable = _data.isPlayable;
         isWallL = _data.isWallL;
         isWallT = _data.isWallT;
