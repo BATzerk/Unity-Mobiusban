@@ -7,7 +7,7 @@ public class BoardObjectView : MonoBehaviour {
 	protected RectTransform myRectTransform { get; private set; } // Set in Awake.
 	// Properties
 	private float _rotation; // so we can use the ease-ier (waka waka) system between -180 and 180 with minimal processing effort.
-	private float _scale=1;
+	private Vector2 _scale;//=Vector2.one;
 	// References
     public BoardView MyBoardView { get; private set; }
     public BoardObject MyBoardObject { get; private set; }
@@ -29,11 +29,11 @@ public class BoardObjectView : MonoBehaviour {
 			OnSetRotation ();
 		}
 	}
-	public float Scale {
+	public Vector2 Scale {
 		get { return _scale; }
 		set {
 			_scale = value;
-			this.transform.localScale = Vector2.one * _scale;
+			this.transform.localScale = _scale;
 			OnSetScale ();
 		}
 	}
@@ -49,6 +49,9 @@ public class BoardObjectView : MonoBehaviour {
             else { Rotation -= 360; }
         }
         return returnValue;
+    }
+    private Vector2 GetScaleFromMyObject () {
+        return new Vector2(MyBoardObject.Chirality, 1);
     }
 
 	virtual protected void OnSetPos () { }
@@ -74,7 +77,8 @@ public class BoardObjectView : MonoBehaviour {
 		// Start me in the right spot!
 		Pos = GetPosFromMyObject();
 		Rotation = GetRotationFromMyObject();
-		Scale = 1;
+        Scale = GetScaleFromMyObject();
+		//Scale = 1;
 	}
     protected void DestroySelf() {
         Destroy(this.gameObject);
@@ -87,13 +91,15 @@ public class BoardObjectView : MonoBehaviour {
     protected void SetPos(Vector2 _pos) { this.Pos = _pos; }
     
 	virtual public void UpdateVisualsPostMove() {
-        // Snap to correct rotation (no animating for now, no need).
+        // Snap to correct rotation/scale (no animating for now, no need).
         Rotation = GetRotationFromMyObject();
+        Scale = GetScaleFromMyObject();
         // Animate from old to new pos!
-        Vector2 oldPos = MyBoardView.BoardToPos(MyBoardObject.BoardPos - MyBoardObject.PrevMoveDelta);
-        Vector2 newPos = GetPosFromMyObject();
+        Vector2 posFrom = MyBoardView.BoardToPos(MyBoardObject.BoardPos - MyBoardObject.PrevMoveDelta);
+        Vector2 posTo = GetPosFromMyObject();
         LeanTween.cancel(this.gameObject);
-        LeanTween.value(this.gameObject,SetPos, oldPos,newPos, 0.18f).setEaseOutQuint();
+        SetPos(posFrom); // start there now.
+        LeanTween.value(this.gameObject,SetPos, posFrom,posTo, 0.18f).setEaseOutQuint();
     }
     
     virtual public void OnRemovedFromPlay() {

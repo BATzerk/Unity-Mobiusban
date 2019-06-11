@@ -5,18 +5,37 @@ using UnityEngine;
 public class CrateGoal : BoardObject, IGoalObject {
 	// Properties
 	public bool IsOn { get; private set; }
+    public int Corner { get; private set; } // TL, TR, BR, BL.
+    
+    // Getters
+    // TEMP In here.
+    private static Matrix2x2 MatrixFromCorner(int corner) {
+        switch (corner) {
+            case Corners.TL: return Matrix2x2.TL;
+            case Corners.TR: return Matrix2x2.TR;
+            case Corners.BR: return Matrix2x2.BR;
+            case Corners.BL: return Matrix2x2.BL;
+            default: return Matrix2x2.zero;
+        }
+    }
+    private static int CornerFromMatrix(Matrix2x2 mat) {
+        if (mat.m00 == 1) { return Corners.TL; }
+        if (mat.m10 == 1) { return Corners.TR; }
+        if (mat.m11 == 1) { return Corners.BR; }
+        if (mat.m01 == 1) { return Corners.BL; }
+        return Corners.undefined;
+    }
     
     // Serializing
     override public BoardObjectData ToData() {
-        return new CrateGoalData (BoardPos, SideFacing);
+        return new CrateGoalData (BoardPos, Corner);
     }
-
-
 	// ----------------------------------------------------------------
 	//  Initialize
 	// ----------------------------------------------------------------
 	public CrateGoal (Board _boardRef, CrateGoalData data) {
 		base.InitializeAsBoardObject (_boardRef, data);
+        Corner = data.corner;
 	}
 
 
@@ -24,8 +43,24 @@ public class CrateGoal : BoardObject, IGoalObject {
 	//  Doers
 	// ----------------------------------------------------------------
 	public void UpdateIsOn () {
-		BoardOccupant bo = MySpace.MyOccupant; // TODO: SideFacing.
-		IsOn = bo!=null && !(bo is Player);
+        IsOn = GetIsOn();
+    }
+    private bool GetIsOn() {
+		Crate crate = MySpace.MyOccupant as Crate;
+        if (crate == null) { return false; } // No Crate on me at all.
+        
+        // KINDA SLOPPY! just getting to work for now!
+        
+        Matrix2x2 mat = MatrixFromCorner(Corner);
+        if (crate.Chirality == -1) {
+            mat = mat.HorzFlipped();
+        }
+        //mat.Rotate(crate.SideFacing - SideFacing);
+        int cornerRel = CornerFromMatrix(mat); // my corner, relative to the Crate.
+        cornerRel += crate.SideFacing - SideFacing;
+        if (cornerRel >= Corners.NumCorners) { cornerRel -= Corners.NumCorners; }
+        
+		return crate.IsDimple[cornerRel];
 	}
 
 }

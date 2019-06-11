@@ -157,13 +157,11 @@ public class Board {
     }
     
     public void UpdateAreGoalsSatisfied() {
+        // Update all GoalObjects' isOn; if any aren't, I'm not satisfied!
         bool areSatisfied = true;
         for (int i=0; i<goalObjects.Count; i++) {
             goalObjects[i].UpdateIsOn();
-            if (!goalObjects[i].IsOn) {
-                areSatisfied = false;
-                break;
-            }
+            areSatisfied &= goalObjects[i].IsOn;
         }
         AreGoalsSatisfied = areSatisfied;
     }

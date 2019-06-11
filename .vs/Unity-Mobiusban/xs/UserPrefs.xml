@@ -1,17 +1,22 @@
 ﻿<Properties StartupConfiguration="{3FDD85B3-B610-CF63-499B-FB4F578BED93}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Gameplay/Board/BoardObjects/BoardObject.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Gameplay/Datas/PropDatas.cs">
     <Files>
-      <File FileName="Assets/Scripts/Gameplay/GameController.cs" Line="109" Column="39" />
+      <File FileName="Assets/Scripts/Gameplay/GameController.cs" Line="111" Column="65" />
       <File FileName="Assets/Scripts/Gameplay/Level.cs" Line="129" Column="6" />
-      <File FileName="Assets/Scripts/Gameplay/Board/Board.cs" Line="22" Column="38" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BoardView.cs" Line="20" Column="18" />
-      <File FileName="Assets/Scripts/Gameplay/Datas/BoardData.cs" Line="79" Column="41" />
-      <File FileName="Assets/Scripts/Gameplay/BoardUtils.cs" Line="14" Column="1" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/CrateGoal.cs" Line="26" Column="24" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardObjectView.cs" Line="91" Column="46" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BoardSpace.cs" Line="25" Column="35" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardObject.cs" Line="51" Column="22" />
+      <File FileName="Assets/Scripts/Gameplay/Board/Board.cs" Line="163" Column="41" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardView.cs" Line="136" Column="20" />
+      <File FileName="Assets/Scripts/Gameplay/Datas/BoardData.cs" Line="166" Column="44" />
+      <File FileName="Assets/Scripts/Gameplay/BoardUtils.cs" Line="47" Column="33" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardObjectView.cs" Line="90" Column="69" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardObject.cs" Line="8" Column="38" />
+      <File FileName="Assets/Scripts/Gameplay/Datas/PropDatas.cs" Line="31" Column="36" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Crate.cs" Line="14" Column="29" />
+      <File FileName="Assets/Scripts/Common/Structs/Vector2Int.cs" Line="30" Column="90" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardSpaceView.cs" Line="49" Column="1" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/CrateGoalView.cs" Line="29" Column="33" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/CrateGoal.cs" Line="44" Column="69" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardOccupant.cs" Line="15" Column="24" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

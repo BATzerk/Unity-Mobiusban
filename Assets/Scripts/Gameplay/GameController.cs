@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+[RequireComponent(typeof(GameTimeController))]
 public class GameController : MonoBehaviour {
-	// Properties
-	private bool isPaused = false;
+	// Components
+	private GameTimeController gameTimeController; // set in Awake.
     // Objects
     public Level CurrLevel { get; private set; }
     // References
@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour {
 	private void Start () {
 		// Set application values.
 		Application.targetFrameRate = GameVisualProperties.TargetFrameRate;
-        UpdateTimeScale();
+        gameTimeController = GetComponent<GameTimeController>();
 
 		// In the editor? Reload our levels file!
 		#if UNITY_EDITOR
@@ -87,20 +87,6 @@ public class GameController : MonoBehaviour {
 
 
 	// ----------------------------------------------------------------
-	//  Doers - Gameplay
-	// ----------------------------------------------------------------
-	private void TogglePause () {
-		isPaused = !isPaused;
-		UpdateTimeScale ();
-	}
-	private void UpdateTimeScale () {
-		if (isPaused) { Time.timeScale = 0; }
-		else { Time.timeScale = 1; }
-	}
-
-
-
-	// ----------------------------------------------------------------
 	//  Update
 	// ----------------------------------------------------------------
 	private void Update () {
@@ -115,22 +101,25 @@ public class GameController : MonoBehaviour {
 		// ~~~~ DEBUG ~~~~
 		// R = Reload current scene!
 		if (Input.GetKeyDown(KeyCode.R)) { StartLevel(currAddress); return; }
-		if (CurrLevel != null) {
-            // ALT + BRACKET keys to change packs.
-            if (InputController.IsKey_alt) {
-                if (Input.GetKeyDown(KeyCode.LeftBracket)) { StartPrevPack(); return; }
-                if (Input.GetKeyDown(KeyCode.RightBracket)) { StartNextPack(); return; }
-            }
-            // BRACKET keys to change levels.
-            else {
-                if (Input.GetKeyDown(KeyCode.LeftBracket)) { StartPrevLevel(); return; }
-                if (Input.GetKeyDown(KeyCode.RightBracket)) { StartNextLevel(); return; }
-            }
-		}
-		//// P = Toggle pause
-		//else if (Input.GetKeyDown (KeyCode.P)) {
-		//	TogglePause ();
-		//}
+        // ALT + BRACKET keys to change packs.
+        if (InputController.IsKey_alt) {
+            if (Input.GetKeyDown(KeyCode.LeftBracket)) { StartPrevPack(); return; }
+            if (Input.GetKeyDown(KeyCode.RightBracket)) { StartNextPack(); return; }
+        }
+        // BRACKET keys to change levels.
+        else {
+            if (Input.GetKeyDown(KeyCode.LeftBracket)) { StartPrevLevel(); return; }
+            if (Input.GetKeyDown(KeyCode.RightBracket)) { StartNextLevel(); return; }
+        }
+        
+        // P = Toggle pause
+        if (Input.GetKeyDown (KeyCode.P)) {
+            gameTimeController.TogglePause();
+        }
+        // T = Toggle slow-mo
+        else if (Input.GetKeyDown (KeyCode.T)) {
+            gameTimeController.ToggleSlowMo();
+        }
 	}
 
 

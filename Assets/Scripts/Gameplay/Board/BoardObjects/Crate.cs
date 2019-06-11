@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Crate : BoardOccupant {
+    // Properties
+    public bool[] IsDimple { get; private set; }
 
 
 	// ----------------------------------------------------------------
@@ -10,10 +12,12 @@ public class Crate : BoardOccupant {
 	// ----------------------------------------------------------------
 	public Crate (Board _boardRef, CrateData _data) {
 		base.InitializeAsBoardOccupant (_boardRef, _data);
-	}
+        IsDimple = GameUtils.CopyBoolArray(_data.isDimple);
+    }
+    
+    // Serializing
 	override public BoardObjectData ToData() {
-		CrateData data = new CrateData (BoardPos, IsMovable);
-		return data;
+        return new CrateData(BoardPos, Chirality,SideFacing, GameUtils.CopyBoolArray(IsDimple));
 	}
 
 

@@ -84,12 +84,20 @@ public class BoardData {
 					// Player!
 					case '@': SetPlayerData(col,row); break;
                     // Crates!
-                    case 'o': AddCrateGoalData (col,row, 0); break;// TODO: Do sideFacing.
-                    case 'O': AddCrateData (col,row, true); break;
-                    case '#': AddCrateData (col,row, false); break;
+                    case 'q': AddCrateGoalData (col,row, Corners.TL); break;
+                    case 'w': AddCrateGoalData (col,row, Corners.TR); break;
+                    case 's': AddCrateGoalData (col,row, Corners.BR); break;
+                    case 'a': AddCrateGoalData (col,row, Corners.BL); break;
+                    case 'Q': AddCrateData (col,row, Corners.TL); break;
+                    case 'W': AddCrateData (col,row, Corners.TR); break;
+                    case 'S': AddCrateData (col,row, Corners.BR); break;
+                    case 'A': AddCrateData (col,row, Corners.BL); break;
+                    //case 'O': AddCrateData (col,row, true); break;
+                    //case '#': AddCrateData (col,row, false); break;
 					// Walls!
 					case '_': SetIsWallT (col,row-1); break; // note: because the underscore looks lower, consider it in the next row (so layout text file looks more intuitive).
 					case '|': SetIsWallL (col,row); break;
+                    
 					}
 				}
 			}
@@ -137,17 +145,25 @@ public class BoardData {
         //SetOccupantInBoard (playerData);
     }
     
-    void AddCrateData (int col,int row, bool isMovable) {
-        CrateData newData = new CrateData (new Vector2Int(col,row), isMovable);
+    void AddCrateData (int col,int row, int dimpleCorner) {
+        bool[] isDimple = new bool[Corners.NumCorners];
+        isDimple[dimpleCorner] = true;
+        
+        CrateData newData = new CrateData (new Vector2Int(col,row), 1,0, isDimple);
         allObjectDatas.Add (newData);
         SetOccupantInBoard (newData);
     }
+    //void AddCrateData (int col,int row, bool isMovable) {
+    //    CrateData newData = new CrateData (new Vector2Int(col,row), isMovable);
+    //    allObjectDatas.Add (newData);
+    //    SetOccupantInBoard (newData);
+    //}
     void AddExitSpotData (int col,int row) {
         ExitSpotData newData = new ExitSpotData (new Vector2Int(col,row), 0);
         allObjectDatas.Add (newData);
     }
-    void AddCrateGoalData (int col,int row, int sideFacing) {
-        CrateGoalData newData = new CrateGoalData (new Vector2Int(col,row), sideFacing);
+    void AddCrateGoalData (int col,int row, int corner) {
+        CrateGoalData newData = new CrateGoalData (new Vector2Int(col,row), corner);
         allObjectDatas.Add (newData);
     }
     

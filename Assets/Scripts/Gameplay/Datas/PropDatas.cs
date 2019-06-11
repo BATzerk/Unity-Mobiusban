@@ -8,6 +8,7 @@ public class PropData {
 }
 
 public class BoardObjectData : PropData {
+    public int chirality=1;
     public int sideFacing;
     public Vector2Int boardPos;
 }
@@ -24,15 +25,20 @@ public class BoardSpaceData : BoardObjectData {
 }
 
 public class CrateData : BoardOccupantData {
-    public CrateData (Vector2Int boardPos, bool isMovable) {
+    public bool[] isDimple;
+    public CrateData (Vector2Int boardPos, int chirality,int sideFacing, bool[] isDimple) {
         this.boardPos = boardPos;
-        this.isMovable = isMovable;
+        this.chirality = chirality;
+        this.sideFacing = sideFacing;
+        this.isDimple = isDimple;
+        //this.isMovable = isMovable;
     }
 }
 public class CrateGoalData : BoardObjectData {
-    public CrateGoalData(Vector2Int boardPos, int sideFacing) {
+    public int corner;
+    public CrateGoalData(Vector2Int boardPos, int corner) {
         this.boardPos = boardPos;
-        this.sideFacing = sideFacing;
+        this.corner = corner;
     }
 }
 public class ExitSpotData : BoardObjectData {

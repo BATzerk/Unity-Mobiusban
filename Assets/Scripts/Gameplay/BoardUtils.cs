@@ -35,6 +35,66 @@ public static class BoardUtils {
         }
     }
     
+    public static TranslationInfo GetTranslationInfo(Board b, Vector2Int from, Vector2Int dir) {
+        Vector2Int to = from + dir;
+        int chiralityH = 1;
+        int chiralityV = 1;
+        int sideDelta = 0;
+        // Wrap!
+        if (to.x < 0) {
+            if (b.DoWrapH) { to.x += b.NumCols; }
+            if (b.WrapH == WrapTypes.Flip) {
+                to.y = b.NumRows-1 - to.y;
+                chiralityV *= -1;
+            }
+        }
+        else if (to.x >= b.NumCols) {
+            if (b.DoWrapH) { to.x -= b.NumCols; }
+            if (b.WrapH == WrapTypes.Flip) {
+                to.y = b.NumRows-1 - to.y;
+                chiralityV *= -1;
+            }
+        }
+        if (to.y < 0) {
+            if (b.DoWrapV) { to.y += b.NumRows; }
+            if (b.WrapV == WrapTypes.Flip) {
+                to.x = b.NumCols-1 - to.x;
+                chiralityH *= -1;
+            }
+        }
+        else if (to.y >= b.NumRows) {
+            if (b.DoWrapV) { to.y -= b.NumRows; }
+            if (b.WrapV == WrapTypes.Flip) {
+                to.x = b.NumCols-1 - to.x;
+                chiralityH *= -1;
+            }
+        }
+        return new TranslationInfo {
+            from = from,
+            to = to,
+            dirOut = dir,
+            dirIn = Vector2Int.Opposite(dir),
+            sideDelta = sideDelta,
+            //chiralityHDelta = chiralityH,
+            //chiralityVDelta = chiralityV,
+        };
+    }
+    //private static int GetNewSideFacing(Board b, int sideFacing, Vector2Int posFrom, Vector2Int dir) {
+    //    int col = posFrom.x + dir.x;
+    //    int row = posFrom.y + dir.y;
+    //    if (col < 0) {
+    //        if (b.WrapH == WrapTypes.Flip) {
+    //            return Sides.GetOpposite(sideFacing);
+    //        }
+    //    }
+    //    else if (col >= b.NumCols) {
+    //        if (b.WrapH == WrapTypes.Flip) {
+    //            return Sides.GetOpposite(sideFacing);
+    //        }
+    //    }
+    //    return sideFacing;
+    //}
+    
     
     
 	// ----------------------------------------------------------------
@@ -50,35 +110,8 @@ public static class BoardUtils {
 
     public static BoardSpace GetSpace(Board b, Vector2Int pos) { return GetSpace(b, pos.x,pos.y); }
     public static BoardSpace GetSpace(Board b, int col,int row) {
-        // Wrap!
-        if (col < 0) {
-            if (b.DoWrapH) { col += b.NumCols; }
-            if (b.WrapH == WrapTypes.Flip) {
-                row = b.NumRows-1 - row;
-            }
-        }
-        else if (col >= b.NumCols) {
-            if (b.DoWrapH) { col -= b.NumCols; }
-            if (b.WrapH == WrapTypes.Flip) {
-                row = b.NumRows-1 - row;
-            }
-        }
-        if (row < 0) {
-            if (b.DoWrapV) { row += b.NumRows; }
-            if (b.WrapV == WrapTypes.Flip) {
-                col = b.NumCols-1 - col;
-            }
-        }
-        else if (row >= b.NumRows) {
-            if (b.DoWrapV) { row -= b.NumRows; }
-            if (b.WrapV == WrapTypes.Flip) {
-                col = b.NumCols-1 - col;
-            }
-        }
-        // Outta bounds? Return NULL.
-        if (col<0 || row<0  ||  col>=b.NumCols || row>=b.NumRows) { return null; }
-        // In bounds! Return space!
-		return b.Spaces[col,row];
+        if (col<0 || row<0  ||  col>=b.NumCols || row>=b.NumRows) { return null; } // Outta bounds? Return NULL.
+		return b.Spaces[col,row]; // In bounds! Return Space!
 	}
     public static BoardOccupant GetOccupant(Board b, Vector2Int pos) { return GetOccupant(b, pos.x,pos.y); }
 	public static BoardOccupant GetOccupant(Board b, int col,int row) {
@@ -90,21 +123,6 @@ public static class BoardUtils {
 		BoardSpace bs = GetSpace (b, col,row);
 		return bs!=null && bs.IsPlayable;
 	}
-    private static int GetNewSideFacing(Board b, int sideFacing, Vector2Int posFrom, Vector2Int dir) {
-        int col = posFrom.x + dir.x;
-        int row = posFrom.y + dir.y;
-        if (col < 0) {
-            if (b.WrapH == WrapTypes.Flip) {
-                return Sides.GetOpposite(sideFacing);
-            }
-        }
-        else if (col >= b.NumCols) {
-            if (b.WrapH == WrapTypes.Flip) {
-                return Sides.GetOpposite(sideFacing);
-            }
-        }
-        return sideFacing;
-    }
     
     
     // ----------------------------------------------------------------
@@ -119,16 +137,17 @@ public static class BoardUtils {
     }
     
     public static MoveResults MoveOccupant(Board b, Vector2Int occPos, Vector2Int dir) {
+        TranslationInfo ti = GetTranslationInfo(b, occPos, dir);
         BoardOccupant bo = GetOccupant(b, occPos);
-        BoardSpace spaceFrom = GetSpace(b, occPos);
-        BoardSpace spaceTo = GetSpace(b, occPos+dir);
+        BoardSpace spaceFrom = GetSpace(b, ti.from);
+        BoardSpace spaceTo = GetSpace(b, ti.to);
         
         // Someone's null? Return Fail.
         if (bo==null || spaceTo==null) { return MoveResults.Fail; }
         // We can't EXIT this space? Return Fail.
-        if (!spaceFrom.MayOccupantEverExit(spaceTo.BoardPos)) { return MoveResults.Fail; }
+        if (!spaceFrom.MayOccupantEverExit(ti.dirOut)) { return MoveResults.Fail; }
         // We can't ENTER this space? Return Fail.
-        if (!spaceTo.MayOccupantEverEnter(occPos)) { return MoveResults.Fail; }
+        if (!spaceTo.MayOccupantEverEnter(ti.dirIn)) { return MoveResults.Fail; }
 
         // Always remove its footprint first. We're about to move it!
         bo.RemoveMyFootprint();
@@ -140,9 +159,10 @@ public static class BoardUtils {
         }
         
         // Okay, we're good to move our original fella! Do!
-        int newSideFacing = GetNewSideFacing(b, bo.SideFacing, occPos, dir);
-        bo.SetColRow(spaceTo.BoardPos, dir);
-        bo.SetSideFacing(newSideFacing);
+        //int newSideFacing = GetNewSideFacing(b, bo.SideFacing, occPos, dir);
+        bo.SetColRow(ti.to, ti.dirOut);
+        bo.ChangeSideFacing(ti.sideDelta);
+        bo.ChangeChirality(ti.chiralityDelta);
         // Put footprint back down.
         bo.AddMyFootprint();
         
@@ -151,4 +171,11 @@ public static class BoardUtils {
     }
 
 
+}
+public class TranslationInfo {
+    public Vector2Int from, to;
+    public Vector2Int dirOut, dirIn;
+    public int chiralityDelta;
+    public int sideDelta;
+    //public TranslationInfo(
 }

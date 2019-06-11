@@ -2,6 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO: Move into its own class?
+public static class Corners {
+    public const int NumCorners = 4; // we're really cornered now!
+    public const int undefined = -1;
+    public const int TL = 0;
+    public const int TR = 1;
+    public const int BR = 2;
+    public const int BL = 3;
+}
+
 public static class Sides {
 	public const int NumSides = 4; // it's hip to be square!
 	public const int Undefined = -1;
@@ -11,8 +21,8 @@ public static class Sides {
 	public const int L = 3;
 	public const int TL = 4;
 	public const int TR = 5;
-	public const int BL = 6;
-	public const int BR = 7;
+    public const int BR = 6;
+    public const int BL = 7;
 
 	public const int Min = 0;
 	public const int Max = 8;

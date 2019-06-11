@@ -64,6 +64,17 @@ public static class GameUtils {
     
     
     
+    // ----------------------------------------------------------------
+    //  Arrays
+    // ----------------------------------------------------------------
+    public static bool[] CopyBoolArray(bool[] original) {
+        bool[] newArray = new bool[original.Length];
+        original.CopyTo(newArray, 0);
+        return newArray;
+    }
+    
+    
+    
     
     // ----------------------------------------------------------------
     //  GameObjects

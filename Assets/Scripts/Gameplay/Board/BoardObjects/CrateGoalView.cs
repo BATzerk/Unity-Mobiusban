@@ -18,6 +18,8 @@ public class CrateGoalView : BoardObjectView {
 	public void Initialize (BoardView _myBoardView, CrateGoal _myCrateGoal) {
 		base.InitializeAsBoardObjectView (_myBoardView, _myCrateGoal);
 		myCrateGoal = _myCrateGoal;
+        // Rotate i_body by corner!
+        i_body.transform.localEulerAngles = new Vector3(0,0,-90*myCrateGoal.Corner);
 	}
 
 	// ----------------------------------------------------------------
