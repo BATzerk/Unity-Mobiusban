@@ -10,6 +10,7 @@ public class Board {
     public WrapTypes WrapH { get; private set; }
     public WrapTypes WrapV { get; private set; }
     public bool AreGoalsSatisfied { get; private set; }
+    public int NumExitSpots { get; private set; }
     // Objects
     public BoardSpace[,] spaces;
     public Player player;
@@ -119,6 +120,7 @@ public class Board {
         ExitSpot prop = new ExitSpot (this, data);
         allObjects.Add (prop);
         objectsAddedThisMove.Add(prop);
+        NumExitSpots ++;
     }
     //private void AddPlayer (PlayerData data) {
     //    Player prop = new Player (this, data);
@@ -133,8 +135,8 @@ public class Board {
     public void OnObjectRemovedFromPlay (BoardObject bo) {
         // Remove it from its lists!
         allObjects.Remove (bo);
-        //if (bo is Crate) { tiles.Remove (bo as Crate); }
-        //else { Debug.LogError ("Trying to RemoveFromPlay an Object of type " + bo.GetType() + ", but our OnObjectRemovedFromPlay function doesn't recognize this type!"); }
+        if (bo is ExitSpot) { NumExitSpots --; }
+        else { Debug.LogError ("Trying to RemoveFromPlay an Object of type " + bo.GetType() + ", but our OnObjectRemovedFromPlay function doesn't recognize this type!"); }
     }
 
 

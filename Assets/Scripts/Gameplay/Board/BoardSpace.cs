@@ -25,13 +25,13 @@ public class BoardSpace {
             default: return false;
         }
     }
-    public bool MayOccupantEverExit(Vector2Int posTo) {
-        int side = MathUtils.GetSide(posTo - BoardPos);
+    public bool MayOccupantEverExit(Vector2Int dirOut) {
+        int side = MathUtils.GetSide(dirOut);
         if (IsWall(side)) { return false; }
         return true;
     }
-    public bool MayOccupantEverEnter(Vector2Int posFrom) {
-        int side = MathUtils.GetSide(posFrom - BoardPos);
+    public bool MayOccupantEverEnter(Vector2Int dirIn) {
+        int side = MathUtils.GetSide(dirIn);
         return MayOccupantEverEnter(side);
     }
     /** Side: Relative to ME. */

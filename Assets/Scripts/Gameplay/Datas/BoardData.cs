@@ -171,6 +171,7 @@ public class BoardData {
         spaceDatas[col,row].isWallL = true;
     }
     void SetIsWallT(int col,int row) {
+        if (row<0) { row += numRows; } // Hardcoded. Wrap bottom walls to top of screen.
         if (!IsInBounds(col,row)) { return; } // Safety check.
         spaceDatas[col,row].isWallT = true;
     }

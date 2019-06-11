@@ -26,8 +26,8 @@ public class ExitSpotView : BoardObjectView {
 	}
     public void UpdateOpenVisuals () {
         // Color me impressed!
-        i_arrow.color = MyBoardView.AreGoalsSatisfied ? new Color(0.2f,0.8f,0f, 0.8f) : new Color(0,0,0, 0.16f);
-        i_backing.color = MyBoardView.AreGoalsSatisfied ? new Color(0.6f,1f,0.3f, 0.8f) : new Color(0,0,0, 0);
+        i_arrow.color = MyBoardView.AreGoalsSatisfied ? new Color(0.2f,0.8f,0f, 0.6f) : new Color(0,0,0, 0.16f);
+        i_backing.color = MyBoardView.AreGoalsSatisfied ? new Color(0.6f,1f,0.3f, 0.3f) : new Color(0,0,0, 0);
     }
 
 

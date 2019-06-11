@@ -165,6 +165,7 @@ public static class MathUtils {
         if (dir == Vector2Int.R) { return Sides.R; }
         if (dir == Vector2Int.T) { return Sides.T; }
         if (dir == Vector2Int.B) { return Sides.B; }
+        Debug.LogError("Whoa, dir not convertable to side. Dir: " + dir);
         return -1; // Whoops.
     }
     //public static int GetOppositeSide (Vector2Int dir) { return GetOppositeSide(GetSide(dir)); }

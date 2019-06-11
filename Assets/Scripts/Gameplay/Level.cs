@@ -128,7 +128,7 @@ public class Level : MonoBehaviour {
         UpdateIsWon();
     }
     private void UpdateIsWon() {
-        IsWon = Board.AreGoalsSatisfied && Board.IsPlayerOnExitSpot();
+        IsWon = Board.AreGoalsSatisfied && (Board.NumExitSpots==0 || Board.IsPlayerOnExitSpot());
         GameManagers.Instance.EventManager.OnLevelSetIsWon(IsWon);
     }
 
