@@ -141,7 +141,7 @@ public static class BoardUtils {
         
         // Okay, we're good to move our original fella! Do!
         int newSideFacing = GetNewSideFacing(b, bo.SideFacing, occPos, dir);
-        bo.SetColRow(spaceTo.BoardPos);
+        bo.SetColRow(spaceTo.BoardPos, dir);
         bo.SetSideFacing(newSideFacing);
         // Put footprint back down.
         bo.AddMyFootprint();

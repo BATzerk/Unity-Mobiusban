@@ -144,6 +144,8 @@ public class Board {
         if (BoardUtils.MayMoveOccupant(this, player.BoardPos, dir)) {
             // Clear out the list NOW.
             objectsAddedThisMove.Clear();
+            // Reset PrevMoveDelta.
+            for (int i=0; i<allObjects.Count; i++) { allObjects[i].ResetPrevMoveDelta(); }
             // Move it!
             BoardUtils.MoveOccupant(this, player.BoardPos, dir);
             // Update goals!

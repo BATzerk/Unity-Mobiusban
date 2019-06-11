@@ -7,55 +7,55 @@
     <Level wrapH="0" wrapV="0" layout="
         ....,
         ....,
-        @.o.,
+        @.O.,
         ....,
     " />
     <Level wrapH="1" wrapV="0" layout="
         ....,
         ....,
-        @.o.,
+        @.O.,
         ....,
     " />
     <Level wrapH="0" wrapV="1" layout="
         ....,
         ....,
-        @.o.,
+        @.O.,
         ....,
     " />
     <Level wrapH="1" wrapV="1" layout="
         ....,
         ....,
-        @.o.,
+        @.O.,
         ....,
     " />
     <Level wrapH="2" wrapV="0" layout="
         ....,
         ....,
-        @.o.,
+        @.O.,
         ....,
     " />
     <Level wrapH="0" wrapV="2" layout="
         ....,
         ....,
-        @.o.,
+        @.O.,
         ....,
     " />
     <Level wrapH="2" wrapV="2" layout="
         ....,
         ....,
-        @.o.,
+        @.O.,
         ....,
     " />
     <Level wrapH="1" wrapV="2" layout="
         ....,
         ....,
-        @.o.,
+        @.O.,
         ....,
     " />
     <Level wrapH="2" wrapV="1" layout="
         ....,
         ....,
-        @.o.,
+        @.O.,
         ....,
     " />
 
@@ -64,28 +64,28 @@
     <Level wrapH="3" wrapV="0" layout="
         ....,
         ....,
-        @.o.,
+        @.O.,
         ....,
     " />
     <Level wrapH="1" wrapV="3" layout="
         ....,
         ....,
-        @.o.,
+        @.O.,
         ....,
     " />
     <Level wrapH="3" wrapV="3" layout="
         ....,
         ....,
-        @.o.,
+        @.O.,
         ....,
     " />
 
 
 
     <Level layout="
-        @.o..,
-        ..o..,
-        ..ooo,
+        @.O..,
+        ..O..,
+        ..OOO,
         .....,
         .....,
     " />
@@ -96,7 +96,7 @@
         _.___,
         .||..,
         .||..,
-        @o...,
+        @O...,
         .....,
     " />
     <Level layout="
@@ -105,7 +105,7 @@
     " />
     <Level wrapH="0" layout="
         _...,
-        @o..,
+        @O..,
         .__.,
         ....,
     " />

@@ -38,7 +38,7 @@ public class BoardObjectView : MonoBehaviour {
 		}
 	}
     protected Vector2 GetPosFromMyObject () {
-        return new Vector2 (MyBoardView.BoardToX (MyBoardObject.Col), MyBoardView.BoardToY (MyBoardObject.Row));
+        return MyBoardView.BoardToPos (MyBoardObject.BoardPos);
     }
     private float GetRotationFromMyObject () {
         float returnValue = -90 * MyBoardObject.SideFacing;
@@ -87,13 +87,13 @@ public class BoardObjectView : MonoBehaviour {
     protected void SetPos(Vector2 _pos) { this.Pos = _pos; }
     
 	virtual public void UpdateVisualsPostMove() {
-        // Animate into new pos!
-        LeanTween.cancel(this.gameObject);
-        Vector2 newPos = GetPosFromMyObject();
-        // TEMP DISABLED animation.
-        SetPos(newPos);
+        // Snap to correct rotation (no animating for now, no need).
         Rotation = GetRotationFromMyObject();
-        //LeanTween.value(this.gameObject,SetPos, Pos,newPos, 0.18f).setEaseOutQuint();
+        // Animate from old to new pos!
+        Vector2 oldPos = MyBoardView.BoardToPos(MyBoardObject.BoardPos - MyBoardObject.PrevMoveDelta);
+        Vector2 newPos = GetPosFromMyObject();
+        LeanTween.cancel(this.gameObject);
+        LeanTween.value(this.gameObject,SetPos, oldPos,newPos, 0.18f).setEaseOutQuint();
     }
     
     virtual public void OnRemovedFromPlay() {

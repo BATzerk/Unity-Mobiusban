@@ -7,6 +7,7 @@ abstract public class BoardObject {
     public Vector2Int BoardPos { get; private set; }
     private bool isInPlay = true; // we set this to false when I'm removed from the Board!
     private int _sideFacing; // corresponds to Sides.cs.
+    public Vector2Int PrevMoveDelta { get; private set; } // how far I moved the last move.
     // References
     protected Board BoardRef { get; private set; }
 
@@ -46,13 +47,17 @@ abstract public class BoardObject {
 	// ----------------------------------------------------------------
 	//  Doers
 	// ----------------------------------------------------------------
-    public void SetColRow(Vector2Int _pos) {
+    public void SetColRow(Vector2Int _pos, Vector2Int moveDir) {
         //RemoveMyFootprint();
+        PrevMoveDelta = moveDir;
         BoardPos = _pos;
         //AddMyFootprint();
 	}
     public void SetSideFacing(int sideFacing) {
         SideFacing = sideFacing;
+    }
+    public void ResetPrevMoveDelta() {
+        PrevMoveDelta = Vector2Int.zero;
     }
 
 	/** This removes me from the Board completely and permanently. */
