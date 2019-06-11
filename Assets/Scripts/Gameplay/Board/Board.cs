@@ -74,6 +74,7 @@ public class Board {
 		// Add all gameplay objects!
 		MakeBoardSpaces (bd);
 		AddPropsFromBoardData (bd);
+        UpdateAreGoalsSatisfied(); // know from the get-go.
 	}
 
 	private void MakeBoardSpaces (BoardData bd) {

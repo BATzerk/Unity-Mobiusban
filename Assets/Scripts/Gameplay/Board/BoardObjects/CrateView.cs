@@ -32,7 +32,7 @@ public class CrateView : BoardObjectView {
         for (int corner=0; corner<Corners.NumCorners; corner++) {
             if (myObj.IsDimple[corner]) {
                 Image newImg = new GameObject().AddComponent<Image>();
-                GameUtils.ParentAndReset(newImg.gameObject, this.transform);
+                GameUtils.ParentAndReset(newImg.gameObject, rt_contents);
                 GameUtils.FlushRectTransform(newImg.rectTransform);
                 newImg.name = "Dimple" + corner;
                 newImg.sprite = s_dimple;

@@ -5,7 +5,8 @@ using System.Collections.Generic;
 abstract public class BoardObject {
     // Properties
     public Vector2Int BoardPos { get; private set; }
-    public int Chirality { get; private set; } // -1 or 1.
+    public int ChirH { get; private set; } // horizontal chirality (along y-axis). -1 or 1.
+    public int ChirV { get; private set; } // vertical chirality (along x-axis). -1 or 1.
     private int _sideFacing; // corresponds to Sides.cs.
     private bool isInPlay = true; // we set this to false when I'm removed from the Board!
     public Vector2Int PrevMoveDelta { get; private set; } // how far I moved the last move.
@@ -38,7 +39,8 @@ abstract public class BoardObject {
 	protected void InitializeAsBoardObject (Board _boardRef, BoardObjectData data) {
 		this.BoardRef = _boardRef;
 		this.BoardPos = data.boardPos;
-        this.Chirality = data.chirality;
+        this.ChirH = data.chirH;
+        this.ChirV = data.chirV;
         this.SideFacing = data.sideFacing;
         
 		// Automatically add me to the board!
@@ -56,9 +58,12 @@ abstract public class BoardObject {
         //AddMyFootprint();
 	}
     private void SetSideFacing(int sideFacing) { SideFacing = sideFacing; }
-    private void SetChirality(int chirality) { Chirality = chirality; }
+    //private void SetChirality(int chirality) { Chirality = chirality; }
     public void ChangeSideFacing(int delta) { SideFacing += delta; }
-    public void ChangeChirality(int delta) { Chirality *= delta; }
+    public void ChangeChirality(int deltaH, int deltaV) {
+        ChirH *= deltaH;
+        ChirV *= deltaV;
+    }
     
     public void ResetPrevMoveDelta() {
         PrevMoveDelta = Vector2Int.zero;

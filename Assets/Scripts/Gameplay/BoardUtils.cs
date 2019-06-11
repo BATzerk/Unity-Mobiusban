@@ -37,36 +37,36 @@ public static class BoardUtils {
     
     public static TranslationInfo GetTranslationInfo(Board b, Vector2Int from, Vector2Int dir) {
         Vector2Int to = from + dir;
-        int chiralityH = 1;
-        int chiralityV = 1;
+        int chirH = 1;
+        int chirV = 1;
         int sideDelta = 0;
         // Wrap!
         if (to.x < 0) {
             if (b.DoWrapH) { to.x += b.NumCols; }
             if (b.WrapH == WrapTypes.Flip) {
                 to.y = b.NumRows-1 - to.y;
-                chiralityV *= -1;
+                chirV *= -1;
             }
         }
         else if (to.x >= b.NumCols) {
             if (b.DoWrapH) { to.x -= b.NumCols; }
             if (b.WrapH == WrapTypes.Flip) {
                 to.y = b.NumRows-1 - to.y;
-                chiralityV *= -1;
+                chirV *= -1;
             }
         }
         if (to.y < 0) {
             if (b.DoWrapV) { to.y += b.NumRows; }
             if (b.WrapV == WrapTypes.Flip) {
                 to.x = b.NumCols-1 - to.x;
-                chiralityH *= -1;
+                chirH *= -1;
             }
         }
         else if (to.y >= b.NumRows) {
             if (b.DoWrapV) { to.y -= b.NumRows; }
             if (b.WrapV == WrapTypes.Flip) {
                 to.x = b.NumCols-1 - to.x;
-                chiralityH *= -1;
+                chirH *= -1;
             }
         }
         return new TranslationInfo {
@@ -75,8 +75,8 @@ public static class BoardUtils {
             dirOut = dir,
             dirIn = Vector2Int.Opposite(dir),
             sideDelta = sideDelta,
-            //chiralityHDelta = chiralityH,
-            //chiralityVDelta = chiralityV,
+            chiralityDeltaH = chirH,
+            chiralityDeltaV = chirV,
         };
     }
     //private static int GetNewSideFacing(Board b, int sideFacing, Vector2Int posFrom, Vector2Int dir) {
@@ -162,7 +162,7 @@ public static class BoardUtils {
         //int newSideFacing = GetNewSideFacing(b, bo.SideFacing, occPos, dir);
         bo.SetColRow(ti.to, ti.dirOut);
         bo.ChangeSideFacing(ti.sideDelta);
-        bo.ChangeChirality(ti.chiralityDelta);
+        bo.ChangeChirality(ti.chiralityDeltaH, ti.chiralityDeltaV);
         // Put footprint back down.
         bo.AddMyFootprint();
         
@@ -175,7 +175,7 @@ public static class BoardUtils {
 public class TranslationInfo {
     public Vector2Int from, to;
     public Vector2Int dirOut, dirIn;
-    public int chiralityDelta;
+    public int chiralityDeltaH, chiralityDeltaV;
     public int sideDelta;
     //public TranslationInfo(
 }

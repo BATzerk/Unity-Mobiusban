@@ -52,12 +52,16 @@ public class CrateGoal : BoardObject, IGoalObject {
         // KINDA SLOPPY! just getting to work for now!
         
         Matrix2x2 mat = MatrixFromCorner(Corner);
-        if (crate.Chirality == -1) {
+        if (crate.ChirH == -1) {
             mat = mat.HorzFlipped();
+        }
+        if (crate.ChirV == -1) {
+            mat = mat.VertFlipped();
         }
         //mat.Rotate(crate.SideFacing - SideFacing);
         int cornerRel = CornerFromMatrix(mat); // my corner, relative to the Crate.
-        cornerRel += crate.SideFacing - SideFacing;
+        cornerRel += SideFacing - crate.SideFacing;
+        if (cornerRel < 0) { cornerRel += Corners.NumCorners; }
         if (cornerRel >= Corners.NumCorners) { cornerRel -= Corners.NumCorners; }
         
 		return crate.IsDimple[cornerRel];

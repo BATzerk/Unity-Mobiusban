@@ -148,8 +148,7 @@ public class BoardData {
     void AddCrateData (int col,int row, int dimpleCorner) {
         bool[] isDimple = new bool[Corners.NumCorners];
         isDimple[dimpleCorner] = true;
-        
-        CrateData newData = new CrateData (new Vector2Int(col,row), 1,0, isDimple);
+        CrateData newData = new CrateData (new Vector2Int(col,row), 1,1, 0, isDimple);
         allObjectDatas.Add (newData);
         SetOccupantInBoard (newData);
     }

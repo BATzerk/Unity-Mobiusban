@@ -8,7 +8,8 @@ public class PropData {
 }
 
 public class BoardObjectData : PropData {
-    public int chirality=1;
+    public int chirH=1;
+    public int chirV=1;
     public int sideFacing;
     public Vector2Int boardPos;
 }
@@ -26,9 +27,10 @@ public class BoardSpaceData : BoardObjectData {
 
 public class CrateData : BoardOccupantData {
     public bool[] isDimple;
-    public CrateData (Vector2Int boardPos, int chirality,int sideFacing, bool[] isDimple) {
+    public CrateData (Vector2Int boardPos, int chirH,int chirV, int sideFacing, bool[] isDimple) {
         this.boardPos = boardPos;
-        this.chirality = chirality;
+        this.chirH = chirH;
+        this.chirV = chirV;
         this.sideFacing = sideFacing;
         this.isDimple = isDimple;
         //this.isMovable = isMovable;

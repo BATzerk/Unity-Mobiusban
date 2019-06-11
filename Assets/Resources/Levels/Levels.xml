@@ -178,6 +178,20 @@
         ....,
     " />
     <Level wrapH="2" wrapV="2" layout="
+        ...$,
+        ....,
+        @.Aq,
+        ....,
+    " />
+    <Level wrapH="2" wrapV="2" layout="
+        .....$,
+        ......,
+        @.Aq..,
+        ......,
+        ......,
+        ......,
+    " />
+    <Level wrapH="2" wrapV="2" layout="
         qw.$,
         as..,
         @.Q.,

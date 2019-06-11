@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class BoardObjectView : MonoBehaviour {
 	// Components
-	protected RectTransform myRectTransform { get; private set; } // Set in Awake.
+    [SerializeField] protected RectTransform rt_contents;
+    protected RectTransform myRectTransform { get; private set; } // Set in Awake.
 	// Properties
 	private float _rotation; // so we can use the ease-ier (waka waka) system between -180 and 180 with minimal processing effort.
 	private Vector2 _scale;//=Vector2.one;
@@ -25,7 +26,7 @@ public class BoardObjectView : MonoBehaviour {
 		get { return _rotation; }
 		set {
 			_rotation = value;
-			this.transform.localEulerAngles = new Vector3 (this.transform.localEulerAngles.x, this.transform.localEulerAngles.y, _rotation);
+			rt_contents.localEulerAngles = new Vector3 (rt_contents.localEulerAngles.x, rt_contents.localEulerAngles.y, _rotation);
 			OnSetRotation ();
 		}
 	}
@@ -51,7 +52,7 @@ public class BoardObjectView : MonoBehaviour {
         return returnValue;
     }
     private Vector2 GetScaleFromMyObject () {
-        return new Vector2(MyBoardObject.Chirality, 1);
+        return new Vector2(MyBoardObject.ChirH, MyBoardObject.ChirV);
     }
 
 	virtual protected void OnSetPos () { }
@@ -78,7 +79,6 @@ public class BoardObjectView : MonoBehaviour {
 		Pos = GetPosFromMyObject();
 		Rotation = GetRotationFromMyObject();
         Scale = GetScaleFromMyObject();
-		//Scale = 1;
 	}
     protected void DestroySelf() {
         Destroy(this.gameObject);
