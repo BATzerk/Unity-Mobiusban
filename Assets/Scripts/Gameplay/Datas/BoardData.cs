@@ -82,6 +82,15 @@ public class BoardData {
                     case '$': AddExitSpotData (col,row); break;
 					// Player!
 					case '@': SetPlayerData(col,row); break;
+                    // Beams!
+                    case 't': AddBeamGoalData (col,row, Sides.T, 0); break;
+                    case 'y': AddBeamGoalData (col,row, Sides.R, 0); break;
+                    case 'h': AddBeamGoalData (col,row, Sides.B, 0); break;
+                    case 'g': AddBeamGoalData (col,row, Sides.L, 0); break;
+                    case 'T': AddBeamSourceData (col,row, Sides.T, 0); break;
+                    case 'Y': AddBeamSourceData (col,row, Sides.R, 0); break;
+                    case 'H': AddBeamSourceData (col,row, Sides.B, 0); break;
+                    case 'G': AddBeamSourceData (col,row, Sides.L, 0); break;
                     // Crates!
                     case 'q': AddCrateGoalData (col,row, Corners.TL, false); break;
                     case 'w': AddCrateGoalData (col,row, Corners.TR, false); break;
@@ -106,8 +115,8 @@ public class BoardData {
 					case '|': SetIsWallL (col,row); break;
                     
                     // MODIFYING properties...
-                    case 'H': FlipChirH(col,row); break;
-                    case 'V': FlipChirV(col,row); break;
+                    case 'Z': FlipChirH(col,row); break;
+                    case 'X': FlipChirV(col,row); break;
 					}
 				}
 			}
@@ -174,6 +183,16 @@ public class BoardData {
     }
     void AddCrateGoalData (int col,int row, int corner, bool doStayOn) {
         CrateGoalData newData = new CrateGoalData (new BoardPos(col,row), corner, doStayOn, false);
+        allObjectDatas.Add (newData);
+        SetOccupantInBoard (newData);
+    }
+    void AddBeamGoalData (int col,int row, int sideFacing, int channelID) {
+        BeamGoalData newData = new BeamGoalData (new BoardPos(col,row, 1,1, sideFacing), channelID);
+        allObjectDatas.Add (newData);
+        SetOccupantInBoard (newData);
+    }
+    void AddBeamSourceData (int col,int row, int sideFacing, int channelID) {
+        BeamSourceData newData = new BeamSourceData (new BoardPos(col,row, 1,1, sideFacing), channelID);
         allObjectDatas.Add (newData);
         SetOccupantInBoard (newData);
     }

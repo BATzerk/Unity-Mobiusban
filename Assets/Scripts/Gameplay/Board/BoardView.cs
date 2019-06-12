@@ -11,9 +11,11 @@ public class BoardView : MonoBehaviour {
     // Components
     [SerializeField] public CanvasGroup MyCanvasGroup=null;
     [SerializeField] private RectTransform myRectTransform=null;
+    [SerializeField] public Transform tf_beamLines=null;
     [SerializeField] public Transform tf_boardObjects=null;
     [SerializeField] public Transform tf_boardSpaces=null;
-    [SerializeField] public Transform rt_walls=null;
+    [SerializeField] public Transform tf_walls=null;
+    public BeamRendererColliderArena BeamRendererColliderArena { get; private set; }
 	// Objects
 	private BoardSpaceView[,] spaceViews;
 	private List<BoardObjectView> allObjectViews = new List<BoardObjectView>(); // includes EVERY single BoardObjectView!
@@ -37,16 +39,13 @@ public class BoardView : MonoBehaviour {
     public Vector2 BoardToPos(Vector2Int pos) { return new Vector2(BoardToX(pos.x),BoardToY(pos.y)); }
     public Vector2 BoardToPosGlobal(Vector2Int pos) { return new Vector2(BoardToXGlobal(pos.x),BoardToYGlobal(pos.y)); }
     
-    ///** Brute-force finds the corresponding TileView. */
-    //private CrateView GetTileView(Vector2Int pos) {
-    //    foreach (BoardObjectView objectView in allObjectViews) {
-    //        BoardObject bo = objectView.MyBoardObject;
-    //        if (bo is Crate && bo.BoardPos==pos) {
-    //            return objectView as CrateView;
-    //        }
-    //    }
-    //    return null; // oops.
-    //}
+    /** Brute-force finds the corresponding BoardOccupantView. */
+    public BoardOccupantView TEMP_GetOccupantView(BoardOccupant bo) {
+        foreach (BoardObjectView objectView in allObjectViews) {
+            if (objectView.MyBoardObject == bo) { return objectView as BoardOccupantView; }
+        }
+        return null; // oops.
+    }
 
 
 	// ----------------------------------------------------------------
@@ -61,6 +60,7 @@ public class BoardView : MonoBehaviour {
         UpdatePosAndSize(rt_availableArea);
 
         // Add Player and Spaces!
+        BeamRendererColliderArena = new BeamRendererColliderArena();
         AddPlayerView(MyBoard.player);
 		spaceViews = new BoardSpaceView[NumCols,NumRows];
 		for (int i=0; i<NumCols; i++) {
@@ -99,7 +99,9 @@ public class BoardView : MonoBehaviour {
 	}
 
 	private void AddObjectView (BoardObject sourceObject) {
-		if (sourceObject is Crate) { AddCrateView (sourceObject as Crate); }
+        if (sourceObject is BeamGoal) { AddBeamGoalView (sourceObject as BeamGoal); }
+        else if (sourceObject is BeamSource) { AddBeamSourceView (sourceObject as BeamSource); }
+        else if (sourceObject is Crate) { AddCrateView (sourceObject as Crate); }
         else if (sourceObject is CrateGoal) { AddCrateGoalView (sourceObject as CrateGoal); }
         else if (sourceObject is ExitSpot) { AddExitSpotView (sourceObject as ExitSpot); }
 		else {
@@ -107,6 +109,16 @@ public class BoardView : MonoBehaviour {
             return;
         }
 	}
+    private void AddBeamGoalView (BeamGoal obj) {
+        BeamGoalView newObj = Instantiate(resourcesHandler.BeamGoalView).GetComponent<BeamGoalView>();
+        newObj.Initialize (this, obj);
+        allObjectViews.Add (newObj);
+    }
+    private void AddBeamSourceView (BeamSource obj) {
+        BeamSourceView newObj = Instantiate(resourcesHandler.BeamSourceView).GetComponent<BeamSourceView>();
+        newObj.Initialize (this, obj);
+        allObjectViews.Add (newObj);
+    }
     private void AddCrateView (Crate obj) {
         CrateView newObj = Instantiate(resourcesHandler.CrateView).GetComponent<CrateView>();
         newObj.Initialize (this, obj);

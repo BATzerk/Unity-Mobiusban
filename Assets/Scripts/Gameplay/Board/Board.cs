@@ -91,7 +91,13 @@ public class Board {
         player = new Player(this, bd.playerData);
 		foreach (BoardObjectData objData in bd.allObjectDatas) {
             System.Type type = objData.GetType();
-            if (type == typeof(CrateData)) {
+            if (type == typeof(BeamGoalData)) {
+                AddBeamGoal (objData as BeamGoalData);
+            }
+            else if (type == typeof(BeamSourceData)) {
+                AddBeamSource (objData as BeamSourceData);
+            }
+            else if (type == typeof(CrateData)) {
                 AddCrate (objData as CrateData);
             }
             else if (type == typeof(CrateGoalData)) {
@@ -106,6 +112,17 @@ public class Board {
         }
 	}
     
+    private void AddBeamGoal (BeamGoalData data) {
+        BeamGoal prop = new BeamGoal (this, data);
+        allObjects.Add (prop);
+        objectsAddedThisMove.Add(prop);
+        goalObjects.Add (prop);
+    }
+    private void AddBeamSource (BeamSourceData data) {
+        BeamSource prop = new BeamSource (this, data);
+        allObjects.Add (prop);
+        objectsAddedThisMove.Add(prop);
+    }
     private void AddCrate (CrateData data) {
         Crate prop = new Crate (this, data);
         allObjects.Add (prop);

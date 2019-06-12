@@ -8,7 +8,7 @@ abstract public class BoardObject {
     private bool isInPlay = true; // we set this to false when I'm removed from the Board!
     public Vector2Int PrevMoveDelta { get; private set; } // how far I moved the last move.
     // References
-    protected Board BoardRef { get; private set; }
+    public Board BoardRef { get; private set; }
 
 
     // Getters
@@ -56,6 +56,7 @@ abstract public class BoardObject {
     private void SetSideFacing(int _sideFacing) {
         BoardPos = new BoardPos(ColRow, ChirH,ChirV,_sideFacing);
         //BoardPos.SideFacing = sideFacing;
+        OnSetSideFacing();
     }
     //private void SetChirality(int chirality) { Chirality = chirality; }
     public void ChangeSideFacing(int delta) { SetSideFacing(SideFacing+delta); }
@@ -77,9 +78,10 @@ abstract public class BoardObject {
 	}
 
 	// Override these!
+    virtual public void AddMyFootprint () {}
+    virtual public void RemoveMyFootprint () {}
     virtual public void OnPlayerMoved () {}
-	virtual public void AddMyFootprint () {}
-	virtual public void RemoveMyFootprint () {}
+    virtual protected void OnSetSideFacing () {}
 
 
 }

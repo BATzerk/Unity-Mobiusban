@@ -52,10 +52,12 @@ public class CrateView : BoardObjectView {
         base.UpdateVisualsPostMove();
         
         if (MyCrate.DoAutoMove) {
-            i_autoMoveDir.enabled = MyCrate.AutoMoveDir!=Vector2Int.zero;
-            
-            float dirRot = MathUtils.GetSide(MyCrate.AutoMoveDir) * -90;
-            i_autoMoveDir.transform.localEulerAngles = new Vector3(0, 0, dirRot);
+            bool isArrow = MyCrate.AutoMoveDir!=Vector2Int.zero;
+            i_autoMoveDir.enabled = isArrow;
+            if (isArrow) {
+                float dirRot = MathUtils.GetSide(MyCrate.AutoMoveDir) * -90;
+                i_autoMoveDir.transform.localEulerAngles = new Vector3(0, 0, dirRot);
+            }
         }
     }
 

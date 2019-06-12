@@ -6,7 +6,14 @@ using UnityEngine;
 abstract public class BoardOccupant : BoardObject {
     // Properties
     public bool IsMovable { get; private set; }
+    protected bool[] canBeamEnter = {false,false,false,false}; // one for each side. Default all to false. My extensions will say otherwise.
+    protected bool[] canBeamExit = {false,false,false,false}; // one for each side. Default all to false. My extensions will say otherwise.
     
+    public bool CanBeamEnter (int sideEntered) { return canBeamEnter[sideEntered]; }
+    public bool CanBeamExit (int sideExited) { return canBeamExit[sideExited]; }
+    virtual public int SideBeamExits (int sideEntered) {
+        return Sides.GetOpposite(sideEntered);
+    }
 
 	// ----------------------------------------------------------------
 	//  Initialize
@@ -27,6 +34,15 @@ abstract public class BoardOccupant : BoardObject {
 		MySpace.RemoveMyOccupant (this);
 	}
 
+    /** Extensions of this class will call this if they totally don't obstruct beams OR other Occupants. */
+    virtual protected void UpdateCanBeamEnterAndExit () { }
+    protected void SetBeamCanEnterAndExit (bool _canEnterAndExit) {
+        for (int i=0;i<4;i++) { canBeamEnter[i]=canBeamExit[i]=_canEnterAndExit; }
+    }
+    override protected void OnSetSideFacing () {
+        base.OnSetSideFacing ();
+        UpdateCanBeamEnterAndExit ();
+    }
 
 
 }

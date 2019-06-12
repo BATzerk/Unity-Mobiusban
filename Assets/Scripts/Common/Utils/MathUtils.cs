@@ -145,6 +145,10 @@ public static class MathUtils {
     public static Vector3 ProjectOntoPlane(Vector3 v,Vector3 normal) {
         return v - Vector3.Project(v,normal);
     }
+    /** TO DO: #optimization This function uses way overkill with converting to vectors and back. There has GOT to be a simpler way with just using the angles. */
+    public static float GetAngleReflection (float angleIn, float surfaceAngle) {
+        return 180+GetAngleDeg (Vector2.Reflect (GetVectorFromDeg(-angleIn), GetVectorFromDeg(surfaceAngle)));
+    }
 
 
 

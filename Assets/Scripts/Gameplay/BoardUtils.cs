@@ -135,6 +135,12 @@ public static class BoardUtils {
 		BoardSpace bs = GetSpace (b, col,row);
 		return bs!=null && bs.IsPlayable;
 	}
+    public static bool CanBeamEnterSpace (BoardSpace bs, int sideEntering) {
+        return bs!=null && bs.CanBeamEnter(sideEntering);
+    }
+    public static bool CanBeamExitSpace (BoardSpace bs, int sideExiting) {
+        return bs!=null && bs.CanBeamExit(sideExiting);
+    }
     
     
     // ----------------------------------------------------------------

@@ -21,6 +21,20 @@ public class BoardSpaceData {
 		this.ColRow.y = _row;
 	}
 }
+public class BeamGoalData : BoardOccupantData {
+    public int channelID=-1;
+    public BeamGoalData (BoardPos boardPos, int channelID) {
+        this.boardPos = boardPos;
+        this.channelID = channelID;
+    }
+}
+public class BeamSourceData : BoardOccupantData {
+    public int channelID=-1;
+    public BeamSourceData (BoardPos boardPos, int channelID) {
+        this.boardPos = boardPos;
+        this.channelID = channelID;
+    }
+}
 
 public class CrateData : BoardOccupantData {
     public bool doAutoMove=false;

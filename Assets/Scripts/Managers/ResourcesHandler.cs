@@ -9,6 +9,9 @@ public class ResourcesHandler : MonoBehaviour {
     [SerializeField] public GameObject ImageLinesJoint;
     [Header ("Mobiusban")]
     [SerializeField] public GameObject Level;
+    [SerializeField] public GameObject BeamGoalView;
+    [SerializeField] public GameObject BeamSourceView;
+    [SerializeField] public GameObject BeamSegmentRenderer;
     [SerializeField] public GameObject BoardView;
     [SerializeField] public GameObject BoardSpaceView;
     [SerializeField] public GameObject CrateView;
