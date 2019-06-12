@@ -27,7 +27,7 @@ public class BeamView : MonoBehaviour {
 	}
 
 	/** Instantiates a BeamSegmentView initialized by me, and returns it for further usage. */
-	private BeamSegmentView GetNewSegmentView () {
+	public BeamSegmentView GetNewSegmentView () {
 		BeamSegmentView newView = Instantiate (prefabGO_BeamSegmentRenderer).GetComponent<BeamSegmentView>();
 		newView.Initialize (this);
 		return newView;
@@ -49,9 +49,7 @@ public class BeamView : MonoBehaviour {
 		// Make more segments if we need them!
 		int numNewSegmentViews = numBeamSegments - segmentViews.Count;
 		for (int i=0; i<numNewSegmentViews; i++) {
-			BeamSegmentView newSegRend = Instantiate (prefabGO_BeamSegmentRenderer).GetComponent<BeamSegmentView>();
-			newSegRend.Initialize (this);
-			segmentViews.Add (newSegRend);
+			segmentViews.Add (GetNewSegmentView());
 		}
 		// Activate/deactivate the right ones!
 		for (int i=0; i<numBeamSegments; i++) {

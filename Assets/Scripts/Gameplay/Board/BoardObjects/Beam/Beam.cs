@@ -14,7 +14,8 @@ public class Beam {
 	public BeamSegment GetSegment (int index) { return segments[index]; }
 
 	private Board BoardRef { get { return mySource.BoardRef; } }
-	private BoardSpace GetSpace (int _col,int _row) { return BoardUtils.GetSpace (BoardRef, _col,_row); }
+    private BoardSpace GetSpace (Vector2Int _colRow) { return BoardUtils.GetSpace (BoardRef, _colRow); }
+    private BoardSpace GetSpace (int _col,int _row) { return BoardUtils.GetSpace (BoardRef, _col,_row); }
 	private BoardOccupant GetOccupant (int _col,int _row) { return BoardUtils.GetOccupant (BoardRef, _col,_row); }
 
 	/** Returns TRUE if the provided Space is ALSO the Space where this Beam originates.
@@ -55,31 +56,21 @@ public class Beam {
 		AddSegmentSpaceRecursively (newSegment, exitSide); // populate the segment (and maybe make more segments)!
 	}
 
-	private void AddSegmentSpaceRecursively (BeamSegment _segment, int sideExiting) {
+	private void AddSegmentSpaceRecursively (BeamSegment _segment, int exitSide) {
 		// Do we have too many segments? Okay, stop; we're probably caught in an infinite-Beam Portal mirroring situation.
 		if (NumSegments > 10) { return; }
-		int _prevCol = _segment.LastCol;
-		int _prevRow = _segment.LastRow;
-		//// Hey, are we ENTERING a Portal?! Then add ANOTHER entire Segment starting at all the other Portals in this Channel!
-		//Portal portalWithExitInNextSpace = BoardUtils.PortalWithWarpSideInSpace (BoardRef, _prevCol,_prevRow, sideExiting);
-		//if (portalWithExitInNextSpace != null) {
-		//	Portal[] otherPortals = portalWithExitInNextSpace.GetOtherPortalsInChannel ();
-		//	foreach (Portal p in otherPortals) {
-		//		AddSegmentRecursively (p); // future todo: Orient this differently in case Portals have fewer than 3 sides.
-		//	}
-		//}
 		// Are we not allowed to EXIT this space? Then stop here.
-		if (!BoardUtils.CanBeamExitSpace (GetSpace(_prevCol,_prevRow), sideExiting)) { return; }
+		if (!BoardUtils.CanBeamExitSpace (GetSpace(_segment.LastColRow), exitSide)) { return; }
 		// What space will we add it to?
-		Vector2Int dirExiting = MathUtils.GetDir (sideExiting);
-		BoardSpace spaceToAddBeam = BoardUtils.GetSpace (BoardRef, _prevCol+dirExiting.x, _prevRow+dirExiting.y);
+        TranslationInfo ti = BoardUtils.GetTranslationInfo(mySource.BoardRef, _segment.LastColRow, exitSide);
+		BoardSpace spaceToAddBeam = BoardUtils.GetSpace (BoardRef, ti.to);
 		// If we can't ENTER the next space, then stop. :)
-		int nextSideEntering = Sides.GetOpposite(sideExiting);
-		if (!BoardUtils.CanBeamEnterSpace (spaceToAddBeam, nextSideEntering)) { return; }
+		int nextSideIn = MathUtils.GetSide(ti.dirIn);
+		if (!BoardUtils.CanBeamEnterSpace (spaceToAddBeam, nextSideIn)) { return; }
 		// Otherwise, add this space to the segment!
 		_segment.AddSpace (spaceToAddBeam);
 		// How is the beam exiting??
-		int endSideExiting = spaceToAddBeam.GetSideBeamExits (nextSideEntering); // keep updaing endSideExiting (until we hit the end).
+		int endSideExiting = spaceToAddBeam.GetSideBeamExits (nextSideIn); // keep updaing endSideExiting (until we hit the end).
 		// Otherwise, keep going! Add again!
 		AddSegmentSpaceRecursively (_segment, endSideExiting);
 	}
@@ -91,3 +82,12 @@ public class Beam {
 	}
 
 }
+
+        //// Hey, are we ENTERING a Portal?! Then add ANOTHER entire Segment starting at all the other Portals in this Channel!
+        //Portal portalWithExitInNextSpace = BoardUtils.PortalWithWarpSideInSpace (BoardRef, _prevCol,_prevRow, sideExiting);
+        //if (portalWithExitInNextSpace != null) {
+        //  Portal[] otherPortals = portalWithExitInNextSpace.GetOtherPortalsInChannel ();
+        //  foreach (Portal p in otherPortals) {
+        //      AddSegmentRecursively (p); // future todo: Orient this differently in case Portals have fewer than 3 sides.
+        //  }
+        //}

@@ -2,30 +2,61 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BeamRendererColliderArena {
+[RequireComponent(typeof(BoardView))]
+public class BeamRendererColliderArena : MonoBehaviour {
 	// Properties
 	private List<BeamRendererColliderLine> boundsLines; // just MY way-big-boundary lines. These are added to the allColliderLines list.
 	// References
 	private List<BeamRendererColliderLine> allColliderLines;
 
 
+    // DEBUG
+    private void OnDrawGizmos () {
+        if (allColliderLines == null) { return; }
+        Gizmos.color = Color.magenta;
+        foreach (BeamRendererColliderLine line in allColliderLines) {
+            Gizmos.DrawLine (line.line.start, line.line.end);
+        }
+    }
+
 	// ----------------------------------------------------------------
 	//  Initialize
 	// ----------------------------------------------------------------
-	public BeamRendererColliderArena () {
+	public void Initialize (Board b, Rect r_board) {
 		allColliderLines = new List<BeamRendererColliderLine>();
+        boundsLines = new List<BeamRendererColliderLine>();
 
-		// Populate me first with far-reaching boundaries!!
-		Rect br = new Rect (-1000,-1000, 3000,3000);
-		boundsLines = new List<BeamRendererColliderLine>();
-		boundsLines.Add (new BeamRendererColliderLine (null, new Line (br.xMin,br.yMin,  br.xMax,br.yMin), BeamRendererCollision.Types.End));
-		boundsLines.Add (new BeamRendererColliderLine (null, new Line (br.xMax,br.yMin,  br.xMax,br.yMax), BeamRendererCollision.Types.End));
-		boundsLines.Add (new BeamRendererColliderLine (null, new Line (br.xMax,br.yMax,  br.xMin,br.yMax), BeamRendererCollision.Types.End));
-		boundsLines.Add (new BeamRendererColliderLine (null, new Line (br.xMin,br.yMax,  br.xMin,br.yMin), BeamRendererCollision.Types.End));
-		foreach (BeamRendererColliderLine boundLine in boundsLines) {
-			BeamRendererColliderLine _boundLine = boundLine;
-			AddLine (ref _boundLine);
-		}
+        //// Populate me first with far-reaching boundaries!!
+        //Rect br = new Rect (-1000,-1000, 3000,3000);
+		//boundsLines.Add (new BeamRendererColliderLine (null, new Line (br.xMin,br.yMin,  br.xMax,br.yMin), BeamRendererCollision.Types.End));
+		//boundsLines.Add (new BeamRendererColliderLine (null, new Line (br.xMax,br.yMin,  br.xMax,br.yMax), BeamRendererCollision.Types.End));
+		//boundsLines.Add (new BeamRendererColliderLine (null, new Line (br.xMax,br.yMax,  br.xMin,br.yMax), BeamRendererCollision.Types.End));
+		//boundsLines.Add (new BeamRendererColliderLine (null, new Line (br.xMin,br.yMax,  br.xMin,br.yMin), BeamRendererCollision.Types.End));
+        // Add bounds on each Board side!
+        Rect br = r_board;
+        br.position = Vector2.zero;
+        // Left
+        switch (b.WrapH) {
+            case WrapTypes.Parallel:
+                boundsLines.Add(new BeamRendererColliderLine(LineUtils.GetLineCW(br, Sides.L), new Vector2(br.width,0), BeamRendererCollision.Types.Warp)); break;
+            //case WrapTypes.Flip:TODO: This.
+                //boundsLines.Add(new BeamRendererColliderLine(null, LineUtils.GetLine(br, Sides.L), BeamRendererCollision.Types.Warp)); break;
+            default:
+                boundsLines.Add(new BeamRendererColliderLine(null, LineUtils.GetLineCW(br, Sides.L), BeamRendererCollision.Types.End)); break;
+        }
+        //// Right
+        //switch (b.WrapH) {
+        //    case WrapTypes.Parallel:
+        //        boundsLines.Add(new BeamRendererColliderLine(LineUtils.GetLine(br, Sides.R), LineUtils.GetLine(br, Sides.L), BeamRendererCollision.Types.Warp)); break;
+        //    //case WrapTypes.Flip:TODO: This.
+        //        //boundsLines.Add(new BeamRendererColliderLine(null, LineUtils.GetLine(br, Sides.R), BeamRendererCollision.Types.Warp)); break;
+        //    default:
+        //        boundsLines.Add(new BeamRendererColliderLine(null, LineUtils.GetLine(br, Sides.R), BeamRendererCollision.Types.End)); break;
+        //}
+        foreach (BeamRendererColliderLine boundLine in boundsLines) {
+            BeamRendererColliderLine _boundLine = boundLine;
+            AddLine (ref _boundLine);
+        }
 	}
 
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public struct BeamRendererCollision {
-	public enum Types { End, Reflect, Portal };
+	public enum Types { End, Reflect, Warp };
 
 	private BeamRendererCollision.Types _type; // true if the beam has hit a mirror and shall keep going!
 	private BoardObjectView _objectView;

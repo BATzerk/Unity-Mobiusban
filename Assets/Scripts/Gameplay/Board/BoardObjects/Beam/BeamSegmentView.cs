@@ -107,14 +107,21 @@ public class BeamSegmentView : MonoBehaviour {
 		switch (collision.type) {
 			case BeamRendererCollision.Types.End: // We've hit a regular wall? Stop adding points!
 				return;
-			case BeamRendererCollision.Types.Reflect: // Oh, a reflection off a Mirror? Add another point!
-				AddPointRecursively (collision.exitRotation);
-				return;
+            case BeamRendererCollision.Types.Reflect: // Oh, a reflection off a Mirror? Add another point!
+                AddPointRecursively (collision.exitRotation);
+                return;
+            //case BeamRendererCollision.Types.Warp: // Oh, a warp? Add a new segment!!
+                //AddSegmentChild(collision.);
+                //return;
 //			case BeamRendererCollision.Types.Portal: // Oooh, a Portal? Add new segments!!
 //				AddSegmentsToOtherPortalViews (collision.objectView as PortalView);
 //				return;
 		}
 	}
+    //private void AddSegmentChild(Vector2 pos, float angle) {
+    //    BeamSegmentView newChild = myBeamView.GetNewSegmentView();
+    //    myChildren.Add (newChild);
+    //}
 
 
 

@@ -8,6 +8,7 @@ public class BeamRendererColliderLine {
 	// Properties
 	private BeamRendererCollision.Types _collisionType;
 	private Line _line;
+    private Vector2 _wrapOffset;
 	// References
 	private BoardObjectView _myObjectView;
 
@@ -19,10 +20,11 @@ public class BeamRendererColliderLine {
 		get { return _line.start; }
 		set { _line.start = value; }
 	}
-	private Vector2 end {
-		get { return _line.end; }
-		set { _line.end = value; }
-	}
+    private Vector2 end {
+        get { return _line.end; }
+        set { _line.end = value; }
+    }
+    public Vector2 wrapOffset { get { return _wrapOffset; } }
 	/** Conveniently sets my line based on what the unscaled/unrotated/etc. line looks like. */
 	public void SetLine (Line unscaledLine, Vector2 objectPos, float objectRotation, float unitSize) {
 		start = MathUtils.GetRotatedVector2Deg(unscaledLine.start, objectRotation)*unitSize + objectPos;
@@ -34,9 +36,14 @@ public class BeamRendererColliderLine {
 		this._line = new Line(); // default to an empty line for now.
 		this._collisionType = collisionType;
 	}
-	public BeamRendererColliderLine (BoardObjectView myObjectView, Line line, BeamRendererCollision.Types collisionType) {
-		this._myObjectView = myObjectView;
-		this._line = line;
-		this._collisionType = collisionType;
-	}
+    public BeamRendererColliderLine (BoardObjectView myObjectView, Line line, BeamRendererCollision.Types collisionType) {
+        this._myObjectView = myObjectView;
+        this._line = line;
+        this._collisionType = collisionType;
+    }
+    public BeamRendererColliderLine (Line line, Vector2 wrapOffset, BeamRendererCollision.Types collisionType) {
+        this._line = line;
+        this._wrapOffset = wrapOffset;
+        this._collisionType = collisionType;
+    }
 }

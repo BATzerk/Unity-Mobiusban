@@ -15,6 +15,27 @@ public static class LineUtils {
 	public static Vector2 GetCenterPos (Vector2 lineStart,Vector2 lineEnd) {
 		return Vector2.Lerp (lineStart,lineEnd, 0.5f);
 	}
+    
+    /** Returns Rect's line in CLOCKwise direction (e.g. Side T would return from TL to TR of Rect). */
+    public static Line GetLineCW(Rect rect, int side) {
+        switch (side) {
+            case Sides.T: return new Line(rect.xMin,rect.yMax, rect.xMax,rect.yMax);
+            case Sides.R: return new Line(rect.xMax,rect.yMax, rect.xMax,rect.yMin);
+            case Sides.B: return new Line(rect.xMax,rect.yMin, rect.xMin,rect.yMin);
+            case Sides.L: return new Line(rect.xMin,rect.yMin, rect.xMin,rect.yMax);
+            default: Debug.LogError("Whoa, " + side + " is not a valid side. Try 0-3."); return new Line();
+        }
+    }
+    /** Returns Rect's line in COUNTER-clockwise direction (e.g. Side T would return from TR to TL of Rect). */
+    public static Line GetLineCCW(Rect rect, int side) {
+        switch (side) {
+            case Sides.T: return new Line(rect.xMax,rect.yMax, rect.xMin,rect.yMax);
+            case Sides.R: return new Line(rect.xMax,rect.yMin, rect.xMax,rect.yMax);
+            case Sides.B: return new Line(rect.xMin,rect.yMin, rect.xMax,rect.yMin);
+            case Sides.L: return new Line(rect.xMin,rect.yMax, rect.xMin,rect.yMin);
+            default: Debug.LogError("Whoa, " + side + " is not a valid side. Try 0-3."); return new Line();
+        }
+    }
 
 
 	// ----------------------------------------------------------------

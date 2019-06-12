@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(BeamRendererColliderArena))]
 public class BoardView : MonoBehaviour {
 	// Constants
 	private const float MAX_UNIT_SIZE = 140; // for the 3x3 lvls. So the spaces aren't ginormous.
@@ -15,7 +16,7 @@ public class BoardView : MonoBehaviour {
     [SerializeField] public Transform tf_boardObjects=null;
     [SerializeField] public Transform tf_boardSpaces=null;
     [SerializeField] public Transform tf_walls=null;
-    public BeamRendererColliderArena BeamRendererColliderArena { get; private set; }
+    public BeamRendererColliderArena BeamRendererColliderArena { get; private set; } // Added in Initialize.
 	// Objects
 	private BoardSpaceView[,] spaceViews;
 	private List<BoardObjectView> allObjectViews = new List<BoardObjectView>(); // includes EVERY single BoardObjectView!
@@ -60,7 +61,8 @@ public class BoardView : MonoBehaviour {
         UpdatePosAndSize(rt_availableArea);
 
         // Add Player and Spaces!
-        BeamRendererColliderArena = new BeamRendererColliderArena();
+        BeamRendererColliderArena = GetComponent<BeamRendererColliderArena>();
+        BeamRendererColliderArena.Initialize(MyBoard, myRectTransform.rect);
         AddObjectView(MyBoard.player);
 		spaceViews = new BoardSpaceView[NumCols,NumRows];
 		for (int i=0; i<NumCols; i++) {

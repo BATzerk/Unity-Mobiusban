@@ -165,7 +165,7 @@ public class Board {
 	// ----------------------------------------------------------------
     private bool MayExecuteMove(Vector2Int dir) {
         if (player.IsDead) { return false; }
-        if (AreGoalsSatisfied) { return false; } // We can't execute after we've won.
+        //if (AreGoalsSatisfied) { return false; } // We can't execute after we've won.
         return BoardUtils.MayMoveOccupant(this, player.ColRow, dir); // Ok, now just check if it's legal!
     }
     private bool GetAreGoalsSatisfied() {

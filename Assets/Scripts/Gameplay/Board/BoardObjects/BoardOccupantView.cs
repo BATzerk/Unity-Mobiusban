@@ -9,15 +9,6 @@ public class BoardOccupantView : BoardObjectView {
 	//[SerializeField] private SpriteRenderer sr_body; // everyone has a primary body sprite for simplicity! Less code.
 	//[SerializeField] private Sprite s_body;
     private BeamRendererCollider beamRendererCollider;
-
-    // DEBUG
-    private void OnDrawGizmos () {
-        if (beamRendererCollider == null) { return; }
-        Gizmos.color = Color.magenta;
-        foreach (BeamRendererColliderLine line in beamRendererCollider.Debug_colliderLines) {
-            Gizmos.DrawLine (line.line.start, line.line.end);
-        }
-    }
     
 	// ----------------------------------------------------------------
 	//  Initialize / Destroy

@@ -23,7 +23,7 @@ public class BeamRendererCollider {
 
 	// Getters
 	private BoardObject myObject { get { return myObjectView.MyBoardObject; } }
-	public BeamRendererColliderLine[] Debug_colliderLines { get { return colliderLines; } }
+	//public BeamRendererColliderLine[] Debug_colliderLines { get { return colliderLines; } }
 
 
 	// ----------------------------------------------------------------
@@ -105,22 +105,22 @@ public class BeamRendererCollider {
 		MakePrototypeLinesFromContinuousPoints (linePoints);
 		MakeColliderLinesFromPrototypeLines (collisionTypes);
 	}
-	private void InitializeLinesForPortal () {
-		// These lines are a square with an open top. So right, bottom, and left sides only.
-		BeamRendererCollision.Types[] collisionTypes = new BeamRendererCollision.Types[4];
-		collisionTypes[0] = BeamRendererCollision.Types.End;
-		collisionTypes[1] = BeamRendererCollision.Types.End;
-		collisionTypes[2] = BeamRendererCollision.Types.End;
-		collisionTypes[3] = BeamRendererCollision.Types.Portal;
+	//private void InitializeLinesForPortal () {
+	//	// These lines are a square with an open top. So right, bottom, and left sides only.
+	//	BeamRendererCollision.Types[] collisionTypes = new BeamRendererCollision.Types[4];
+	//	collisionTypes[0] = BeamRendererCollision.Types.End;
+	//	collisionTypes[1] = BeamRendererCollision.Types.End;
+	//	collisionTypes[2] = BeamRendererCollision.Types.End;
+	//	collisionTypes[3] = BeamRendererCollision.Types.Portal;
 
-		prototypeLines = new Line[4];
-		prototypeLines[0] = new Line( 0.5f, 0.5f,  0.5f,-0.5f);
-		prototypeLines[1] = new Line( 0.5f,-0.5f, -0.5f,-0.5f);
-		prototypeLines[2] = new Line(-0.5f,-0.5f, -0.5f, 0.5f);
-		prototypeLines[3] = new Line(-0.48f,-0.48f, 0.48f,-0.48f); // the special inner Portal line.
-		// Now add the special portal line!
-		MakeColliderLinesFromPrototypeLines (collisionTypes);
-	}
+	//	prototypeLines = new Line[4];
+	//	prototypeLines[0] = new Line( 0.5f, 0.5f,  0.5f,-0.5f);
+	//	prototypeLines[1] = new Line( 0.5f,-0.5f, -0.5f,-0.5f);
+	//	prototypeLines[2] = new Line(-0.5f,-0.5f, -0.5f, 0.5f);
+	//	prototypeLines[3] = new Line(-0.48f,-0.48f, 0.48f,-0.48f); // the special inner Portal line.
+	//	// Now add the special portal line!
+	//	MakeColliderLinesFromPrototypeLines (collisionTypes);
+	//}
 	private void InitializeLinesForPlayer () {
 		colliderLines = new BeamRendererColliderLine[0]; // Lines pass straight through the Playa!
 	}

@@ -422,11 +422,37 @@
     " />
 
 
+    <Level wrapH="1" layout="
+    	....,
+        ..Y.,
+        .@..,
+        ....,
+    " />
+    <Level layout="
+    	....,
+        ..TH,
+        .@..,
+        ....,
+    " />
     <Level layout="
     	.....,
         ...h.,
         .....,
         @.T..,
+        .....,
+    " />
+    <Level wrapV="1" layout="
+        @.T..,
+    	.....,
+        ...h.,
+        .....,
+        .....,
+    " />
+    <Level wrapV="2" layout="
+        @.hT.,
+    	.....,
+        .....,
+        .....,
         .....,
     " />
 
@@ -501,73 +527,34 @@
         @.Q.,
         ....,
     " />
-    <Level wrapH="1" wrapV="3" layout="
-        ....,
-        ....,
-        @.Q.,
-        ....,
-    " />
-    <Level wrapH="3" wrapV="3" layout="
-        ....,
-        ....,
-        @.Q.,
-        ....,
-    " />
 
 
 
-    <Level layout="
-        @.O..,
-        ..O..,
-        ..OOO,
-        .....,
+    <Level wrapH="2" wrapV="1" layout="
+        _____,
+        |....,
+        |.@..,
+        |Q...,
         .....,
     " />
-
-
-
-    <Level layout="
-        _.___,
-        .||..,
-        .||..,
-        @O...,
-        .....,
-    " />
-    <Level layout="
-        _.,
-        @.,
-    " />
-    <Level wrapH="0" layout="
-        _...,
-        @O..,
-        .__.,
-        ....,
-    " />
-    <Level layout="
+    <Level wrapH="1" wrapV="1" layout="
         ......,
-        .~..~.,
-        ......,
-        ......,
+        .~QW~.,
+        @.saS.,
+        ..wqA.,
         .~..~.,
         ......,
     " />
-</Levels>
-</LevelPack>
-
-
-
-
-
-
-<!-- ================================ PACK ================================ -->
-<LevelPack packName="Levels">
-<Levels>
-    <Level wrapH="0" wrapV="0" layout="
-        ...$,
-        .o..,
-        @.O.,
-        ....,
+    <Level wrapH="1" wrapV="1" layout="
+        ......,
+        ..QW..,
+        @.saS.,
+        ..wqA.,
+        ......,
+        ......,
     " />
+
+<!--
     <Level wrapH="1" wrapV="1" layout="
         ..|..,
         ..|..,
@@ -587,15 +574,13 @@
         .....,
         .....,
     " />
-
-
-    <!--
 -->
-
-
-
 </Levels>
 </LevelPack>
+
+
+
+
 
 
 

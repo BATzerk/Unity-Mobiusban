@@ -35,6 +35,7 @@ public static class BoardUtils {
         }
     }
     
+    public static TranslationInfo GetTranslationInfo(Board b, Vector2Int from, int side) { return GetTranslationInfo(b,from,MathUtils.GetDir(side)); }
     public static TranslationInfo GetTranslationInfo(Board b, Vector2Int from, Vector2Int dir) {
         Vector2Int to = from + dir;
         Vector2Int dirOut = dir;
@@ -135,6 +136,8 @@ public static class BoardUtils {
 		BoardSpace bs = GetSpace (b, col,row);
 		return bs!=null && bs.IsPlayable;
 	}
+    //public static bool CanBeamEnterSpace (Board b, Vector2Int colRow, int sideEntering) { return CanBeamEnterSpace(b.GetSpace(colRow), sideEntering); }
+    //public static bool CanBeamExitSpace (Board b, Vector2Int colRow, int sideExiting) { return CanBeamExitSpace(b.GetSpace(colRow), sideExiting); }
     public static bool CanBeamEnterSpace (BoardSpace bs, int sideEntering) {
         return bs!=null && bs.CanBeamEnter(sideEntering);
     }
