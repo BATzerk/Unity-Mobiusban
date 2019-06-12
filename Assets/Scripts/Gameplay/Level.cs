@@ -13,7 +13,7 @@ public class Level : MonoBehaviour {
     public LevelAddress MyAddress { get; private set; }
     private List<BoardData> boardSnapshots = new List<BoardData>(); // note: There's always ONE value in here. These are added immediately AFTER a move.
 	// References
-	private GameController gameController;
+	//private GameController gameController;
     private RectTransform rt_boardArea; // a RectTransform that ONLY informs us how the BoardView's size should be, so we can make layout changes in the editor.
 
     // Getters (Public)
@@ -37,7 +37,7 @@ public class Level : MonoBehaviour {
         GameManagers.Instance.EventManager.BoardExecutedMoveEvent -= OnBoardExecutedMove;
     }
     public void Initialize (GameController _gameController, Transform tf_parent, RectTransform _rt_boardArea, LevelData _levelData) {
-		this.gameController = _gameController;
+		//this.gameController = _gameController;
 		this.MyAddress = _levelData.myAddress;
         this.rt_boardArea = _rt_boardArea;
 
@@ -211,6 +211,8 @@ public class Level : MonoBehaviour {
             else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) { MovePlayerAttempt(Vector2Int.R); }
             else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) { MovePlayerAttempt(Vector2Int.B); }
             else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) { MovePlayerAttempt(Vector2Int.T); }
+            // SPACE = Advance time
+            else if (Input.GetKeyDown(KeyCode.Space)) { MovePlayerAttempt(Vector2Int.zero); }
         }
 	}
     

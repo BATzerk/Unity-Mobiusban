@@ -149,6 +149,9 @@ public static class BoardUtils {
     }
     
     public static MoveResults MoveOccupant(Board b, Vector2Int occPos, Vector2Int dir) {
+        // No dir?? Do nothing; return success!
+        if (dir == Vector2Int.zero) { return MoveResults.Success; }
+        
         TranslationInfo ti = GetTranslationInfo(b, occPos, dir);
         BoardOccupant bo = GetOccupant(b, occPos);
         BoardSpace spaceFrom = GetSpace(b, ti.from);

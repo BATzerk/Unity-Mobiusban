@@ -23,11 +23,14 @@ public class BoardSpaceData {
 }
 
 public class CrateData : BoardOccupantData {
+    public bool doAutoMove=false;
+    public Vector2Int autoMoveDir=Vector2Int.zero;
     public bool[] isDimple;
-    public CrateData (BoardPos boardPos, bool[] isDimple) {
+    public CrateData (BoardPos boardPos, bool[] isDimple, bool doAutoMove, Vector2Int autoMoveDir) {
         this.boardPos = boardPos;
         this.isDimple = isDimple;
-        //this.isMovable = isMovable;
+        this.doAutoMove = doAutoMove;
+        this.autoMoveDir = autoMoveDir;
     }
 }
 public class CrateGoalData : BoardObjectData {

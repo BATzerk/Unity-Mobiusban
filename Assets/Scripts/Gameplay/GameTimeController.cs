@@ -6,8 +6,8 @@ using UnityEngine;
  * I manage pausing, slow-mo, edit-mode-pausing, etc. */
 [RequireComponent(typeof(GameController))]
 public class GameTimeController : MonoBehaviour {
-    // Components
-    private GameController gameController; // set in Awake.
+    //// Components
+    //private GameController gameController; // set in Awake.
     // Properties
     public bool IsPaused { get; private set; }
     public bool IsFastMo { get; private set; }
@@ -18,7 +18,7 @@ public class GameTimeController : MonoBehaviour {
     //  Awake / Destroy
     // ----------------------------------------------------------------
     private void Awake() {
-        gameController = GetComponent<GameController>();
+        //gameController = GetComponent<GameController>();
         UpdateTimeScale();
     }
 

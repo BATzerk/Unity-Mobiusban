@@ -149,9 +149,12 @@ public class Board {
             // Clear out the list NOW.
             objectsAddedThisMove.Clear();
             // Reset PrevMoveDelta.
+            player.ResetPrevMoveDelta();
             for (int i=0; i<allObjects.Count; i++) { allObjects[i].ResetPrevMoveDelta(); }
-            // Move it!
+            // Move Player!
             BoardUtils.MoveOccupant(this, player.ColRow, dir);
+            // Tell all other Occupants!
+            for (int i=0; i<allObjects.Count; i++) { allObjects[i].OnPlayerMoved(); }
             // Update goals!
             UpdateAreGoalsSatisfied();
             

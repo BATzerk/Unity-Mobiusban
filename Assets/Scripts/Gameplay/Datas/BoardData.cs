@@ -91,10 +91,14 @@ public class BoardData {
                     case 'r': AddCrateGoalData (col,row, Corners.TR, true); break;
                     case 'f': AddCrateGoalData (col,row, Corners.BR, true); break;
                     case 'd': AddCrateGoalData (col,row, Corners.BL, true); break;
-                    case 'Q': AddCrateData (col,row, Corners.TL); break;
-                    case 'W': AddCrateData (col,row, Corners.TR); break;
-                    case 'S': AddCrateData (col,row, Corners.BR); break;
-                    case 'A': AddCrateData (col,row, Corners.BL); break;
+                    case 'Q': AddCrateData (col,row, Corners.TL, false); break;
+                    case 'W': AddCrateData (col,row, Corners.TR, false); break;
+                    case 'S': AddCrateData (col,row, Corners.BR, false); break;
+                    case 'A': AddCrateData (col,row, Corners.BL, false); break;
+                    case 'E': AddCrateData (col,row, Corners.TL, true); break;
+                    case 'R': AddCrateData (col,row, Corners.TR, true); break;
+                    case 'F': AddCrateData (col,row, Corners.BR, true); break;
+                    case 'D': AddCrateData (col,row, Corners.BL, true); break;
                     //case 'O': AddCrateData (col,row, true); break;
                     //case '#': AddCrateData (col,row, false); break;
 					// Walls!
@@ -151,10 +155,10 @@ public class BoardData {
         SetOccupantInBoard (playerData);
     }
     
-    void AddCrateData (int col,int row, int dimpleCorner) {
+    void AddCrateData (int col,int row, int dimpleCorner, bool doAutoMove) {
         bool[] isDimple = new bool[Corners.NumCorners];
         isDimple[dimpleCorner] = true;
-        CrateData newData = new CrateData (new BoardPos(col,row), isDimple);
+        CrateData newData = new CrateData (new BoardPos(col,row), isDimple, doAutoMove, Vector2Int.zero);
         allObjectDatas.Add (newData);
         SetOccupantInBoard (newData);
     }

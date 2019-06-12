@@ -34,7 +34,7 @@ public class BoardObjectView : MonoBehaviour {
 		get { return _scale; }
 		set {
 			_scale = value;
-			this.transform.localScale = _scale;
+			rt_contents.transform.localScale = _scale;
 			OnSetScale ();
 		}
 	}

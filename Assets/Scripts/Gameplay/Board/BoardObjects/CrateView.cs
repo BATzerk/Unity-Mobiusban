@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class CrateView : BoardObjectView {
     // Components
     [SerializeField] private Image i_body=null;
+    [SerializeField] private Image i_autoMoveDir=null;
     //private List<
  //   // Properties
  //   [SerializeField] private Color c_movable=Color.white;
@@ -24,9 +25,14 @@ public class CrateView : BoardObjectView {
 		MyCrate = myObj;
 		base.InitializeAsBoardObjectView (_myBoardView, MyCrate);
         
-        // TEMP. TODO: Make Obstacle class. All crates should be movable.
-        //i_body.color = MyCrate.IsMovable ? c_movable : c_unmovable;
-        //i_body.sprite = MyCrate.IsMovable ? s_movable : s_unmovable;
+        // Auto-move visuals!
+        if (MyCrate.DoAutoMove) {
+            i_body.color = new ColorHSB(0.5f, 0.3f, 1f).ToColor();
+        }
+        else {
+            Destroy(i_autoMoveDir.gameObject);
+            i_autoMoveDir = null;
+        }
         
         // Add dimple images!
         for (int corner=0; corner<Corners.NumCorners; corner++) {
@@ -40,6 +46,18 @@ public class CrateView : BoardObjectView {
             }
         }
 	}
+
+
+    public override void UpdateVisualsPostMove() {
+        base.UpdateVisualsPostMove();
+        
+        if (MyCrate.DoAutoMove) {
+            i_autoMoveDir.enabled = MyCrate.AutoMoveDir!=Vector2Int.zero;
+            
+            float dirRot = MathUtils.GetSide(MyCrate.AutoMoveDir) * -90;
+            i_autoMoveDir.transform.localEulerAngles = new Vector3(0, 0, dirRot);
+        }
+    }
 
 
 

@@ -47,10 +47,10 @@ abstract public class BoardObject {
 	// ----------------------------------------------------------------
 	//  Doers
 	// ----------------------------------------------------------------
-    public void SetColRow(Vector2Int _pos, Vector2Int moveDir) {
+    virtual public void SetColRow(Vector2Int _colRow, Vector2Int _moveDir) {
         //RemoveMyFootprint();
-        PrevMoveDelta = moveDir;
-        BoardPos = new BoardPos(_pos, ChirH,ChirV,SideFacing);
+        PrevMoveDelta = _moveDir;
+        BoardPos = new BoardPos(_colRow, ChirH,ChirV,SideFacing);
         //AddMyFootprint();
 	}
     private void SetSideFacing(int _sideFacing) {
@@ -77,6 +77,7 @@ abstract public class BoardObject {
 	}
 
 	// Override these!
+    virtual public void OnPlayerMoved () {}
 	virtual public void AddMyFootprint () {}
 	virtual public void RemoveMyFootprint () {}
 
