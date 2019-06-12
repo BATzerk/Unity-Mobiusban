@@ -5,11 +5,13 @@ using UnityEngine.UI;
 
 public class CrateGoalView : BoardObjectView {
 	// Constants
-	static public readonly Color color_on = new ColorHSB(60/255f,255/255f,200/255f, 1).ToColor();
+    static public readonly Color color_on = new ColorHSB(60/255f,255/255f,200/255f, 1).ToColor();
 	static public readonly Color color_off = new Color(0.9f,0.9f,0.9f, 0.84f);
 	// Components
 	[SerializeField] private Image i_body=null;
 	// References
+    [SerializeField] private Sprite s_bodyNoStayOn=null;
+    [SerializeField] private Sprite s_bodyStayOn=null;
 	private CrateGoal myCrateGoal;
 
 	// ----------------------------------------------------------------
@@ -20,6 +22,7 @@ public class CrateGoalView : BoardObjectView {
 		myCrateGoal = _myCrateGoal;
         // Rotate i_body by corner!
         i_body.transform.localEulerAngles = new Vector3(0,0,-90*myCrateGoal.Corner);
+        i_body.sprite = myCrateGoal.DoStayOn ? s_bodyStayOn : s_bodyNoStayOn;
 	}
 
 	// ----------------------------------------------------------------

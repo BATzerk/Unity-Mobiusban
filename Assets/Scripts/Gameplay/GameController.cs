@@ -38,8 +38,8 @@ public class GameController : MonoBehaviour {
 	//  Doers - Loading Level
 	// ----------------------------------------------------------------
 	public void RestartCurrLevel() { StartLevel (currAddress); }
-    private void StartPrevLevel() { StartLevel(currAddress.PrevLevel); }
-    private void StartNextLevel() { StartLevel(currAddress.NextLevel); }
+    private void StartPrevLevel() { StartLevel(dataManager.PrevLevelAddress(currAddress)); }
+    private void StartNextLevel() { StartLevel(dataManager.NextLevelAddress(currAddress)); }
     private void StartPrevPack() { StartPack(currAddress.pack - 1); }
     private void StartNextPack() { StartPack(currAddress.pack + 1); }
     private void StartPack(int packIndex) {

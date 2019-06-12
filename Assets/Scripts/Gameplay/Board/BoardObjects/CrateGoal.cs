@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class CrateGoal : BoardObject, IGoalObject {
 	// Properties
-	public bool IsOn { get; private set; }
+    public bool IsOn { get; private set; }
+    public bool DoStayOn { get; private set; }
     public int Corner { get; private set; } // TL, TR, BR, BL.
     
     // Getters
@@ -28,7 +29,7 @@ public class CrateGoal : BoardObject, IGoalObject {
     
     // Serializing
     override public BoardObjectData ToData() {
-        return new CrateGoalData (BoardPos, Corner);
+        return new CrateGoalData (BoardPos, Corner, DoStayOn, IsOn);
     }
 	// ----------------------------------------------------------------
 	//  Initialize
@@ -36,6 +37,8 @@ public class CrateGoal : BoardObject, IGoalObject {
 	public CrateGoal (Board _boardRef, CrateGoalData data) {
 		base.InitializeAsBoardObject (_boardRef, data);
         Corner = data.corner;
+        DoStayOn = data.doStayOn;
+        IsOn = data.isOn;
 	}
 
 
@@ -43,14 +46,19 @@ public class CrateGoal : BoardObject, IGoalObject {
 	//  Doers
 	// ----------------------------------------------------------------
 	public void UpdateIsOn () {
-        IsOn = GetIsOn();
+        if (DoStayOn) { // I STAY on? It's an OR condition!
+            IsOn |= GetIsSatisfied();
+        }
+        else { // I DON'T stay on. Only on if it's true now.
+            IsOn = GetIsSatisfied();
+        }
     }
-    private bool GetIsOn() {
+    private bool GetIsSatisfied() {
 		Crate crate = MySpace.MyOccupant as Crate;
         if (crate == null) { return false; } // No Crate on me at all.
         
         // KINDA SLOPPY! just getting to work for now!
-        
+        // TODO: Clean this up when we know what our needs are.
         Matrix2x2 mat = MatrixFromCorner(Corner);
         if (crate.ChirH == -1) {
             mat = mat.HorzFlipped();

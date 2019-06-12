@@ -83,10 +83,14 @@ public class BoardData {
 					// Player!
 					case '@': SetPlayerData(col,row); break;
                     // Crates!
-                    case 'q': AddCrateGoalData (col,row, Corners.TL); break;
-                    case 'w': AddCrateGoalData (col,row, Corners.TR); break;
-                    case 's': AddCrateGoalData (col,row, Corners.BR); break;
-                    case 'a': AddCrateGoalData (col,row, Corners.BL); break;
+                    case 'q': AddCrateGoalData (col,row, Corners.TL, false); break;
+                    case 'w': AddCrateGoalData (col,row, Corners.TR, false); break;
+                    case 's': AddCrateGoalData (col,row, Corners.BR, false); break;
+                    case 'a': AddCrateGoalData (col,row, Corners.BL, false); break;
+                    case 'e': AddCrateGoalData (col,row, Corners.TL, true); break;
+                    case 'r': AddCrateGoalData (col,row, Corners.TR, true); break;
+                    case 'f': AddCrateGoalData (col,row, Corners.BR, true); break;
+                    case 'd': AddCrateGoalData (col,row, Corners.BL, true); break;
                     case 'Q': AddCrateData (col,row, Corners.TL); break;
                     case 'W': AddCrateData (col,row, Corners.TR); break;
                     case 'S': AddCrateData (col,row, Corners.BR); break;
@@ -164,8 +168,8 @@ public class BoardData {
         allObjectDatas.Add (newData);
         SetOccupantInBoard (newData);
     }
-    void AddCrateGoalData (int col,int row, int corner) {
-        CrateGoalData newData = new CrateGoalData (new BoardPos(col,row), corner);
+    void AddCrateGoalData (int col,int row, int corner, bool doStayOn) {
+        CrateGoalData newData = new CrateGoalData (new BoardPos(col,row), corner, doStayOn, false);
         allObjectDatas.Add (newData);
         SetOccupantInBoard (newData);
     }

@@ -9,7 +9,7 @@ public enum WrapTypes {
     None,
     Parallel,
     Flip,
-    CW, // clockwise
+    CW, // clockwise TODO: This DOESN'T apply separately to H/V; it applies to BOTH! Clarify this up in BoardData and stuff.
 }
 
 public static class BoardUtils {
@@ -31,12 +31,14 @@ public static class BoardUtils {
             case 1: return WrapTypes.Parallel;
             case 2: return WrapTypes.Flip;
             case 3: return WrapTypes.CW;
-            default: return WrapTypes.Undefined;; // Hmm.
+            default: return WrapTypes.Undefined; // Hmm.
         }
     }
     
     public static TranslationInfo GetTranslationInfo(Board b, Vector2Int from, Vector2Int dir) {
         Vector2Int to = from + dir;
+        Vector2Int dirOut = dir;
+        Vector2Int dirIn = Vector2Int.Opposite(dirOut);
         int chirH = 1;
         int chirV = 1;
         int sideDelta = 0;
@@ -54,6 +56,11 @@ public static class BoardUtils {
                 to.y = b.NumRows-1 - to.y;
                 chirV *= -1;
             }
+            if (b.WrapH == WrapTypes.CW) {
+                to = new Vector2Int(to.y, b.NumRows-1);
+                sideDelta ++;
+                dirOut = Vector2Int.CW(dir);
+            }
         }
         if (to.y < 0) {
             if (b.DoWrapV) { to.y += b.NumRows; }
@@ -68,12 +75,17 @@ public static class BoardUtils {
                 to.x = b.NumCols-1 - to.x;
                 chirH *= -1;
             }
+            if (b.WrapH == WrapTypes.CW) {
+                to = new Vector2Int(b.NumCols-1, to.x);
+                sideDelta --;
+                dirOut = Vector2Int.CCW(dir);
+            }
         }
         return new TranslationInfo {
             from = from,
             to = to,
-            dirOut = dir,
-            dirIn = Vector2Int.Opposite(dir),
+            dirOut = dirOut,
+            dirIn = dirIn,
             sideDelta = sideDelta,
             chirDeltaH = chirH,
             chirDeltaV = chirV,
@@ -154,7 +166,7 @@ public static class BoardUtils {
         
         // Next space is OCCUPIED? Ok, try to move THAT fella, and return if fail!
         if (spaceTo.HasOccupant) {
-            MoveResults result = MoveOccupant(b, spaceTo.ColRow, dir);
+            MoveResults result = MoveOccupant(b, ti.to, ti.dirOut);
             if (result!=MoveResults.Success) { return result; }
         }
         

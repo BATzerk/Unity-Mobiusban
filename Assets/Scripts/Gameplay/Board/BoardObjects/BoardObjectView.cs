@@ -7,8 +7,8 @@ public class BoardObjectView : MonoBehaviour {
     [SerializeField] protected RectTransform rt_contents;
     protected RectTransform myRectTransform { get; private set; } // Set in Awake.
 	// Properties
-	private float _rotation; // so we can use the ease-ier (waka waka) system between -180 and 180 with minimal processing effort.
-	private Vector2 _scale;//=Vector2.one;
+	private float _rotation;
+	private Vector2 _scale;
 	// References
     public BoardView MyBoardView { get; private set; }
     public BoardObject MyBoardObject { get; private set; }

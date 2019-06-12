@@ -28,6 +28,8 @@ public struct Vector2Int {
     
     //public static Vector2Int Opposite(Vector2Int v) { return v * -1; }
     public static Vector2Int Opposite(Vector2Int v) { return new Vector2Int(-v.x, -v.y); }
+    public static Vector2Int CW(Vector2Int v) { return new Vector2Int(v.y, -v.x); }
+    public static Vector2Int CCW(Vector2Int v) { return new Vector2Int(-v.y, v.x); }
     
     public static Vector2Int operator + (Vector2Int a, Vector2Int b) {
         return new Vector2Int(a.x+b.x, a.y+b.y);

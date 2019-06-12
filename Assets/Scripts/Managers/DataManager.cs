@@ -44,6 +44,25 @@ public class DataManager {
 			return new LevelAddress(0, 0);
 		}
 	}
+    public LevelAddress PrevLevelAddress(LevelAddress addr) {
+        if (addr==LevelAddress.zero) { return addr; } // Safety check; can't go before 0,0.
+        addr.level --;
+        if (addr.level < 0) { // Wrap back to previous pack.
+            addr.pack --;
+            addr.level = GetPackData(addr.pack).NumLevels-1;
+        }
+        return addr;
+    }
+    public LevelAddress NextLevelAddress(LevelAddress addr) {
+        PackData pack = GetPackData(addr.pack);
+        if (pack == null) { return LevelAddress.undefined; } // Safety check.
+        addr.level ++;
+        if (addr.level >= pack.NumLevels) { // Wrap over to next pack.
+            addr.pack ++;
+            addr.level = 0;
+        }
+        return addr;
+    }
 
 
 	// ----------------------------------------------------------------

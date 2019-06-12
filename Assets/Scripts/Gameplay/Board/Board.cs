@@ -20,8 +20,8 @@ public class Board {
     public List<BoardObject> objectsAddedThisMove;
 
 	// Getters
-    public bool DoWrapH { get { return WrapH != WrapTypes.None; } }
-    public bool DoWrapV { get { return WrapV != WrapTypes.None; } }
+    public bool DoWrapH { get { return WrapH==WrapTypes.Parallel || WrapH==WrapTypes.Flip; } }
+    public bool DoWrapV { get { return WrapV==WrapTypes.Parallel || WrapV==WrapTypes.Flip; } }
     public int NumGoalObjects { get { return goalObjects.Count; } }
     public BoardSpace GetSpace(Vector2Int pos) { return GetSpace(pos.x, pos.y); }
     public BoardSpace GetSpace(int col,int row) { return BoardUtils.GetSpace(this, col,row); }

@@ -31,10 +31,14 @@ public class CrateData : BoardOccupantData {
     }
 }
 public class CrateGoalData : BoardObjectData {
+    public bool doStayOn;
+    public bool isOn;
     public int corner;
-    public CrateGoalData(BoardPos boardPos, int corner) {
+    public CrateGoalData(BoardPos boardPos, int corner, bool doStayOn, bool isOn) {
         this.boardPos = boardPos;
         this.corner = corner;
+        this.doStayOn = doStayOn;
+        this.isOn = isOn;
     }
 }
 public class ExitSpotData : BoardObjectData {

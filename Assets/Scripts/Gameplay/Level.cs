@@ -20,7 +20,7 @@ public class Level : MonoBehaviour {
     public int LevelIndex { get { return MyAddress.level; } }
     // Getters (Private)
 	private InputController inputController { get { return InputController.Instance; } }
-	private PackData myPackData { get { return GameManagers.Instance.DataManager.GetPackData(MyAddress); } }
+	public PackData MyPackData { get { return GameManagers.Instance.DataManager.GetPackData(MyAddress); } }
     private bool CanUndo() { return boardSnapshots.Count >= 2; }
 
 
@@ -45,6 +45,7 @@ public class Level : MonoBehaviour {
         GameUtils.FlushRectTransform(myRectTransform); // fit me into the container 100%.
         this.transform.SetSiblingIndex(1); // hardcoded! Put me just in FRONT of the background.
 		this.name = "Level " + LevelIndex;
+        SetZoomAmount(0.5f); // reset default zoom.
 
 		// Reset!
 		RemakeModelAndViewFromData (_levelData.boardData);
@@ -61,39 +62,69 @@ public class Level : MonoBehaviour {
         BoardView.Initialize (this, Board, rt_boardArea);
         // Make BoardViewEchoes!
         // NOTE: This is all pretty hacked in!! VERY hardcoded values.
-        int cols = Board.DoWrapH ? 3 : 1;
-        int rows = Board.DoWrapV ? 3 : 1;
-        Vector2 bvSize = BoardView.Size;
-        BoardViewEchoes = new BoardView[cols,rows];
-        for (int col=0; col<cols; col++) {
-            for (int row=0; row<rows; row++) {
-                if (col==Mathf.FloorToInt(cols*0.5f) && row==Mathf.FloorToInt(rows*0.5f)) { continue; } // HARDCODED Ignore the middle one. That's what my main BoardView is.
-                //if (col==2 && row==2) { continue; } // HARDCODED Ignore the middle one. That's what my main BoardView is.
-                
-                
-                BoardView view = Instantiate (ResourcesHandler.Instance.BoardView).GetComponent<BoardView>();
-                view.Initialize (this, Board, rt_boardArea);
-                view.MyCanvasGroup.alpha = 0.6f;
-                if (cols > 1) {
-                    view.transform.localPosition += new Vector3(Mathf.Ceil(col-cols*0.5f)*bvSize.x, 0, 0);
+        if (Board.WrapH == WrapTypes.CW) {
+            int cols = 2;
+            int rows = 2;
+            Vector2 bvSize = BoardView.Size;
+            BoardView.transform.localPosition -= new Vector3(bvSize.x*0.5f,bvSize.y*0.5f);
+            BoardViewEchoes = new BoardView[cols,rows];
+            for (int col=0; col<cols; col++) {
+                for (int row=0; row<rows; row++) {
+                    if (col==0&&row==0) { continue; } // HARDCODED Ignore the middle one. That's what my main BoardView is.
+                    BoardView view = Instantiate (ResourcesHandler.Instance.BoardView).GetComponent<BoardView>();
+                    view.Initialize (this, Board, rt_boardArea);
+                    view.MyCanvasGroup.alpha = 0.6f;
+                    view.transform.localPosition += new Vector3(col*bvSize.x, row*bvSize.y, 0);
+                    view.transform.localPosition -= new Vector3(bvSize.x*0.5f,bvSize.y*0.5f); // offset to center all 4 of 'em.
+                    float rot = 0;
+                    if (col==0 && row==1) { rot = -90; }
+                    if (col==1 && row==0) { rot =  90; }
+                    if (col==1 && row==1) { rot = 180; }
+                    view.transform.localEulerAngles += new Vector3(0, 0, rot);//col==0 ? -90 : 90);
+                    BoardViewEchoes[col,row] = view;
                 }
-                if (rows > 1) {
-                    view.transform.localPosition += new Vector3(0, Mathf.Ceil(row-rows*0.5f)*bvSize.y, 0);
+            }
+            SetZoomAmount(0.4f);
+        }
+        else {
+            int cols = Board.DoWrapH ? 3 : 1;
+            int rows = Board.DoWrapV ? 3 : 1;
+            Vector2 bvSize = BoardView.Size;
+            BoardViewEchoes = new BoardView[cols,rows];
+            for (int col=0; col<cols; col++) {
+                for (int row=0; row<rows; row++) {
+                    if (col==Mathf.FloorToInt(cols*0.5f) && row==Mathf.FloorToInt(rows*0.5f)) { continue; } // HARDCODED Ignore the middle one. That's what my main BoardView is.
+                    
+                    BoardView view = Instantiate (ResourcesHandler.Instance.BoardView).GetComponent<BoardView>();
+                    view.Initialize (this, Board, rt_boardArea);
+                    view.MyCanvasGroup.alpha = 0.6f;
+                    if (cols > 1) {
+                        view.transform.localPosition += new Vector3(Mathf.Ceil(col-cols*0.5f)*bvSize.x, 0, 0);
+                    }
+                    if (rows > 1) {
+                        view.transform.localPosition += new Vector3(0, Mathf.Ceil(row-rows*0.5f)*bvSize.y, 0);
+                    }
+                    if (col%2==0 && Board.WrapH==WrapTypes.Flip) {
+                        view.transform.localScale = new Vector3(view.transform.localScale.x, -view.transform.localScale.y, 1);
+                    }
+                    if (row%2==0 && Board.WrapV==WrapTypes.Flip) {
+                        view.transform.localScale = new Vector3(-view.transform.localScale.x, view.transform.localScale.y, 1);
+                    }
+                    
+                    if (Board.WrapH==WrapTypes.CW) {
+                        float rot=180;
+                        if (false) {}
+                        if (col==1 && row==0) { rot = 90; }
+                        if (col==1 && row==2) { rot = -90; }
+                        if (col==2 && row==1) { rot = -90; }
+                        if (col==0 && row==0) { rot = 180; }
+                        view.transform.localEulerAngles += new Vector3(0, 0, rot);//col==0 ? -90 : 90);
+                    }
+                    //if (Board.WrapH==WrapTypes.CW) {
+                    //    view.transform.localEulerAngles += new Vector3(0, 0, row==0 ? -90 : 180);
+                    //}
+                    BoardViewEchoes[col,row] = view;
                 }
-                if (col%2==0 && Board.WrapH==WrapTypes.Flip) {
-                    view.transform.localScale = new Vector3(view.transform.localScale.x, -view.transform.localScale.y, 1);
-                }
-                if (row%2==0 && Board.WrapV==WrapTypes.Flip) {
-                    view.transform.localScale = new Vector3(-view.transform.localScale.x, view.transform.localScale.y, 1);
-                }
-                
-                if (col%2==0 && Board.WrapH==WrapTypes.CW) {
-                    view.transform.localEulerAngles += new Vector3(0, 0, col==0 ? -90 : 90);
-                }
-                if (row%2==0 && Board.WrapV==WrapTypes.CW) {
-                    view.transform.localEulerAngles += new Vector3(0, 0, row==0 ? -90 : 90);
-                }
-                BoardViewEchoes[col,row] = view;
             }
         }
         UpdateIsWon();
@@ -145,6 +176,15 @@ public class Level : MonoBehaviour {
             RemakeModelAndViewFromData(snapshot);
         }
     }
+    
+    private float ZoomAmount;
+    private void MultZoomAmount(float mult) {
+        SetZoomAmount(ZoomAmount * mult);
+    }
+    private void SetZoomAmount(float val) {
+        ZoomAmount = Mathf.Clamp(val, 0.05f, 1f); // keep it reeeasonable.
+        this.transform.localScale = Vector3.one * ZoomAmount;
+    }
 
     
 
@@ -160,15 +200,29 @@ public class Level : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Z)) {
             UndoMoveAttempt();
         }
+        // C = Zoom OUT
+        if (Input.GetKey(KeyCode.C)) { MultZoomAmount(0.95f); }
+        // V = Zoom IN
+        if (Input.GetKey(KeyCode.V)) { MultZoomAmount(1.05f); }
         // Level's NOT won...!
         if (!IsWon) {
             // Arrow Keys = Move Player
-            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) { Board.MovePlayerAttempt(Vector2Int.L); }
-            else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) { Board.MovePlayerAttempt(Vector2Int.R); }
-            else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) { Board.MovePlayerAttempt(Vector2Int.B); }
-            else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) { Board.MovePlayerAttempt(Vector2Int.T); }
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) { MovePlayerAttempt(Vector2Int.L); }
+            else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) { MovePlayerAttempt(Vector2Int.R); }
+            else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) { MovePlayerAttempt(Vector2Int.B); }
+            else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) { MovePlayerAttempt(Vector2Int.T); }
         }
 	}
+    
+    private void MovePlayerAttempt(Vector2Int dir) {
+        //// TEST: Rotate dir to match Player's sideFacing!
+        //switch (Board.player.SideFacing) {
+        //    case Sides.R: dir = Vector2Int.CW(dir); break;
+        //    case Sides.B: dir = Vector2Int.Opposite(dir); break;
+        //    case Sides.L: dir = Vector2Int.CCW(dir); break;
+        //}
+        Board.MovePlayerAttempt(dir);
+    }
     
     
     
