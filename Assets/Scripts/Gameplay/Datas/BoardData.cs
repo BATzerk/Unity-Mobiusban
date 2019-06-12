@@ -159,7 +159,7 @@ public class BoardData {
     
     void SetPlayerData(int col,int row) {
         if (playerData != null) { Debug.LogError("Whoa! Two players defined in Level XML layout."); return; } // Safety check.
-        playerData = new PlayerData(new BoardPos(col,row));
+        playerData = new PlayerData(new BoardPos(col,row), false);
         //allObjectDatas.Add (playerData);
         SetOccupantInBoard (playerData);
     }

@@ -98,6 +98,13 @@ public static class GameUtils {
         rt.anchorMax = Vector2.one;
         rt.offsetMin = rt.offsetMax = Vector2.zero;
     }
+    /** Makes the anchor/offset properties of the second RectTransform match those of the first. */
+    public static void EchoRectTransformAnchor(RectTransform rtSource, RectTransform rtToChange) {
+        rtToChange.anchorMax = rtSource.anchorMax;
+        rtToChange.anchorMin = rtSource.anchorMin;
+        //rtToChange.offsetMax = rtSource.offsetMax;
+        //rtToChange.offsetMin = rtSource.offsetMin;
+    }
     
     
 

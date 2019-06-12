@@ -66,9 +66,9 @@ public class BoardObjectView : MonoBehaviour {
     private void Awake() {
         myRectTransform = GetComponent<RectTransform>();
     }
-    protected void InitializeAsBoardObjectView (BoardView _myBoardView, BoardObject _myObject) {
+    virtual public void Initialize(BoardView _myBoardView, BoardObject bo) {
 		MyBoardView = _myBoardView;
-		MyBoardObject = _myObject;
+		MyBoardObject = bo;
 
 		// Parent me!
         GameUtils.ParentAndReset(this.gameObject, MyBoardView.tf_boardObjects);

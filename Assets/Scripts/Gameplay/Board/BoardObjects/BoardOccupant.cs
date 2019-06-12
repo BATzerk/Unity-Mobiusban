@@ -21,6 +21,7 @@ abstract public class BoardOccupant : BoardObject {
 	protected void InitializeAsBoardOccupant (Board _boardRef, BoardOccupantData _data) {
 		base.InitializeAsBoardObject (_boardRef, _data);
         IsMovable = _data.isMovable;
+        UpdateCanBeamEnterAndExit();
 	}
 
 

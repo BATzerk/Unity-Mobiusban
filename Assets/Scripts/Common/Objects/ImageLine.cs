@@ -15,6 +15,7 @@ public class ImageLine : MonoBehaviour {
 	private Vector2 endPos;
 
 	// Getters
+    public RectTransform MyRectTransform { get { return image.rectTransform; } }
 	public float Angle { get { return angle; } }
 	public float Length { get { return length; } }
 	public Vector2 StartPos {

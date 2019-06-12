@@ -5,6 +5,7 @@ using UnityEngine.UI;
 /** A lightweight alternative to LineRenderer. */
 public class ImageLines : MonoBehaviour {
     // Components
+    private RectTransform myRectTransform; // set in Awake.
     private List<ImageLine> lines; // the actual line images.
     private List<Image> joints; // the circles between lines for those smooth, round joints.
 	// Properties
@@ -24,6 +25,7 @@ public class ImageLines : MonoBehaviour {
 	//  Initialize
 	// ----------------------------------------------------------------
     private void Awake() {
+        myRectTransform = GetComponent<RectTransform>();
         lines = new List<ImageLine>();
         joints = new List<Image>();
         points = new List<Vector2>();
@@ -77,12 +79,13 @@ public class ImageLines : MonoBehaviour {
    }
 
     private void AddLine (Vector2 startPos, Vector2 endPos) {
-        ImageLine newLine = Instantiate(ResourcesHandler.Instance.ImageLine).GetComponent<ImageLine>();
-        newLine.Initialize (this.transform, startPos,endPos);
-        newLine.gameObject.name = "ImageLine" + lines.Count;
-        newLine.SetColor (lineColor);
-        newLine.SetThickness (lineThickness);
-        lines.Add (newLine);
+        ImageLine newObj = Instantiate(ResourcesHandler.Instance.ImageLine).GetComponent<ImageLine>();
+        newObj.Initialize (this.transform, startPos,endPos);
+        GameUtils.EchoRectTransformAnchor(myRectTransform, newObj.MyRectTransform);
+        newObj.gameObject.name = "ImageLine" + lines.Count;
+        newObj.SetColor (lineColor);
+        newObj.SetThickness (lineThickness);
+        lines.Add (newObj);
     }
     private void RemoveLine () {
         ImageLine line = lines[lines.Count-1];
@@ -90,13 +93,14 @@ public class ImageLines : MonoBehaviour {
         Destroy (line.gameObject);
     }
     private void AddJoint (Vector2 pos) {
-        Image newImage = Instantiate(ResourcesHandler.Instance.ImageLinesJoint).GetComponent<Image>();
-        GameUtils.ParentAndReset(newImage.gameObject, this.transform);
-        newImage.rectTransform.anchoredPosition = pos;
-        newImage.gameObject.name = "Joint" + joints.Count;
-        newImage.color = lineColor;
-        newImage.rectTransform.sizeDelta = new Vector2(lineThickness, lineThickness);
-        joints.Add (newImage);
+        Image newObj = Instantiate(ResourcesHandler.Instance.ImageLinesJoint).GetComponent<Image>();
+        GameUtils.ParentAndReset(newObj.gameObject, this.transform);
+        GameUtils.EchoRectTransformAnchor(myRectTransform, newObj.rectTransform);
+        newObj.rectTransform.anchoredPosition = pos;
+        newObj.gameObject.name = "Joint" + joints.Count;
+        newObj.color = lineColor;
+        newObj.rectTransform.sizeDelta = new Vector2(lineThickness, lineThickness);
+        joints.Add (newObj);
     }
     private void RemoveJoint () {
         Image joint = joints[joints.Count-1];

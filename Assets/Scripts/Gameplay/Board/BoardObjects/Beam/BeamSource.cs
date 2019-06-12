@@ -43,10 +43,10 @@ public class BeamSource : BoardOccupant {
 	//	AddMyFootprint ();
 	//}
 
-	//override protected void UpdateCanBeamEnterAndExit () {
-	//	SetBeamCanEnterAndExit (false); // default all can-enter-and-exits to false!
-	//	canBeamExit[SideFacing] = true; // Allow beams to exit me from the side I'm facing (so my beam can escape)!
-	//}
+	override protected void UpdateCanBeamEnterAndExit () {
+		SetBeamCanEnterAndExit (false); // default all can-enter-and-exits to false!
+		canBeamExit[SideFacing] = true; // Allow beams to exit me from the side I'm facing (so my beam can escape)!
+	}
 
 
 

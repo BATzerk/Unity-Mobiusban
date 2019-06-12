@@ -64,8 +64,10 @@ public class ExitSpotData : BoardObjectData {
     }
 }
 public class PlayerData : BoardOccupantData {
-    public PlayerData (BoardPos boardPos) {
+    public bool isDead;
+    public PlayerData (BoardPos boardPos, bool isDead) {
         this.boardPos = boardPos;
+        this.isDead = isDead;
     }
 }
 //public class WallData : BoardObjectData {

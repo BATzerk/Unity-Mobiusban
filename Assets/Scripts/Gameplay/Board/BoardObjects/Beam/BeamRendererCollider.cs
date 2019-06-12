@@ -42,7 +42,7 @@ public class BeamRendererCollider {
 
 		// Set my lines hardcodedly!
 		//if (myObject is Mirror) { InitializeLinesForMirror (); }
-		else if (myObject is BeamGoal) { InitializeLinesForBeamGoalOrSource (0.5f); }
+		if (myObject is BeamGoal) { InitializeLinesForBeamGoalOrSource (0.5f); }
 		else if (myObject is BeamSource) { InitializeLinesForBeamGoalOrSource (0.1f); }
 		//else if (myObject is Bucket) { InitializeLinesForBucket (); }
 		//else if (myObject is Portal) { InitializeLinesForPortal (); }

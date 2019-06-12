@@ -40,9 +40,9 @@ public class BoardView : MonoBehaviour {
     public Vector2 BoardToPosGlobal(Vector2Int pos) { return new Vector2(BoardToXGlobal(pos.x),BoardToYGlobal(pos.y)); }
     
     /** Brute-force finds the corresponding BoardOccupantView. */
-    public BoardOccupantView TEMP_GetOccupantView(BoardOccupant bo) {
+    public BoardObjectView TEMP_GetObjectView(BoardOccupant bo) {
         foreach (BoardObjectView objectView in allObjectViews) {
-            if (objectView.MyBoardObject == bo) { return objectView as BoardOccupantView; }
+            if (objectView.MyBoardObject == bo) { return objectView;}// as BoardOccupantView; }
         }
         return null; // oops.
     }
@@ -61,7 +61,7 @@ public class BoardView : MonoBehaviour {
 
         // Add Player and Spaces!
         BeamRendererColliderArena = new BeamRendererColliderArena();
-        AddPlayerView(MyBoard.player);
+        AddObjectView(MyBoard.player);
 		spaceViews = new BoardSpaceView[NumCols,NumRows];
 		for (int i=0; i<NumCols; i++) {
 			for (int j=0; j<NumRows; j++) {
@@ -99,46 +99,37 @@ public class BoardView : MonoBehaviour {
 	}
 
 	private void AddObjectView (BoardObject sourceObject) {
-        if (sourceObject is BeamGoal) { AddBeamGoalView (sourceObject as BeamGoal); }
-        else if (sourceObject is BeamSource) { AddBeamSourceView (sourceObject as BeamSource); }
-        else if (sourceObject is Crate) { AddCrateView (sourceObject as Crate); }
-        else if (sourceObject is CrateGoal) { AddCrateGoalView (sourceObject as CrateGoal); }
-        else if (sourceObject is ExitSpot) { AddExitSpotView (sourceObject as ExitSpot); }
-		else {
-            Debug.LogError ("Trying to add BoardObjectView from BoardObject, but no clause to handle this type! " + sourceObject.GetType().ToString());
-            return;
-        }
+        GameObject prefab = resourcesHandler.GetBoardObjectView(sourceObject);
+        if (prefab == null) { return; } // Safety check.
+        BoardObjectView newView = Instantiate(prefab).GetComponent<BoardObjectView>();
+        newView.Initialize (this, sourceObject);
+        allObjectViews.Add (newView);
 	}
-    private void AddBeamGoalView (BeamGoal obj) {
-        BeamGoalView newObj = Instantiate(resourcesHandler.BeamGoalView).GetComponent<BeamGoalView>();
-        newObj.Initialize (this, obj);
-        allObjectViews.Add (newObj);
-    }
-    private void AddBeamSourceView (BeamSource obj) {
-        BeamSourceView newObj = Instantiate(resourcesHandler.BeamSourceView).GetComponent<BeamSourceView>();
-        newObj.Initialize (this, obj);
-        allObjectViews.Add (newObj);
-    }
-    private void AddCrateView (Crate obj) {
-        CrateView newObj = Instantiate(resourcesHandler.CrateView).GetComponent<CrateView>();
-        newObj.Initialize (this, obj);
-        allObjectViews.Add (newObj);
-    }
-    private void AddCrateGoalView (CrateGoal obj) {
-        CrateGoalView newObj = Instantiate(resourcesHandler.CrateGoalView).GetComponent<CrateGoalView>();
-        newObj.Initialize (this, obj);
-        allObjectViews.Add (newObj);
-    }
-    private void AddExitSpotView (ExitSpot obj) {
-        ExitSpotView newObj = Instantiate(resourcesHandler.ExitSpotView).GetComponent<ExitSpotView>();
-        newObj.Initialize (this, obj);
-        allObjectViews.Add (newObj);
-    }
-    private void AddPlayerView (Player obj) {
-        PlayerView newObj = Instantiate(resourcesHandler.PlayerView).GetComponent<PlayerView>();
-        newObj.Initialize (this, obj);
-        allObjectViews.Add (newObj);
-    }
+    //private void AddBeamSourceView (BeamSource obj) {
+    //    BeamSourceView newObj = Instantiate(resourcesHandler.BeamSourceView).GetComponent<BeamSourceView>();
+    //    newObj.Initialize (this, obj);
+    //    allObjectViews.Add (newObj);
+    //}
+    //private void AddCrateView (Crate obj) {
+    //    CrateView newObj = Instantiate(resourcesHandler.CrateView).GetComponent<CrateView>();
+    //    newObj.Initialize (this, obj);
+    //    allObjectViews.Add (newObj);
+    //}
+    //private void AddCrateGoalView (CrateGoal obj) {
+    //    CrateGoalView newObj = Instantiate(resourcesHandler.CrateGoalView).GetComponent<CrateGoalView>();
+    //    newObj.Initialize (this, obj);
+    //    allObjectViews.Add (newObj);
+    //}
+    //private void AddExitSpotView (ExitSpot obj) {
+    //    ExitSpotView newObj = Instantiate(resourcesHandler.ExitSpotView).GetComponent<ExitSpotView>();
+    //    newObj.Initialize (this, obj);
+    //    allObjectViews.Add (newObj);
+    //}
+    //private void AddPlayerView (Player obj) {
+    //    PlayerView newObj = Instantiate(resourcesHandler.PlayerView).GetComponent<PlayerView>();
+    //    newObj.Initialize (this, obj);
+    //    allObjectViews.Add (newObj);
+    //}
 
 
 	// ----------------------------------------------------------------

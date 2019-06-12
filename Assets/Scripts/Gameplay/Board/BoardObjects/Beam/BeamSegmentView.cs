@@ -4,23 +4,20 @@ using UnityEngine;
 
 public class BeamSegmentView : MonoBehaviour {
 	// Components
-	[SerializeField] private LineRenderer lineRenderer;
-	[SerializeField] private ParticleSystem ps_endSparks;
+	[SerializeField] private ImageLines lineRenderer=null;
+	[SerializeField] private ParticleSystem ps_endSparks=null;
 	private List<BeamSegmentView> myChildren; // every segment has a list of children! For recursion with Portals.
 	// Properties
 	private int numPoints; // how many points in our list that are actually used. (We have a bigger bucket than we need so we don't have to remake the bucket!)
 	private Vector2[] points; // the actual line data points, in board space.
 	// References
 	private BeamView myBeamView; // the BeamView I originate from!
-	private BoardOccupantView sourceOccupantView; // NOTE: Because we can be recycled, this can change (when I'm recycled).
+	private BoardObjectView sourceObjView; // NOTE: Because we can be recycled, this can change (when I'm recycled).
 
 	// Getters
 	public Color BeamColor { get { return myBeamView.BeamColor; } }
 	private BoardView MyBoardView { get { return myBeamView.MyBoardView; } }
 	private BeamRendererColliderArena colliderArena { get { return MyBoardView.BeamRendererColliderArena; } }
-	//	public bool DoEndInPortal {
-	//		
-	//	}
 
 	// DEBUG
 	private void OnDrawGizmos () {
@@ -37,27 +34,23 @@ public class BeamSegmentView : MonoBehaviour {
 		myBeamView = _myBeamView;
 
 		// Parent me on my BeamSourceRenderer.
-		gameObject.transform.SetParent (myBeamView.transform);
-		gameObject.transform.localPosition = Vector3.zero;
-		gameObject.transform.localScale = Vector3.one;
-		gameObject.transform.localEulerAngles = Vector3.zero;
+        GameUtils.ParentAndReset(this.gameObject, myBeamView.transform);
 
 		points = new Vector2[20]; // this is pleeenty of points to render lots of lines.
 		myChildren = new List<BeamSegmentView>();
 
 		// Apply base visual properties.
 		UpdateColorThickness ();
-		lineRenderer.sortingOrder = 30; // renders over most BoardObjects.
 	}
 
-	public void Activate (BoardOccupantView _sourceOccupantView) {
+	public void Activate (BoardObjectView _view) {
 		this.gameObject.SetActive (true);
-		sourceOccupantView = _sourceOccupantView;
+		sourceObjView = _view;
 		UpdateSegmentView ();
 	}
 	public void Deactivate () {
 		this.gameObject.SetActive (false);
-		sourceOccupantView = null;
+		sourceObjView = null;
 	}
 
 
@@ -66,10 +59,10 @@ public class BeamSegmentView : MonoBehaviour {
 	// ----------------------------------------------------------------
 	private void UpdateColorThickness () {
 		float beamLineThickness = MyBoardView.UnitSize * 0.12f;
-		lineRenderer.startWidth = lineRenderer.endWidth = beamLineThickness;
+		lineRenderer.SetThickness(beamLineThickness);
 
-		lineRenderer.startColor = new Color (BeamColor.r,BeamColor.g,BeamColor.b, BeamColor.a*0.5f);
-		lineRenderer.endColor = new Color (BeamColor.r,BeamColor.g,BeamColor.b, BeamColor.a*0.4f); // fade it out slightly towards the end
+		lineRenderer.SetColor(new Color (BeamColor.r,BeamColor.g,BeamColor.b, BeamColor.a*0.5f));
+		//lineRenderer.endColor = new Color (BeamColor.r,BeamColor.g,BeamColor.b, BeamColor.a*0.4f); // fade it out slightly towards the end
 		GameUtils.SetParticleSystemColor (ps_endSparks, BeamColor);
 	}
 
@@ -90,12 +83,13 @@ public class BeamSegmentView : MonoBehaviour {
 
 	private void UpdatePoints () {
 		numPoints = 1;
-		float bodyRotation = sourceOccupantView.Rotation;
-		float lineRotation = -bodyRotation;
-		//float originOffsetLoc = sourceOccupantView.BeamSegmentRendererOriginOffsetLoc;
-		Vector2 originOffset = Vector2.zero;//TODO: This. MathUtils.GetRotatedVector2Deg(new Vector2(0,MyBoardView.UnitSize*sourceOccupantView.Scale*originOffsetLoc), bodyRotation); // we visually draw an EXTRA point partially INSIDE of me. See next comment.
+		float bodyRotation = sourceObjView.Rotation;
+		float lineRotation = bodyRotation;
+		float originOffsetLoc = 0.38f;//TODO: Use BoardOccupantView's value? sourceOccupantView.BeamSegmentRendererOriginOffsetLoc;
+        //sourceObjView.Scale*
+		Vector2 originOffset = MathUtils.GetRotatedVector2Deg(new Vector2(0,MyBoardView.UnitSize*originOffsetLoc), bodyRotation); // we visually draw an EXTRA point partially INSIDE of me. See next comment.
 //		Vector2 secondPosOffset = GameMathUtils.GetRotatedVector2Deg(new Vector2(0,boardRef.UnitSize*0.5f), bodyRotation); // start our collision stuff from HERE, just outside of me so I don't intersect with my insides.
-		points[0] = sourceOccupantView.Pos + originOffset;
+		points[0] = sourceObjView.Pos + originOffset;
 //		points[1] = mySource.Body.Pos + secondPosOffset;
 		AddPointRecursively (lineRotation);
 	}
@@ -125,14 +119,15 @@ public class BeamSegmentView : MonoBehaviour {
 
 
 	private void UpdateLineRenderer () {
-		lineRenderer.positionCount = numPoints;
+        // Update ImageLines.
+		lineRenderer.SetNumPoints(numPoints);
 		for (int i=0; i<numPoints; i++) {
-			lineRenderer.SetPosition (i, points[i]);
+			lineRenderer.SetPoint (i, points[i]);
 		}
 
 		// And finally, position the ps_endSparks!
 		ps_endSparks.transform.localPosition = points[numPoints-1];
-		float endSparksRotation = -LineUtils.GetAngle_Degrees (lineRenderer.GetPosition(numPoints-1), lineRenderer.GetPosition(numPoints-2));
+		float endSparksRotation = -LineUtils.GetAngle_Degrees (lineRenderer.GetPoint(numPoints-1), lineRenderer.GetPoint(numPoints-2));
 		ps_endSparks.transform.localEulerAngles = new Vector3 (ps_endSparks.transform.localEulerAngles.x, ps_endSparks.transform.localEulerAngles.y, endSparksRotation);
 	}
 

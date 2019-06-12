@@ -9,12 +9,13 @@ public class ExitSpotView : BoardObjectView {
 	[SerializeField] private Image i_backing=null;
 
 
-	// ----------------------------------------------------------------
-	//  Initialize
-	// ----------------------------------------------------------------
-	public void Initialize (BoardView _myBoardView, ExitSpot _myExitSpot) {
-		base.InitializeAsBoardObjectView (_myBoardView, _myExitSpot);
-	}
+	//// ----------------------------------------------------------------
+	////  Initialize
+	//// ----------------------------------------------------------------
+    //override public void Initialize (BoardView _myBoardView, BoardObject bo) {
+    //    base.Initialize (_myBoardView, bo);
+    //}
+
 
 
     // ----------------------------------------------------------------

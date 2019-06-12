@@ -6,7 +6,7 @@ public class BeamView : MonoBehaviour {
 	// Components
 	private List<BeamSegmentView> segmentViews;
 	// References
-	[SerializeField] private BeamSourceView mySourceView;
+	[SerializeField] private BeamSourceView mySourceView=null;
 
 	// Getters
 	public Color BeamColor { get { return mySourceView.BeamColor; } }
@@ -18,12 +18,10 @@ public class BeamView : MonoBehaviour {
 	// ----------------------------------------------------------------
 	//  Initialize / Destroy
 	// ----------------------------------------------------------------
-	public void Initialize (Transform _tf_beamRendererParent) {
+	public void Initialize (Transform parentTF) {
 		// Chuck me OUT of my BeamSource and plop me onto the Beam layer!
-		gameObject.transform.SetParent (_tf_beamRendererParent);
-		gameObject.transform.localPosition = Vector3.zero;
-		gameObject.transform.localScale = Vector3.one;
-		gameObject.transform.localEulerAngles = Vector3.zero;
+		GameUtils.ParentAndReset(this.gameObject, parentTF);
+        GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
 		segmentViews = new List<BeamSegmentView>();
 	}
@@ -58,8 +56,8 @@ public class BeamView : MonoBehaviour {
 		// Activate/deactivate the right ones!
 		for (int i=0; i<numBeamSegments; i++) {
 			BoardOccupant sourceOccupant = MyBeam.GetSegment(i).SourceOccupant;
-			BoardOccupantView sourceOccupantView = MyBoardView.TEMP_GetOccupantView(sourceOccupant);
-			segmentViews[i].Activate (sourceOccupantView);
+			BoardObjectView sourceView = MyBoardView.TEMP_GetObjectView(sourceOccupant);
+			segmentViews[i].Activate (sourceView);
 		}
 		for (int i=numBeamSegments; i<segmentViews.Count; i++) {
 			segmentViews[i].Deactivate ();

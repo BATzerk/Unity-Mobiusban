@@ -25,12 +25,12 @@ public class BeamGoal : BoardOccupant, IGoalObject {
 	//  Doers
 	// ----------------------------------------------------------------
 	public void UpdateIsOn () {
-		//IsOn = MySpace.HasBeamSansSource (ChannelID);
+		IsOn = MySpace.HasBeamSansSource (ChannelID);
 	}
-	//override protected void UpdateCanBeamEnterAndExit() {
-	//	SetBeamCanEnterAndExit (false); // default all can-enter-and-exits to false!
-	//	canBeamEnter[SideFacing] = true; // Allow beams to enter me from the side I'm facing!
-	//}
+	override protected void UpdateCanBeamEnterAndExit() {
+		SetBeamCanEnterAndExit (false); // default all can-enter-and-exits to false!
+		canBeamEnter[SideFacing] = true; // Allow beams to enter me from the side I'm facing!
+	}
 
 
 

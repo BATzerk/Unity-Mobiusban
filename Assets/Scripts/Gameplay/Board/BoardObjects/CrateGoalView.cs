@@ -17,9 +17,10 @@ public class CrateGoalView : BoardObjectView {
 	// ----------------------------------------------------------------
 	//  Initialize
 	// ----------------------------------------------------------------
-	public void Initialize (BoardView _myBoardView, CrateGoal _myCrateGoal) {
-		base.InitializeAsBoardObjectView (_myBoardView, _myCrateGoal);
-		myCrateGoal = _myCrateGoal;
+	override public void Initialize (BoardView _myBoardView, BoardObject bo) {
+        myCrateGoal = bo as CrateGoal;
+        base.Initialize (_myBoardView, bo);
+        
         // Rotate i_body by corner!
         i_body.transform.localEulerAngles = new Vector3(0,0,-90*myCrateGoal.Corner);
         i_body.sprite = myCrateGoal.DoStayOn ? s_bodyStayOn : s_bodyNoStayOn;

@@ -69,7 +69,6 @@ public class BoardSpace {
             }
         }
         return false;
-//      return BoardUtils.IsBeamOfChannelIDInList (beamsOverMe, channelID);
     }
     
     

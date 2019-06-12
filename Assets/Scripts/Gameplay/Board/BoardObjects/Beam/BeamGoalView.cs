@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class BeamGoalView : BoardOccupantView {
 	// Components
-	[SerializeField] private Image i_goalLight=null;
+    [SerializeField] private Image i_body=null;
+    [SerializeField] private Image i_goalLight=null;
 	// Properties
 	private Color beamColor;
 	// References
@@ -18,22 +19,23 @@ public class BeamGoalView : BoardOccupantView {
 	// ----------------------------------------------------------------
 	//  Initialize
 	// ----------------------------------------------------------------
-	public void Initialize (BoardView _boardView, BeamGoal _data) {
-		myBeamGoal = _data;
-		beamColor = Color.yellow;//TODO: Dis. Colors.GetBeamColor (_boardView.WorldIndex, _data.ChannelID);
-		base.InitializeAsBoardOccupantView (_boardView, _data);
+    override public void Initialize (BoardView _myBoardView, BoardObject bo) {
+        myBeamGoal = bo as BeamGoal;
+        beamColor = Colors.GetBeamColor (myBeamGoal.ChannelID);
+        base.Initialize (_myBoardView, bo);
+        
+        i_body.color = beamColor;
 	}
 
-	// ----------------------------------------------------------------
-	//  Doers
-	// ----------------------------------------------------------------
+    // ----------------------------------------------------------------
+    //  Update Visuals
+    // ----------------------------------------------------------------
 	override public void UpdateVisualsPostMove () {
 		base.UpdateVisualsPostMove ();
 		UpdateGoalLight ();
 	}
 
 	public void UpdateGoalLight () {
-		// Update sr_goalLight!
 		i_goalLight.color = myBeamGoal.IsOn ? beamColor : new Color(0.2f,0.2f,0.2f, 0.6f);
 	}
 

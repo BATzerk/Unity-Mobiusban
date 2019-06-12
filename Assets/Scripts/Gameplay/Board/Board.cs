@@ -18,6 +18,7 @@ public class Board {
     // Reference Lists
     public List<IGoalObject> goalObjects; // contains JUST the objects that have winning criteria.
     public List<BoardObject> objectsAddedThisMove;
+    private List<BeamSource> beamSources=new List<BeamSource>();
 
 	// Getters
     public bool DoWrapH { get { return WrapH==WrapTypes.Parallel || WrapH==WrapTypes.Flip; } }
@@ -30,16 +31,16 @@ public class Board {
     public bool IsPlayerOnExitSpot () {
         return player.MySpace.HasExitSpot && player.MySpace.MyExitSpot.IsOrientationMatch(player);
     }
-    private bool CheckAreGoalsSatisfied () {
-        if (goalObjects.Count == 0) { return true; } // If there's NO criteria, then sure, we're satisfied! For levels that're just about getting to the exit.
-        for (int i=0; i<goalObjects.Count; i++) {
-            if (!goalObjects[i].IsOn) { return false; } // return false if any of these guys aren't on.
-        }
-        return true; // Looks like we're soooo satisfied!!
-    }
+    //private bool CheckAreGoalsSatisfied () {
+    //    if (goalObjects.Count == 0) { return true; } // If there's NO criteria, then sure, we're satisfied! For levels that're just about getting to the exit.
+    //    for (int i=0; i<goalObjects.Count; i++) {
+    //        if (!goalObjects[i].IsOn) { return false; } // return false if any of these guys aren't on.
+    //    }
+    //    return true; // Looks like we're soooo satisfied!!
+    //}
 
     // Serializing
-	public Board Clone () {
+	public Board Clone() {
 		BoardData data = ToData();
 		return new Board(data);
 	}
@@ -76,7 +77,7 @@ public class Board {
 		// Add all gameplay objects!
 		MakeBoardSpaces (bd);
 		AddPropsFromBoardData (bd);
-        UpdateAreGoalsSatisfied(); // know from the get-go.
+        AreGoalsSatisfied = GetAreGoalsSatisfied(); // know from the get-go.
 	}
 
 	private void MakeBoardSpaces (BoardData bd) {
@@ -122,6 +123,7 @@ public class Board {
         BeamSource prop = new BeamSource (this, data);
         allObjects.Add (prop);
         objectsAddedThisMove.Add(prop);
+        beamSources.Add(prop);
     }
     private void AddCrate (CrateData data) {
         Crate prop = new Crate (this, data);
@@ -159,36 +161,71 @@ public class Board {
 
 
 	// ----------------------------------------------------------------
-	//  Doers
+	//  Makin' Moves
 	// ----------------------------------------------------------------
+    private bool MayExecuteMove(Vector2Int dir) {
+        if (player.IsDead) { return false; }
+        if (AreGoalsSatisfied) { return false; } // We can't execute after we've won.
+        return BoardUtils.MayMoveOccupant(this, player.ColRow, dir); // Ok, now just check if it's legal!
+    }
+    private bool GetAreGoalsSatisfied() {
+        if (player.IsDead) { return false; } // Player is kaput? Nah, we need 'em alive.
+        if (goalObjects.Count == 0) { return true; } // If there's NO criteria, then sure, we're satisfied! For levels that're just about getting to the exit.
+        for (int i=0; i<goalObjects.Count; i++) {
+            if (!goalObjects[i].IsOn) { return false; } // return false if any of these guys aren't on.
+        }
+        return true; // Looks like we're soooo satisfied!!
+    }
+    
+    
     public void MovePlayerAttempt(Vector2Int dir) {
-        if (BoardUtils.MayMoveOccupant(this, player.ColRow, dir)) {
+        if (MayExecuteMove(dir)) {
             // Clear out the list NOW.
             objectsAddedThisMove.Clear();
             // Reset PrevMoveDelta.
-            player.ResetPrevMoveDelta();
-            for (int i=0; i<allObjects.Count; i++) { allObjects[i].ResetPrevMoveDelta(); }
+            ResetOccupantsPrevMoveDelta();
             // Move Player!
             BoardUtils.MoveOccupant(this, player.ColRow, dir);
             // Tell all other Occupants!
             for (int i=0; i<allObjects.Count; i++) { allObjects[i].OnPlayerMoved(); }
-            // Update goals!
-            UpdateAreGoalsSatisfied();
-            
-            // Dispatch event!
-            GameManagers.Instance.EventManager.OnBoardExecutedMove(this);
+            // Call OnMoveComplete!
+            OnMoveComplete();
         }
     }
     
-    public void UpdateAreGoalsSatisfied() {
-        // Update all GoalObjects' isOn; if any aren't, I'm not satisfied!
-        bool areSatisfied = true;
-        for (int i=0; i<goalObjects.Count; i++) {
-            goalObjects[i].UpdateIsOn();
-            areSatisfied &= goalObjects[i].IsOn;
-        }
-        AreGoalsSatisfied = areSatisfied;
+    private void OnMoveComplete () {
+        // Just redundantly remake all the beams.
+        RemakeAllBeams();
+        // Check if the player's in a toaster oven!
+        UpdatePlayerIsDead();
+        // Update Goals!
+        foreach (IGoalObject igo in goalObjects) { igo.UpdateIsOn (); }
+        AreGoalsSatisfied = GetAreGoalsSatisfied();
+        // Dispatch event!
+        GameManagers.Instance.EventManager.OnBoardExecutedMove(this);
     }
+
+
+    private void ResetOccupantsPrevMoveDelta() {
+        player.ResetPrevMoveDelta();
+        for (int i=0; i<allObjects.Count; i++) { allObjects[i].ResetPrevMoveDelta(); }
+    }
+    private void RemakeAllBeams () {
+        foreach (BeamSource bs in beamSources) { bs.Beam.RemakeBeam (); }
+    }
+    private void UpdatePlayerIsDead() {
+        if (player.MySpace.NumBeamsOverMe() > 0) {
+            player.Die();
+        }
+    }
+    //private bool UpdateAreGoalsSatisfied() {
+    //    // Update all GoalObjects' isOn; if any aren't, I'm not satisfied!
+    //    bool areSatisfied = true;
+    //    for (int i=0; i<goalObjects.Count; i++) {
+    //        areSatisfied &= goalObjects[i].IsOn;
+    //    }
+    //    AreGoalsSatisfied = areSatisfied;
+    //}
     
     
     
