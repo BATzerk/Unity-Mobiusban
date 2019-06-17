@@ -250,6 +250,22 @@ public class Board {
         if (occupant is Crate) { return "o"; }
         return "?";
     }
+    public void Debug_PrintBeamSpaces() {
+        string str = "";
+        for (int row=0; row<NumRows; row++) {
+            for (int col=0; col<NumCols; col++) {
+                BoardSpace space = GetSpace(col,row);
+                if (space.BeamsOverMe.Count > 0) {
+                    str += space.BeamsOverMe[0].ChannelID;
+                }
+                else {
+                    str += ".";
+                }
+            }
+            str += "\n";
+        }
+        Debug.Log("Beams:\n" + str);
+    }
 
 
 

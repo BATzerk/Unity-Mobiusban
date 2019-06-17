@@ -15,6 +15,7 @@ public class BoardView : MonoBehaviour {
     [SerializeField] public Transform tf_boardSpaces=null;
     [SerializeField] public Transform tf_walls=null;
     public BeamRendererColliderArena BeamRendererColliderArena { get; private set; } // Added in Initialize.
+    public PlayerView Temp_PlayerView; // HACK TEMP TEST
 	// Objects
 	private BoardSpaceView[,] spaceViews;
 	private List<BoardObjectView> allObjectViews = new List<BoardObjectView>(); // includes EVERY single BoardObjectView!
@@ -61,7 +62,7 @@ public class BoardView : MonoBehaviour {
         // Add Player and Spaces!
         BeamRendererColliderArena = GetComponent<BeamRendererColliderArena>();
         BeamRendererColliderArena.Initialize(MyBoard, myRectTransform.rect);
-        AddObjectView(MyBoard.player);
+        Temp_PlayerView = AddObjectView(MyBoard.player) as PlayerView;
 		spaceViews = new BoardSpaceView[NumCols,NumRows];
 		for (int i=0; i<NumCols; i++) {
 			for (int j=0; j<NumRows; j++) {
@@ -92,12 +93,13 @@ public class BoardView : MonoBehaviour {
         transform.SetParent(MyLevel.transform);
 	}
 
-	private void AddObjectView (BoardObject sourceObject) {
+	private BoardObjectView AddObjectView (BoardObject sourceObject) {
         GameObject prefab = resourcesHandler.GetBoardObjectView(sourceObject);
-        if (prefab == null) { return; } // Safety check.
+        if (prefab == null) { return null; } // Safety check.
         BoardObjectView newView = Instantiate(prefab).GetComponent<BoardObjectView>();
         newView.Initialize (this, sourceObject);
         allObjectViews.Add (newView);
+        return newView;
 	}
 
 

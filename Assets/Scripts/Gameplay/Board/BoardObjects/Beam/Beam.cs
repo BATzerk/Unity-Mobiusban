@@ -54,6 +54,15 @@ public class Beam {
 		BeamSegment newSegment = new BeamSegment(this, _sourceOccupant);
 		segments.Add (newSegment);
 		int exitSide = _sourceOccupant.SideFacing; // assume that we ALWAYS come OUT of any Occupant's SideFacing.
+        //// HACK for chirality.
+        //if (_sourceOccupant.ChirH < 0) {
+        //    if (exitSide == Sides.L) { exitSide = Sides.R; }
+        //    else if (exitSide == Sides.R) { exitSide = Sides.L; }
+        //}
+        //if (_sourceOccupant.ChirV < 0) {
+        //    if (exitSide == Sides.B) { exitSide = Sides.T; }
+        //    else if (exitSide == Sides.T) { exitSide = Sides.B; }
+        //}
 		AddSegmentSpaceRecursively (newSegment, exitSide); // populate the segment (and maybe make more segments)!
 	}
 

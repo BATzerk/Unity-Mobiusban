@@ -128,6 +128,8 @@ public class Level : MonoBehaviour {
                 }
             }
         }
+        Debug_ApplyEchoAlphas();
+        
         UpdateIsWon();
 	}
 	private void DestroyBoardModelAndView () {
@@ -165,8 +167,8 @@ public class Level : MonoBehaviour {
         GameManagers.Instance.EventManager.OnLevelSetIsWon(IsWon);
     }
 
-    
-    
+
+
     // ----------------------------------------------------------------
     //  Doers
     // ----------------------------------------------------------------
@@ -194,6 +196,8 @@ public class Level : MonoBehaviour {
 	// ----------------------------------------------------------------
 	private void Update() {
         RegisterButtonInput();
+        //// TEST
+        //this.myRectTransform.anchoredPosition = -(BoardView.Temp_PlayerView.Pos-BoardView.Size*0.5f) * myRectTransform.localScale.x;
 	}
 
 	private void RegisterButtonInput() {
@@ -222,6 +226,12 @@ public class Level : MonoBehaviour {
         if (Input.GetKey(KeyCode.C)) { MultZoomAmount(0.95f); }
         // V = Zoom IN
         if (Input.GetKey(KeyCode.V)) { MultZoomAmount(1.05f); }
+        
+        
+        // B = Print Beams
+        if (Input.GetKeyDown(KeyCode.B)) { Board.Debug_PrintBeamSpaces(); }
+        // H = Toggle echo alphas
+        if (Input.GetKeyDown(KeyCode.H)) { Debug_ToggleEchoAlphas(); }
 	}
     
     private void MovePlayerAttempt(Vector2Int dir) {
@@ -232,6 +242,22 @@ public class Level : MonoBehaviour {
         //    case Sides.L: dir = Vector2Int.CCW(dir); break;
         //}
         Board.MovePlayerAttempt(dir);
+    }
+    
+    private bool debug_areEchoesLightAlpha = false;
+    private void Debug_ToggleEchoAlphas() {
+        debug_areEchoesLightAlpha = !debug_areEchoesLightAlpha;
+        Debug_ApplyEchoAlphas();
+    }
+    private void Debug_ApplyEchoAlphas() {
+        float alpha = debug_areEchoesLightAlpha ? 0.1f : 1f;
+        for (int i=0; i<BoardViewEchoes.GetLength(0); i++) {
+            for (int j=0; j<BoardViewEchoes.GetLength(1); j++) {
+                if (BoardViewEchoes[i,j] != null) {
+                    BoardViewEchoes[i,j].MyCanvasGroup.alpha = alpha;
+                }
+            }
+        }
     }
     
     
