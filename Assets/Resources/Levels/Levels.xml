@@ -414,18 +414,38 @@
 <!-- ================================ PACK ================================ -->
 <LevelPack packName="Tests">
 <Levels>
-    <Level wrapH="2" wrapV="2" layout="
-        ..~.,
+
+
+    <Level wrapH="2" layout="
+        ..G.,
+    	.@H.,
         ....,
-        @.E.,
+        ....,
+    " />
+    <Level wrapH="2" layout="
+    	....,
+        T@..,
+        ....,
+        ....,
+    " />
+    <Level wrapV="2" layout="
+    	.Y..,
+        .@..,
+        ....,
         ....,
     " />
 
 
-    <Level wrapH="1" layout="
-    	....,
+    <Level wrapH="2" wrapV="2" layout="
         ..Y.,
-        .@..,
+    	@...,
+        ....,
+        ....,
+    " />
+    <Level wrapH="2" wrapV="2" layout="
+        ..Y.,
+    	@.H.,
+        ....,
         ....,
     " />
     <Level layout="
@@ -456,6 +476,14 @@
         .....,
     " />
 
+
+
+    <Level wrapH="2" wrapV="2" layout="
+        ..~.,
+        ....,
+        @.E.,
+        ....,
+    " />
 
 
 

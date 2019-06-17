@@ -5,7 +5,7 @@ using UnityEngine.UI;
 /** A lightweight alternative to LineRenderer. */
 public class ImageLine : MonoBehaviour {
 	// Components
-	[SerializeField] private Image image; // the actual line
+	[SerializeField] private Image image=null; // the actual line
 	// Properties
 	private float angle; // in DEGREES.
 	private float length;
@@ -35,11 +35,14 @@ public class ImageLine : MonoBehaviour {
 		}
 	}
 
-	public void SetStartAndEndPos (Vector2 _startPos, Vector2 _endPos) {
-		startPos = _startPos;
-		endPos = _endPos;
-		UpdateAngleLengthPosition ();
-	}
+    public void SetStartAndEndPos (Line _line) {
+        SetStartAndEndPos(_line.start, _line.end);
+    }
+    public void SetStartAndEndPos (Vector2 _startPos, Vector2 _endPos) {
+        startPos = _startPos;
+        endPos = _endPos;
+        UpdateAngleLengthPosition ();
+    }
 
 
 
@@ -52,6 +55,9 @@ public class ImageLine : MonoBehaviour {
 	public void Initialize (Vector2 _startPos, Vector2 _endPos) {
 		Initialize (this.transform.parent, _startPos,_endPos);
 	}
+    public void Initialize (Transform _parentTransform) {
+        Initialize(_parentTransform, Vector2.zero, Vector2.zero);
+    }
 	public void Initialize (Transform _parentTransform, Vector2 _startPos, Vector2 _endPos) {
 		startPos = _startPos;
 		endPos = _endPos;
@@ -82,6 +88,10 @@ public class ImageLine : MonoBehaviour {
 		get { return image.enabled; }
 		set { image.enabled = value; }
 	}
+    public void SetAnchors(Vector2 anchorMin,Vector2 anchorMax) {
+        MyRectTransform.anchorMin = anchorMin;
+        MyRectTransform.anchorMax = anchorMax;
+    }
 	public void SetAlpha(float alpha) {
 		GameUtils.SetUIGraphicAlpha(image, alpha);
 	}

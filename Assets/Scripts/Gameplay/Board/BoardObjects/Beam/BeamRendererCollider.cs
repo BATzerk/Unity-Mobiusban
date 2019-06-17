@@ -58,24 +58,24 @@ public class BeamRendererCollider {
 		RemoveMyLinesFromArena ();
 	}
 
-	private void InitializeLinesForMirror () {
-		BeamRendererCollision.Types[] collisionTypes = new BeamRendererCollision.Types[3];
-		collisionTypes[0] = BeamRendererCollision.Types.Reflect;
-		collisionTypes[1] = BeamRendererCollision.Types.End;
-		collisionTypes[2] = BeamRendererCollision.Types.End;
+	//private void InitializeLinesForMirror () {
+	//	BeamRendererCollision.Types[] collisionTypes = new BeamRendererCollision.Types[3];
+	//	collisionTypes[0] = BeamRendererCollision.Types.Reflect;
+	//	collisionTypes[1] = BeamRendererCollision.Types.End;
+	//	collisionTypes[2] = BeamRendererCollision.Types.End;
 
-		float slashRadius = 0.53f;
-		float capsRadius = 0.12f; // The little caps on the end of the slash. Looks like a tilted I! Mirrors actually block beams from their ends. Looks better during animations.
-		float slashAngle = Mathf.PI*0.25f; // Looks like \.
+	//	float slashRadius = 0.53f;
+	//	float capsRadius = 0.12f; // The little caps on the end of the slash. Looks like a tilted I! Mirrors actually block beams from their ends. Looks better during animations.
+	//	float slashAngle = Mathf.PI*0.25f; // Looks like \.
 
-		// Make 
-		prototypeLines = new Line[3];
-		prototypeLines[0] = new Line(0,slashRadius, 0,-slashRadius).Rotate(slashAngle);
-		prototypeLines[1] = new Line(-capsRadius, slashRadius, capsRadius, slashRadius).Rotate(slashAngle); // top cap
-		prototypeLines[2] = new Line(-capsRadius,-slashRadius, capsRadius,-slashRadius).Rotate(slashAngle); // bottom cap
+	//	// Make 
+	//	prototypeLines = new Line[3];
+	//	prototypeLines[0] = new Line(0,slashRadius, 0,-slashRadius).Rotate(slashAngle);
+	//	prototypeLines[1] = new Line(-capsRadius, slashRadius, capsRadius, slashRadius).Rotate(slashAngle); // top cap
+	//	prototypeLines[2] = new Line(-capsRadius,-slashRadius, capsRadius,-slashRadius).Rotate(slashAngle); // bottom cap
 
-		MakeColliderLinesFromPrototypeLines (collisionTypes);
-	}
+	//	MakeColliderLinesFromPrototypeLines (collisionTypes);
+	//}
 	private void InitializeLinesForBeamGoalOrSource (float indentAmount) {
 		Vector2[] linePoints = new Vector2[9];
 		BeamRendererCollision.Types[] collisionTypes = new BeamRendererCollision.Types[8];

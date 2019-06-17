@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BeamView : MonoBehaviour {
 	// Components
-	private List<BeamSegmentView> segmentViews;
+	private List<BeamSegmentView> segmentViews; // NOTE: Currently there's only ONE segment per Beam!!
 	// References
 	[SerializeField] private BeamSourceView mySourceView=null;
 
@@ -27,7 +27,7 @@ public class BeamView : MonoBehaviour {
 	}
 
 	/** Instantiates a BeamSegmentView initialized by me, and returns it for further usage. */
-	public BeamSegmentView GetNewSegmentView () {
+	private BeamSegmentView GetNewSegmentView () {
 		BeamSegmentView newView = Instantiate (prefabGO_BeamSegmentRenderer).GetComponent<BeamSegmentView>();
 		newView.Initialize (this);
 		return newView;

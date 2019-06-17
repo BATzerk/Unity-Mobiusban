@@ -8,12 +8,12 @@ public class BeamRendererColliderLine {
 	// Properties
 	private BeamRendererCollision.Types _collisionType;
 	private Line _line;
-    private Vector2 _wrapOffset;
+    public Line lineOut { get; private set; } // for WARP. The equivalent line the beam's coming out of.
 	// References
 	private BoardObjectView _myObjectView;
 
 	// Getters / Setters
-	public BeamRendererCollision.Types collisionType { get { return _collisionType; } }
+	public BeamRendererCollision.Types collType { get { return _collisionType; } }
 	public BoardObjectView myObjectView { get { return _myObjectView; } }
 	public Line line { get { return _line; } }
 	private Vector2 start {
@@ -24,26 +24,30 @@ public class BeamRendererColliderLine {
         get { return _line.end; }
         set { _line.end = value; }
     }
-    public Vector2 wrapOffset { get { return _wrapOffset; } }
 	/** Conveniently sets my line based on what the unscaled/unrotated/etc. line looks like. */
 	public void SetLine (Line unscaledLine, Vector2 objectPos, float objectRotation, float unitSize) {
 		start = MathUtils.GetRotatedVector2Deg(unscaledLine.start, objectRotation)*unitSize + objectPos;
 		end   = MathUtils.GetRotatedVector2Deg(unscaledLine.end,   objectRotation)*unitSize + objectPos;
 	}
 
-	public BeamRendererColliderLine (BoardObjectView myObjectView, BeamRendererCollision.Types collisionType) {
-		this._myObjectView = myObjectView;
-		this._line = new Line(); // default to an empty line for now.
-		this._collisionType = collisionType;
-	}
+    public BeamRendererColliderLine (Line line) {
+        this._myObjectView = null;
+        this._line = line;
+        this._collisionType = BeamRendererCollision.Types.End;
+    }
+    public BeamRendererColliderLine (BoardObjectView myObjectView, BeamRendererCollision.Types collisionType) {
+        this._myObjectView = myObjectView;
+        this._line = new Line(); // default to an empty line for now.
+        this._collisionType = collisionType;
+    }
     public BeamRendererColliderLine (BoardObjectView myObjectView, Line line, BeamRendererCollision.Types collisionType) {
         this._myObjectView = myObjectView;
         this._line = line;
         this._collisionType = collisionType;
     }
-    public BeamRendererColliderLine (Line line, Vector2 wrapOffset, BeamRendererCollision.Types collisionType) {
+    public BeamRendererColliderLine (Line line, Line lineOut, BeamRendererCollision.Types collisionType) {
         this._line = line;
-        this._wrapOffset = wrapOffset;
+        this.lineOut = lineOut;
         this._collisionType = collisionType;
     }
 }

@@ -149,6 +149,13 @@ public static class MathUtils {
     public static float GetAngleReflection (float angleIn, float surfaceAngle) {
         return 180+GetAngleDeg (Vector2.Reflect (GetVectorFromDeg(-angleIn), GetVectorFromDeg(surfaceAngle)));
     }
+    // TODO: These two functions!!
+    public static float FlipDegHorz(float deg) {
+        return deg;
+    }
+    public static float FlipDegVert(float deg) {
+        return deg;
+    }
 
 
 
@@ -195,6 +202,8 @@ public static class MathUtils {
     //        default: throw new UnityException ("Whoa, " + corner + " is not a valid corner. Try 0, 1, 2, or 3.");
     //    }
     //}
+    
+    
 
 
 

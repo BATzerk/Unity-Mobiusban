@@ -35,15 +35,37 @@ public class BeamRendererColliderArena : MonoBehaviour {
         // Add bounds on each Board side!
         Rect br = r_board;
         br.position = Vector2.zero;
-        // Left
         switch (b.WrapH) {
             case WrapTypes.Parallel:
-                boundsLines.Add(new BeamRendererColliderLine(LineUtils.GetLineCW(br, Sides.L), new Vector2(br.width,0), BeamRendererCollision.Types.Warp)); break;
-            //case WrapTypes.Flip:TODO: This.
-                //boundsLines.Add(new BeamRendererColliderLine(null, LineUtils.GetLine(br, Sides.L), BeamRendererCollision.Types.Warp)); break;
+                AddBoundsLine(LineUtils.GetLineCW(br,Sides.L), LineUtils.GetLineCCW(br,Sides.R), BeamRendererCollision.Types.WarpParallel); // Left
+                AddBoundsLine(LineUtils.GetLineCCW(br,Sides.R), LineUtils.GetLineCW(br,Sides.L), BeamRendererCollision.Types.WarpParallel); // Right
+                break;
+            case WrapTypes.Flip:
+                AddBoundsLine(LineUtils.GetLineCW(br,Sides.L), LineUtils.GetLineCW(br,Sides.R), BeamRendererCollision.Types.WarpFlipH); // Left
+                AddBoundsLine(LineUtils.GetLineCW(br,Sides.R), LineUtils.GetLineCW(br,Sides.L), BeamRendererCollision.Types.WarpFlipH); // Right
+                break;
             default:
-                boundsLines.Add(new BeamRendererColliderLine(null, LineUtils.GetLineCW(br, Sides.L), BeamRendererCollision.Types.End)); break;
+                boundsLines.Add(new BeamRendererColliderLine(LineUtils.GetLineCW(br, Sides.L))); // Left
+                boundsLines.Add(new BeamRendererColliderLine(LineUtils.GetLineCW(br, Sides.R))); // Right
+                break;
         }
+        switch (b.WrapV) {
+            case WrapTypes.Parallel:
+                AddBoundsLine(LineUtils.GetLineCW(br,Sides.B), LineUtils.GetLineCCW(br,Sides.T), BeamRendererCollision.Types.WarpParallel); // Bottom
+                AddBoundsLine(LineUtils.GetLineCCW(br,Sides.T), LineUtils.GetLineCW(br,Sides.B), BeamRendererCollision.Types.WarpParallel); // Top
+                break;
+            case WrapTypes.Flip:
+                AddBoundsLine(LineUtils.GetLineCW(br,Sides.B), LineUtils.GetLineCW(br,Sides.T), BeamRendererCollision.Types.WarpFlipH); // Bottom
+                AddBoundsLine(LineUtils.GetLineCW(br,Sides.T), LineUtils.GetLineCW(br,Sides.B), BeamRendererCollision.Types.WarpFlipH); // Top
+                break;
+            default:
+                boundsLines.Add(new BeamRendererColliderLine(LineUtils.GetLineCW(br, Sides.B))); // Bottom
+                boundsLines.Add(new BeamRendererColliderLine(LineUtils.GetLineCW(br, Sides.T))); // Top
+                break;
+        }
+        
+        
+                
         //// Right
         //switch (b.WrapH) {
         //    case WrapTypes.Parallel:
@@ -58,6 +80,9 @@ public class BeamRendererColliderArena : MonoBehaviour {
             AddLine (ref _boundLine);
         }
 	}
+    private void AddBoundsLine(Line line, Line lineOut, BeamRendererCollision.Types collType) {
+        boundsLines.Add(new BeamRendererColliderLine(line, lineOut, collType));
+    }
 
 
 	// ----------------------------------------------------------------
@@ -77,30 +102,30 @@ public class BeamRendererColliderArena : MonoBehaviour {
 	/** beamAngle: in DEGREES. */
 	public BeamRendererCollision GetBeamRendererCollision (Vector2 beamPos, float beamAngle) {
 		// Make a huge-ass line! Note: I'm doing line-line collision instead of ray-line collision because there's less code and it's easier to understand.
-		Line beamLine = new Line (beamPos, beamPos + MathUtils.GetVectorFromDeg(beamAngle)*100000);
+		Line beamLine = new Line (beamPos, beamPos+MathUtils.GetVectorFromDeg(beamAngle)*100000);
 
 		// Get the CLOSEST line-on-line collision!
-		BeamRendererCollision closestCollision = new BeamRendererCollision(null, BeamRendererCollision.Types.End, beamAngle, beamLine.end); // default this to the farthest theoretical collision possible.
-		float closestCollisionDist = float.PositiveInfinity;
+		BeamRendererCollision closestColl = new BeamRendererCollision(null, beamLine.end, beamAngle); // default this to the farthest theoretical collision possible.
+		float closestDist = float.PositiveInfinity;
 
 		Vector2 intPos;
-		foreach (BeamRendererColliderLine colliderLine in allColliderLines) {
-			bool isIntersection = LineUtils.GetIntersectionLineToLine (out intPos, beamLine, colliderLine.line);
+		foreach (BeamRendererColliderLine collLine in allColliderLines) {
+			bool isIntersection = LineUtils.GetIntersectionLineToLine (out intPos, beamLine, collLine.line);
 			if (isIntersection) { // There IS an intersection!
 				float intDist = Vector2.Distance (intPos, beamLine.start);
-				if (closestCollisionDist > intDist) { // It's the closest one yet! Update the values I'm gonna return!
-					closestCollisionDist = intDist;
-					closestCollision.type = colliderLine.collisionType;
-					closestCollision.pos = intPos;
-					closestCollision.objectView = colliderLine.myObjectView;
-					float lineAngle = colliderLine.line.GetAngleDeg();
-					closestCollision.exitRotation = MathUtils.GetAngleReflection (beamAngle, lineAngle);
+				if (closestDist > intDist) { // It's the closest one yet! Update the values I'm gonna return!
+					closestDist = intDist;
+					closestColl.pos = intPos;
+					closestColl.SetCollLine(collLine);
+                    closestColl.angleIn = beamAngle;
+                    //float lineAngle = collLine.line.GetAngleDeg();
+					//closestColl.exitRotation = MathUtils.GetAngleReflection (beamAngle, lineAngle);
 //					Debug.Log ("lineAngle: " + lineAngle + "  pos: " + intPos + "  closestCollisionDist: " + closestCollisionDist);
 //					Debug.Log ("beamAngle: " + beamAngle + " lineAngle: " + lineAngle + "  exitRotation: " + closestCollision.exitRotation);
 				}
 			}
 		}
-		return closestCollision;
+		return closestColl;
 //		// Oh, jeez. SOMEhow we didn't intersect with anything, not even my outer bounds!! This is an error. Just return a made-up intersection at the end of the fake line we used.
 //		Debug.LogWarning ("Oops! A BeamRenderer didn't have a collision with ANYthing! It should at least be hitting the Arena's bounds.");
 //		return new BeamRendererCollision(false, beamAngle, beamLine.end);

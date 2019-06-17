@@ -36,6 +36,12 @@ public static class LineUtils {
             default: Debug.LogError("Whoa, " + side + " is not a valid side. Try 0-3."); return new Line();
         }
     }
+    
+    public static float PosToLoc(Line line, Vector2 pos) {
+        return line.PosToLoc(pos);
+    }
+    
+    
 
 
 	// ----------------------------------------------------------------
