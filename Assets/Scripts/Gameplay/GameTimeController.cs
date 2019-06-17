@@ -49,7 +49,7 @@ public class GameTimeController : MonoBehaviour {
     // ----------------------------------------------------------------
     private void UpdateTimeScale() {
         if (IsPaused) { Time.timeScale = 0; }
-        else if (IsSlowMo) { Time.timeScale = 0.2f; }
+        else if (IsSlowMo) { Time.timeScale = 0.07f; }
         else if (IsFastMo) { Time.timeScale = 4f; }
         else { Time.timeScale = 1; }
     }

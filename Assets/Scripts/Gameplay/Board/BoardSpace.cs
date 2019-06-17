@@ -19,6 +19,12 @@ public class BoardSpace {
     public bool HasExitSpot { get { return MyExitSpot != null; } }
     public bool HasOccupant { get { return MyOccupant != null; } }
     public bool HasImmovableOccupant { get { return MyOccupant!=null && !MyOccupant.IsMovable; } }
+    public bool IsLethalBeamOverMe() {
+        for (int i=0; i<BeamsOverMe.Count; i++) {
+            if (BeamsOverMe[i].IsLethal) { return true; }
+        }
+        return false;
+    }
     public bool IsWall(int side) {
         switch(side) {
             case Sides.L: return isWallL;

@@ -9,7 +9,17 @@ abstract public class BoardOccupant : BoardObject {
     protected bool[] canBeamEnter = {false,false,false,false}; // one for each side. Default all to false. My extensions will say otherwise.
     protected bool[] canBeamExit = {false,false,false,false}; // one for each side. Default all to false. My extensions will say otherwise.
     
-    public bool CanBeamEnter (int sideEntered) { return canBeamEnter[sideEntered]; }
+    public bool CanBeamEnter (int sideEntered) {
+        if (ChirH<0) { // hacky. flip sideEntered for chirality.
+            if (sideEntered==Sides.L) { sideEntered = Sides.R; }
+            else if (sideEntered==Sides.R) { sideEntered = Sides.L; }
+        }
+        if (ChirV<0) { // hacky. flip sideEntered for chirality.
+            if (sideEntered==Sides.B) { sideEntered = Sides.T; }
+            else if (sideEntered==Sides.T) { sideEntered = Sides.B; }
+        }
+        return canBeamEnter[sideEntered];
+    }
     public bool CanBeamExit (int sideExited) { return canBeamExit[sideExited]; }
     virtual public int SideBeamExits (int sideEntered) {
         return Sides.GetOpposite(sideEntered);

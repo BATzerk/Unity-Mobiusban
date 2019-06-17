@@ -99,7 +99,7 @@ public class BeamSegmentView : MonoBehaviour {
             sourceRot = -sourceRot + 180;
         }
         
-		float originOffsetLoc = 0.38f;//to do: Use BoardOccupantView's value? sourceOccupantView.BeamSegmentRendererOriginOffsetLoc;
+		float originOffsetLoc = sourceObjView.BeamOriginOffsetLoc;
 		Vector2 originOffset = MathUtils.GetRotatedVector2Deg(new Vector2(0,MyBoardView.UnitSize*originOffsetLoc), sourceRot);
 		AddLineRecursively (sourcePos+originOffset, sourceRot);
 	}

@@ -3,18 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardOccupantView : BoardObjectView {
+    // Overridables
+    override public float BeamOriginOffsetLoc { get { return MyBoardOccupant.IsMovable ? 0.38f : 0.5f; } }
 	//// Properties
 	//virtual protected Color GetPrimaryFill () { return new Color (1,1,1); } // Override this if we want to auto-color our body (without adding code)!
 	//// Components
 	//[SerializeField] private SpriteRenderer sr_body; // everyone has a primary body sprite for simplicity! Less code.
 	//[SerializeField] private Sprite s_body;
     private BeamRendererCollider beamRendererCollider;
+    // References
+    protected BoardOccupant MyBoardOccupant { get; private set; }
     
 	// ----------------------------------------------------------------
 	//  Initialize / Destroy
 	// ----------------------------------------------------------------
 	override public void Initialize (BoardView _myBoardView, BoardObject bo) {
-		base.Initialize (_myBoardView, bo);
+        MyBoardOccupant = bo as BoardOccupant;
+        base.Initialize (_myBoardView, bo);
         
         // Make my beamRendererCollider!
         beamRendererCollider = new BeamRendererCollider (MyBoardView, this);

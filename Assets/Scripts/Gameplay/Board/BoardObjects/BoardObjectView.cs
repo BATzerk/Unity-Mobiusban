@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardObjectView : MonoBehaviour {
+    // Overridables
+    virtual public float BeamOriginOffsetLoc { get { return 0.38f; } }
 	// Components
     [SerializeField] protected RectTransform rt_contents;
     protected RectTransform myRectTransform { get; private set; } // Set in Awake.

@@ -122,7 +122,8 @@ public class BeamRendererCollider {
 	//	MakeColliderLinesFromPrototypeLines (collisionTypes);
 	//}
 	private void InitializeLinesForPlayer () {
-		colliderLines = new BeamRendererColliderLine[0]; // Lines pass straight through the Playa!
+		//colliderLines = new BeamRendererColliderLine[0]; // Lines pass straight through the Playa!
+        InitializeLinesForDefaultSquare();
 	}
 	private void InitializeLinesForDefaultSquare () {
 		prototypeLines = new Line[4];
@@ -175,7 +176,7 @@ public class BeamRendererCollider {
 	// ----------------------------------------------------------------
 	public void UpdateLines () {
 		for (int i=0; i<colliderLines.Length; i++) {
-			colliderLines[i].SetLine (prototypeLines[i], myObjectView.Pos, myObjectView.Rotation, diameter*1);//myObjectView.Scale);
+			colliderLines[i].SetLine (prototypeLines[i], myObjectView.Pos, myObjectView.Rotation, diameter*1);
 		}
 	}
 

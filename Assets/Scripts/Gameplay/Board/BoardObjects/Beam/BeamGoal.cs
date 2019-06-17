@@ -17,7 +17,7 @@ public class BeamGoal : BoardOccupant, IGoalObject {
 		ChannelID = _data.channelID;
 	}
 	override public BoardObjectData ToData() {
-		return new BeamGoalData (BoardPos, ChannelID);
+		return new BeamGoalData (BoardPos, IsMovable, ChannelID);
 	}
 
 

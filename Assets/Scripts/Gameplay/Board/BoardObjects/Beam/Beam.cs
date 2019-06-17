@@ -8,6 +8,7 @@ public class Beam {
 	private List<BeamSegment> segments; // Recreated every time I'm moved. Note that Portals can create tree-like/fractal segment structures. This is just a linear list that doesn't care about that; it's just all the segments.
 
 	// Getters
+    public bool IsLethal { get { return ChannelID != 0; } } // TEMP!! Channel 0 Beams are non-lethal.
 	public bool IsInPlay { get { return mySource.IsInPlay; } }
 	public int ChannelID { get { return mySource.ChannelID; } }
 	public int NumSegments { get { return segments.Count; } }

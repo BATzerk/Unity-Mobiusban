@@ -18,9 +18,7 @@ public class BeamSource : BoardOccupant {
 		base.InitializeAsBoardOccupant (_boardRef, _data);
 	}
 	override public BoardObjectData ToData() {
-        return new BeamSourceData(BoardPos, ChannelID) {
-            isMovable = IsMovable
-        };
+        return new BeamSourceData(BoardPos, IsMovable, ChannelID);
 	}
 
 

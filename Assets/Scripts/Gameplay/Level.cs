@@ -98,7 +98,7 @@ public class Level : MonoBehaviour {
                     
                     BoardView view = Instantiate (ResourcesHandler.Instance.BoardView).GetComponent<BoardView>();
                     view.Initialize (this, Board, rt_boardArea);
-                    view.MyCanvasGroup.alpha = 0.6f;
+                    //view.MyCanvasGroup.alpha = 0.6f;
                     if (cols > 1) {
                         view.transform.localPosition += new Vector3(Mathf.Ceil(col-cols*0.5f)*bvSize.x, 0, 0);
                     }

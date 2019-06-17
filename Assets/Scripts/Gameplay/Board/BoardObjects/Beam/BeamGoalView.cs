@@ -10,6 +10,8 @@ public class BeamGoalView : BoardOccupantView {
 	// Properties
 	private Color beamColor;
 	// References
+    [SerializeField] private Sprite s_bodyMovable=null;
+    [SerializeField] private Sprite s_bodyNotMovable=null;
 	private BeamGoal myBeamGoal;
 
 	// Getters
@@ -25,6 +27,7 @@ public class BeamGoalView : BoardOccupantView {
         base.Initialize (_myBoardView, bo);
         
         i_body.color = beamColor;
+        i_body.sprite = myBeamGoal.IsMovable ? s_bodyMovable : s_bodyNotMovable;
 	}
 
     // ----------------------------------------------------------------

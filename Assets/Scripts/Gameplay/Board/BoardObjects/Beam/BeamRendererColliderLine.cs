@@ -25,9 +25,9 @@ public class BeamRendererColliderLine {
         set { _line.end = value; }
     }
 	/** Conveniently sets my line based on what the unscaled/unrotated/etc. line looks like. */
-	public void SetLine (Line unscaledLine, Vector2 objectPos, float objectRotation, float unitSize) {
-		start = MathUtils.GetRotatedVector2Deg(unscaledLine.start, objectRotation)*unitSize + objectPos;
-		end   = MathUtils.GetRotatedVector2Deg(unscaledLine.end,   objectRotation)*unitSize + objectPos;
+	public void SetLine (Line unscaledLine, Vector2 objPos, float objRot, float objDiameter) {
+		start = MathUtils.GetRotatedVector2Deg(unscaledLine.start, objRot)*objDiameter + objPos;
+		end   = MathUtils.GetRotatedVector2Deg(unscaledLine.end,   objRot)*objDiameter + objPos;
 	}
 
     public BeamRendererColliderLine (Line line) {

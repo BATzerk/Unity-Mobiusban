@@ -91,6 +91,14 @@ public class BoardData {
                     case 'Y': AddBeamSourceData (col,row, Sides.R, 0); break;
                     case 'H': AddBeamSourceData (col,row, Sides.B, 0); break;
                     case 'G': AddBeamSourceData (col,row, Sides.L, 0); break;
+                    case 'u': AddBeamGoalData (col,row, Sides.T, 1); break;
+                    case 'i': AddBeamGoalData (col,row, Sides.R, 1); break;
+                    case 'k': AddBeamGoalData (col,row, Sides.B, 1); break;
+                    case 'j': AddBeamGoalData (col,row, Sides.L, 1); break;
+                    case 'U': AddBeamSourceData (col,row, Sides.T, 1); break;
+                    case 'I': AddBeamSourceData (col,row, Sides.R, 1); break;
+                    case 'K': AddBeamSourceData (col,row, Sides.B, 1); break;
+                    case 'J': AddBeamSourceData (col,row, Sides.L, 1); break;
                     // Crates!
                     case 'q': AddCrateGoalData (col,row, Corners.TL, false); break;
                     case 'w': AddCrateGoalData (col,row, Corners.TR, false); break;
@@ -117,6 +125,7 @@ public class BoardData {
                     // MODIFYING properties...
                     case 'Z': FlipChirH(col,row); break;
                     case 'X': FlipChirV(col,row); break;
+                    case 'm': SetNotMovable(col,row); break;
 					}
 				}
 			}
@@ -187,12 +196,12 @@ public class BoardData {
         SetOccupantInBoard (newData);
     }
     void AddBeamGoalData (int col,int row, int sideFacing, int channelID) {
-        BeamGoalData newData = new BeamGoalData (new BoardPos(col,row, 1,1, sideFacing), channelID);
+        BeamGoalData newData = new BeamGoalData (new BoardPos(col,row, 1,1, sideFacing), true, channelID);
         allObjectDatas.Add (newData);
         SetOccupantInBoard (newData);
     }
     void AddBeamSourceData (int col,int row, int sideFacing, int channelID) {
-        BeamSourceData newData = new BeamSourceData (new BoardPos(col,row, 1,1, sideFacing), channelID);
+        BeamSourceData newData = new BeamSourceData (new BoardPos(col,row, 1,1, sideFacing), true, channelID);
         allObjectDatas.Add (newData);
         SetOccupantInBoard (newData);
     }
@@ -214,6 +223,10 @@ public class BoardData {
     private void FlipChirV(int col,int row) {
         BoardObjectData bo = GetObjectInBoard(col,row);
         if (bo != null) { bo.boardPos.ChirV *= -1; }
+    }
+    private void SetNotMovable(int col,int row) {
+        BoardOccupantData bo = GetObjectInBoard(col,row) as BoardOccupantData;
+        if (bo != null) { bo.isMovable = false; }
     }
 
 

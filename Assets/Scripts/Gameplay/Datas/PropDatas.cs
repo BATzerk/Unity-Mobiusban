@@ -23,15 +23,17 @@ public class BoardSpaceData {
 }
 public class BeamGoalData : BoardOccupantData {
     public int channelID=-1;
-    public BeamGoalData (BoardPos boardPos, int channelID) {
+    public BeamGoalData (BoardPos boardPos, bool isMovable, int channelID) {
         this.boardPos = boardPos;
+        this.isMovable = isMovable;
         this.channelID = channelID;
     }
 }
 public class BeamSourceData : BoardOccupantData {
     public int channelID=-1;
-    public BeamSourceData (BoardPos boardPos, int channelID) {
+    public BeamSourceData (BoardPos boardPos, bool isMovable, int channelID) {
         this.boardPos = boardPos;
+        this.isMovable = isMovable;
         this.channelID = channelID;
     }
 }

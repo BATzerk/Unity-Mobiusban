@@ -214,7 +214,7 @@ public class Board {
         foreach (BeamSource bs in beamSources) { bs.Beam.RemakeBeam (); }
     }
     private void UpdatePlayerIsDead() {
-        if (player.MySpace.NumBeamsOverMe() > 0) {
+        if (player.MySpace.IsLethalBeamOverMe()) {
             player.Die();
         }
     }

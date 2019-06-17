@@ -10,6 +10,8 @@ public class BeamSourceView : BoardOccupantView {
     // Properties
     public Color BeamColor { get; private set; }
     // References
+    [SerializeField] private Sprite s_bodyMovable=null;
+    [SerializeField] private Sprite s_bodyNotMovable=null;
     public BeamSource MyBeamSource { get; private set; }
 
 
@@ -22,6 +24,7 @@ public class BeamSourceView : BoardOccupantView {
 		base.Initialize (_myBoardView, bo);
 		beamView.Initialize (_myBoardView.tf_beamLines);
         i_body.color = BeamColor;
+        i_body.sprite = MyBoardOccupant.IsMovable ? s_bodyMovable : s_bodyNotMovable;
 	}
 	override protected void OnDestroy () {
 		// Also destroy my BeamView because it's not parented to me (and won't be destroyed automatically)!

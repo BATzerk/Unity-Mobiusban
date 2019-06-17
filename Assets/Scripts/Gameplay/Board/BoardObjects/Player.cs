@@ -21,7 +21,9 @@ public class Player : BoardOccupant {
 	}
     // Overrides
     override protected void UpdateCanBeamEnterAndExit () {
-        SetBeamCanEnterAndExit (true); // player does NOT block beams at ALL!
+        //SetBeamCanEnterAndExit (true);
+        // Beams can ENTER, but not EXIT Player (so that way they can die).
+        for (int i=0;i<Sides.NumSides;i++) { canBeamEnter[i]=true; canBeamExit[i]=false; }
     }
     
     

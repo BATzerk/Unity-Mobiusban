@@ -1,18 +1,25 @@
 ﻿<Properties StartupConfiguration="{3FDD85B3-B610-CF63-499B-FB4F578BED93}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Gameplay/Board/BoardObjects/BoardObjectView.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Gameplay/BoardUtils.cs">
     <Files>
       <File FileName="Assets/Scripts/Gameplay/Level.cs" Line="21" Column="24" />
-      <File FileName="Assets/Scripts/Gameplay/Board/Board.cs" Line="168" Column="25" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BoardView.cs" Line="25" Column="25" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Beam/BeamSegmentView.cs" Line="75" Column="12" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BeamRendererColliderArena.cs" Line="115" Column="23" />
+      <File FileName="Assets/Scripts/Gameplay/Board/Board.cs" Line="193" Column="10" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardView.cs" Line="17" Column="30" />
+      <File FileName="Assets/Scripts/Gameplay/Datas/BoardData.cs" Line="97" Column="76" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Beam/BeamSourceView.cs" Line="27" Column="33" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Beam/BeamGoalView.cs" Line="12" Column="15" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Beam/BeamView.cs" Line="58" Column="25" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Beam/BeamSegmentView.cs" Line="70" Column="66" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardObjectView.cs" Line="5" Column="14" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardOccupantView.cs" Line="4" Column="1" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardSpace.cs" Line="7" Column="48" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Beam/Beam.cs" Line="10" Column="12" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Player.cs" Line="21" Column="3" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardOccupant.cs" Line="9" Column="100" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardObject.cs" Line="64" Column="79" />
       <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Beam/BeamRendererColliderLine.cs" Line="15" Column="22" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Beam/BeamView.cs" Line="30" Column="9" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Beam/Beam.cs" Line="13" Column="13" />
-      <File FileName="Assets/Scripts/Common/Utils/MathUtils.cs" Line="150" Column="55" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Beam/BeamRendererCollision.cs" Line="24" Column="9" />
-      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/BoardObjectView.cs" Line="37" Column="50" />
+      <File FileName="Assets/Scripts/Gameplay/Board/BoardObjects/Beam/BeamRendererCollider.cs" Line="179" Column="22" />
+      <File FileName="Assets/Scripts/Gameplay/BoardUtils.cs" Line="116" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
