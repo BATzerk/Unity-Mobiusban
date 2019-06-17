@@ -18,10 +18,11 @@ public class Level : MonoBehaviour {
 
     // Getters (Public)
     public int LevelIndex { get { return MyAddress.level; } }
+    public PackData MyPackData { get { return GameManagers.Instance.DataManager.GetPackData(MyAddress); } }
     // Getters (Private)
-	private InputController inputController { get { return InputController.Instance; } }
-	public PackData MyPackData { get { return GameManagers.Instance.DataManager.GetPackData(MyAddress); } }
+    private InputController inputController { get { return InputController.Instance; } }
     private bool CanUndo() { return boardSnapshots.Count >= 2; }
+    private bool IsPlayerDead() { return Board!=null && Board.player!=null && Board.player.IsDead; }
 
 
 
@@ -196,14 +197,16 @@ public class Level : MonoBehaviour {
 	}
 
 	private void RegisterButtonInput() {
+        // ANY key, and Player's dead? Undo.
+        if (Input.anyKeyDown && IsPlayerDead()) {
+            UndoMoveAttempt();
+            return;
+        }
         // Z = Undo
         if (Input.GetKeyDown(KeyCode.Z)) {
             UndoMoveAttempt();
+            return;
         }
-        // C = Zoom OUT
-        if (Input.GetKey(KeyCode.C)) { MultZoomAmount(0.95f); }
-        // V = Zoom IN
-        if (Input.GetKey(KeyCode.V)) { MultZoomAmount(1.05f); }
         // Level's NOT won...!
         if (!IsWon) {
             // Arrow Keys = Move Player
@@ -214,6 +217,11 @@ public class Level : MonoBehaviour {
             // SPACE = Advance time
             else if (Input.GetKeyDown(KeyCode.Space)) { MovePlayerAttempt(Vector2Int.zero); }
         }
+        
+        // C = Zoom OUT
+        if (Input.GetKey(KeyCode.C)) { MultZoomAmount(0.95f); }
+        // V = Zoom IN
+        if (Input.GetKey(KeyCode.V)) { MultZoomAmount(1.05f); }
 	}
     
     private void MovePlayerAttempt(Vector2Int dir) {

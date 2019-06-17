@@ -50,9 +50,7 @@ public class GameController : MonoBehaviour {
         #if UNITY_EDITOR // In editor? Noice. Reload all levels from file so we can update during runtime!
         dataManager.ReloadLevels ();
         #endif
-		LevelData ld = dataManager.GetLevelData (address);
-		if (ld == null) { Debug.LogError ("Requested LevelData doesn't exist! address: " + address.ToString()); return; } // Useful feedback for dev.
-		StartLevel (ld);
+		StartLevel (dataManager.GetLevelData (address));
 	}
 	private void StartLevel (LevelData ld) {
 		if (ld == null) { // Safety check.

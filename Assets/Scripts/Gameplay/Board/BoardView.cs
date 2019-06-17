@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(BeamRendererColliderArena))]
 public class BoardView : MonoBehaviour {
-	// Constants
-	private const float MAX_UNIT_SIZE = 140; // for the 3x3 lvls. So the spaces aren't ginormous.
     // Visual Properties
     public float UnitSize { get; private set; } // how big each board space is in pixels
     // Components
@@ -85,17 +83,11 @@ public class BoardView : MonoBehaviour {
     private void UpdatePosAndSize(RectTransform rt_availableArea) {
         // Temporarily parent me to this fella!
         transform.SetParent(rt_availableArea);
-		// Determine unitSize.
+		// Determine unitSize, and apply it to myRectTransform.
         UnitSize = Mathf.Min(rt_availableArea.rect.size.x/NumCols, rt_availableArea.rect.size.y/NumRows);
-		UnitSize = Mathf.Min(MAX_UNIT_SIZE, UnitSize); // don't let it get TOO big. (Just for the 3x3 lvls, really.)
-		// Apply the board size to my rectTransform.
 		Vector2 mySize = new Vector2(UnitSize*NumCols, UnitSize*NumRows);
 		myRectTransform.sizeDelta = mySize;
-		// Set my position.
-        //float xOffset = (rt_availableArea.rect.width -mySize.x) * 0.5f; // nudge me so I'm centered!
-        //float yOffset = (rt_availableArea.rect.height-mySize.y) * 0.5f; // nudge me so I'm centered!
-        //myRectTransform.anchoredPosition = new Vector2(xOffset,yOffset);
-        myRectTransform.anchoredPosition = new Vector2(0,0);
+        myRectTransform.anchoredPosition = new Vector2(0,0); // Stay centered.
         // Now that the suit fits, sneak be back onto my Level! I'll be transformed great.
         transform.SetParent(MyLevel.transform);
 	}
@@ -107,31 +99,6 @@ public class BoardView : MonoBehaviour {
         newView.Initialize (this, sourceObject);
         allObjectViews.Add (newView);
 	}
-    //private void AddBeamSourceView (BeamSource obj) {
-    //    BeamSourceView newObj = Instantiate(resourcesHandler.BeamSourceView).GetComponent<BeamSourceView>();
-    //    newObj.Initialize (this, obj);
-    //    allObjectViews.Add (newObj);
-    //}
-    //private void AddCrateView (Crate obj) {
-    //    CrateView newObj = Instantiate(resourcesHandler.CrateView).GetComponent<CrateView>();
-    //    newObj.Initialize (this, obj);
-    //    allObjectViews.Add (newObj);
-    //}
-    //private void AddCrateGoalView (CrateGoal obj) {
-    //    CrateGoalView newObj = Instantiate(resourcesHandler.CrateGoalView).GetComponent<CrateGoalView>();
-    //    newObj.Initialize (this, obj);
-    //    allObjectViews.Add (newObj);
-    //}
-    //private void AddExitSpotView (ExitSpot obj) {
-    //    ExitSpotView newObj = Instantiate(resourcesHandler.ExitSpotView).GetComponent<ExitSpotView>();
-    //    newObj.Initialize (this, obj);
-    //    allObjectViews.Add (newObj);
-    //}
-    //private void AddPlayerView (Player obj) {
-    //    PlayerView newObj = Instantiate(resourcesHandler.PlayerView).GetComponent<PlayerView>();
-    //    newObj.Initialize (this, obj);
-    //    allObjectViews.Add (newObj);
-    //}
 
 
 	// ----------------------------------------------------------------
@@ -170,7 +137,6 @@ public class BoardView : MonoBehaviour {
             UpdateViewsPostMove();
         }
     }
-
 
 
 

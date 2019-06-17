@@ -29,7 +29,6 @@ public class BeamSourceView : BoardOccupantView {
 		beamView = null;
 	}
 
-
 	//override protected void ApplyFundamentalVisualProperties () {
 	//	base.ApplyFundamentalVisualProperties ();
  //       // TODO: Use beamSegmentRendererOriginOffsetLoc?
@@ -42,19 +41,19 @@ public class BeamSourceView : BoardOccupantView {
     // ----------------------------------------------------------------
 	override public void UpdateVisualsPostMove () {
 		base.UpdateVisualsPostMove ();
-		beamView.UpdateBeamView (); // Make sure that when the move is over (and when the board is first done being made), we finish updating what our Beam looks like! So it's definitely in the right spot.
-	}
+        
+        // Update BeamView while all objs are animating.
+        StartCoroutine(UpdateBeamViewForDur(0.3f));
+    }
     
-
-	// ----------------------------------------------------------------
-	//  Update
-	// ----------------------------------------------------------------
-	/** Note: I've got myself on an *independent* Update loop, outside of FixedUpdate. To avoid occasional Beam-rendering pops (so far only spotted when it's being moved in a Container). */
-	private void Update () {
-		//// If ANYone is moving in the whole board, update my segments!
-		//if (MyBoardView.AreObjectsAnimating) {TODO: This.
-			beamView.UpdateBeamView ();
-		//}
+    private IEnumerator UpdateBeamViewForDur(float dur) {
+        float timeLeft = dur;
+        while (true) {
+		    beamView.UpdateBeamView ();
+            timeLeft -= Time.deltaTime;
+            if (timeLeft <= 0) { break; }
+            yield return null;
+        }
 	}
 
 
