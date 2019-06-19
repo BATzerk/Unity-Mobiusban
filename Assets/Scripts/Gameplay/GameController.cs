@@ -91,6 +91,10 @@ public class GameController : MonoBehaviour {
 		RegisterButtonInput ();
 	}
 	private void RegisterButtonInput () {
+        // ESCAPE = Open MainMenu
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            SceneHelper.OpenScene(SceneNames.MainMenu);
+        }
         // SPACE = Start next level!
         if (CurrLevel.IsWon && Input.GetKeyDown(KeyCode.Space)) {
             StartNextLevel();
