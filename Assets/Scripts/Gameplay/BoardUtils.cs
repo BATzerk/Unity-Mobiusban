@@ -82,6 +82,13 @@ public static class BoardUtils {
                 dirOut = Vector2Int.CCW(dir);
             }
         }
+        // Voyd? Recurse!!
+        Voyd voyd = GetOccupant(b, to) as Voyd;
+        if (voyd != null) {
+            return GetTranslationInfo(b, to, dirOut); // TODO: Keep the whole "from" thing.
+        }
+        
+        // Return!
         return new TranslationInfo {
             from = from,
             to = to,
@@ -149,6 +156,52 @@ public static class BoardUtils {
     // ----------------------------------------------------------------
     //  Moving Occupants
     // ----------------------------------------------------------------
+    /// This will FAIL if ANY occupant can't do this move.
+    public static bool MayMovePlayers(Board b, List<Player> originalBOs, Vector2Int dir) {
+        if (b==null) { return false; } // Safety check.
+        // Clone the Board!
+        Board boardClone = b.Clone();
+        // Move the occupants, and return the result!
+        return MovePlayers(boardClone, originalBOs, dir) == MoveResults.Success;
+    }
+    public static MoveResults MovePlayers(Board b, List<Player> players, Vector2Int dir) {
+        List<Vector2Int> poses = new List<Vector2Int>();
+        foreach (BoardOccupant bo in players) { poses.Add(bo.ColRow); }
+        return MovePlayers(b, poses, dir);
+    }
+    /// This will FAIL if ANY occupant can't do this move.
+    public static MoveResults MovePlayers(Board b, List<Vector2Int> occPoses, Vector2Int dir) {
+        // No dir?? Do nothing; return success!
+        if (dir == Vector2Int.zero) { return MoveResults.Success; }
+        // Make a list of the Occupants we wanna move.
+        List<BoardOccupant> bosToMove = new List<BoardOccupant>();
+        foreach (Vector2Int boPos in occPoses) { bosToMove.Add(b.GetOccupant(boPos)); }
+        //// Remove these occupants' footprints!
+        //foreach (BoardOccupant bo in bosToMove) { bo.RemoveMyFootprint(); }
+        
+        // Move 'em all, and return the result!
+        bool justNeedOneToMove = true;
+        if (justNeedOneToMove) {
+            MoveResults finalResult = MoveResults.Fail;
+            foreach (BoardOccupant bo in bosToMove) {
+                if (MayMoveOccupant(b, bo.ColRow, dir)) {
+                    MoveOccupant(b, bo, dir);
+                    finalResult = MoveResults.Success;
+                }
+            }
+            return finalResult;
+        }
+        else {
+            foreach (BoardOccupant bo in bosToMove) {
+                MoveResults result = MoveOccupant(b, bo, dir);
+                if (result == MoveResults.Fail) { return MoveResults.Fail; } // This move didn't work? Return fail.
+            }
+            return MoveResults.Success;
+        }
+    }
+    
+    
+    
     public static bool MayMoveOccupant(Board b, Vector2Int occPos, Vector2Int dir) {
         if (b==null) { return false; } // Safety check.
         // Clone the Board!
@@ -158,11 +211,13 @@ public static class BoardUtils {
     }
     
     public static MoveResults MoveOccupant(Board b, Vector2Int occPos, Vector2Int dir) {
+        return MoveOccupant(b, GetOccupant(b,occPos), dir);
+    }
+    public static MoveResults MoveOccupant(Board b, BoardOccupant bo, Vector2Int dir) {
         // No dir?? Do nothing; return success!
         if (dir == Vector2Int.zero) { return MoveResults.Success; }
         
-        TranslationInfo ti = GetTranslationInfo(b, occPos, dir);
-        BoardOccupant bo = GetOccupant(b, occPos);
+        TranslationInfo ti = GetTranslationInfo(b, bo.ColRow, dir);
         BoardSpace spaceFrom = GetSpace(b, ti.from);
         BoardSpace spaceTo = GetSpace(b, ti.to);
         

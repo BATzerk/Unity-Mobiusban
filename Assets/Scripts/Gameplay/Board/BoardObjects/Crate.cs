@@ -7,7 +7,13 @@ public class Crate : BoardOccupant {
     public bool[] IsDimple { get; private set; }
     public bool DoAutoMove { get; private set; }
     public Vector2Int AutoMoveDir { get; private set; }
-
+    
+    // Getters
+    private BoardSpace GetSpaceAutoMoveTo() {
+        TranslationInfo ti = BoardUtils.GetTranslationInfo(BoardRef, ColRow, MathUtils.GetSide(AutoMoveDir));
+        return GetSpace(ti.to);
+    }
+    
 
 	// ----------------------------------------------------------------
 	//  Initialize
@@ -36,8 +42,11 @@ public class Crate : BoardOccupant {
         base.OnPlayerMoved();
         // I auto-move, I HAVE a dir to auto-move, AND I DIDN'T just move?...
         if (DoAutoMove && AutoMoveDir!=Vector2Int.zero && PrevMoveDelta==Vector2Int.zero) {
+            BoardSpace spaceTo = GetSpaceAutoMoveTo();
+            bool doMove = !spaceTo.HasOccupant;
+            doMove &= BoardUtils.MayMoveOccupant(BoardRef, ColRow, AutoMoveDir);
             // We CAN move. Do!
-            if (BoardUtils.MayMoveOccupant(BoardRef, ColRow, AutoMoveDir)) {
+            if (doMove) {
                 BoardUtils.MoveOccupant(BoardRef, ColRow, AutoMoveDir);
             }
             // We CANNOT move. Zero-out AutoMoveDir.

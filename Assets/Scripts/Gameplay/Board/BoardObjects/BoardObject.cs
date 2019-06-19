@@ -19,7 +19,8 @@ abstract public class BoardObject {
     public int ChirH { get { return BoardPos.ChirH; } }
     public int ChirV { get { return BoardPos.ChirV; } }
     public int SideFacing { get { return BoardPos.SideFacing; } }
-	protected BoardSpace GetSpace (int _col,int _row) { return BoardUtils.GetSpace (BoardRef, _col,_row); }
+    protected BoardSpace GetSpace (Vector2Int _colRow) { return BoardUtils.GetSpace (BoardRef, _colRow); }
+    protected BoardSpace GetSpace (int _col,int _row) { return BoardUtils.GetSpace (BoardRef, _col,_row); }
 	public BoardSpace MySpace { get { return GetSpace (Col,Row); } }
     public bool IsOrientationMatch(BoardObject other) {
         return BoardPos == other.BoardPos;

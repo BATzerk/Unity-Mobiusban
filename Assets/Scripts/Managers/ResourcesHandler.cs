@@ -21,6 +21,7 @@ public class ResourcesHandler : MonoBehaviour {
     [SerializeField] private GameObject CrateGoalView;
     [SerializeField] private GameObject ExitSpotView;
     [SerializeField] private GameObject PlayerView;
+    [SerializeField] private GameObject VoydView;
     
     // Getters
     public GameObject GetBoardObjectView(BoardObject sourceObject) {
@@ -30,6 +31,7 @@ public class ResourcesHandler : MonoBehaviour {
         if (sourceObject is CrateGoal) { return CrateGoalView; }
         if (sourceObject is ExitSpot) { return ExitSpotView; }
         if (sourceObject is Player) { return PlayerView; }
+        if (sourceObject is Voyd) { return VoydView; }
         Debug.LogError ("Trying to add BoardObjectView from BoardObject, but no clause to handle this type! " + sourceObject.GetType().ToString());
         return null;
     }

@@ -15,7 +15,7 @@ public class BoardView : MonoBehaviour {
     [SerializeField] public Transform tf_boardSpaces=null;
     [SerializeField] public Transform tf_walls=null;
     public BeamRendererColliderArena BeamRendererColliderArena { get; private set; } // Added in Initialize.
-    public PlayerView Temp_PlayerView; // HACK TEMP TEST
+    //public PlayerView Temp_PlayerView; // HACK TEMP TEST
 	// Objects
 	private BoardSpaceView[,] spaceViews;
 	private List<BoardObjectView> allObjectViews = new List<BoardObjectView>(); // includes EVERY single BoardObjectView!
@@ -62,7 +62,7 @@ public class BoardView : MonoBehaviour {
         // Add Player and Spaces!
         BeamRendererColliderArena = GetComponent<BeamRendererColliderArena>();
         BeamRendererColliderArena.Initialize(MyBoard, myRectTransform.rect);
-        Temp_PlayerView = AddObjectView(MyBoard.player) as PlayerView;
+        //Temp_PlayerView = AddObjectView(MyBoard.player) as PlayerView;
 		spaceViews = new BoardSpaceView[NumCols,NumRows];
 		for (int i=0; i<NumCols; i++) {
 			for (int j=0; j<NumRows; j++) {

@@ -72,6 +72,11 @@ public class PlayerData : BoardOccupantData {
         this.isDead = isDead;
     }
 }
+public class VoydData : BoardObjectData {
+    public VoydData(BoardPos boardPos) {
+        this.boardPos = boardPos;
+    }
+}
 //public class WallData : BoardObjectData {
 //    public int sideFacing { get; private set; }// = -1;
 //	public WallData (Vector2Int boardPos, int sideFacing) {

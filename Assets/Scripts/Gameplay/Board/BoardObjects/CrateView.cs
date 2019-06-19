@@ -54,6 +54,8 @@ public class CrateView : BoardOccupantView {
             if (isArrow) {
                 float dirRot = MathUtils.GetSide(MyCrate.AutoMoveDir) * -90;
                 i_autoMoveDir.transform.localEulerAngles = new Vector3(0, 0, dirRot);
+                // HACK! TEMP! Offset BACK from chir scale.
+                i_autoMoveDir.transform.localScale = this.transform.localScale;
             }
         }
     }

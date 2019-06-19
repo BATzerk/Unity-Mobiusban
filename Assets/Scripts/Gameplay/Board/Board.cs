@@ -13,7 +13,7 @@ public class Board {
     public int NumExitSpots { get; private set; }
     // Objects
     public BoardSpace[,] spaces;
-    public Player player;
+    public List<Player> players;
     public List<BoardObject> allObjects; // includes every object EXCEPT Player!
     // Reference Lists
     public List<IGoalObject> goalObjects; // contains JUST the objects that have winning criteria.
@@ -27,9 +27,19 @@ public class Board {
     public BoardSpace GetSpace(Vector2Int pos) { return GetSpace(pos.x, pos.y); }
     public BoardSpace GetSpace(int col,int row) { return BoardUtils.GetSpace(this, col,row); }
     public BoardOccupant GetOccupant(int col,int row) { return BoardUtils.GetOccupant(this, col,row); }
+    public BoardOccupant GetOccupant(Vector2Int pos) { return GetOccupant(pos.x, pos.y); }
 	public BoardSpace[,] Spaces { get { return spaces; } }
-    public bool IsPlayerOnExitSpot () {
-        return player.MySpace.HasExitSpot && player.MySpace.MyExitSpot.IsOrientationMatch(player);
+    public bool IsAnyPlayerOnExitSpot () {
+        for (int i=0; i<players.Count; i++) {
+            if (players[i].MySpace.HasExitSpot && players[i].MySpace.MyExitSpot.IsOrientationMatch(players[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public bool IsEveryPlayerDead() {
+        for (int i=0; i<players.Count; i++) { if (!players[i].IsDead) { return false; } }
+        return true;
     }
     //private bool CheckAreGoalsSatisfied () {
     //    if (goalObjects.Count == 0) { return true; } // If there's NO criteria, then sure, we're satisfied! For levels that're just about getting to the exit.
@@ -48,7 +58,8 @@ public class Board {
 		BoardData bd = new BoardData(NumCols,NumRows);
         bd.wrapH = WrapH;
         bd.wrapV = WrapV;
-        bd.playerData = player.ToData() as PlayerData;
+        //bd.playerData = player.ToData() as PlayerData;
+        foreach (Player p in players) { bd.playerDatas.Add(p.ToData() as PlayerData); }
 		foreach (BoardObject obj in allObjects) { bd.allObjectDatas.Add(obj.ToData()); }
 		for (int col=0; col<NumCols; col++) {
 			for (int row=0; row<NumRows; row++) {
@@ -70,6 +81,7 @@ public class Board {
         WrapV = bd.wrapV;
         
         // Empty out lists.
+        players = new List<Player>();
         allObjects = new List<BoardObject>();
         goalObjects = new List<IGoalObject>();
         objectsAddedThisMove = new List<BoardObject>();
@@ -89,7 +101,7 @@ public class Board {
 		}
 	}
 	private void AddPropsFromBoardData (BoardData bd) {
-        player = new Player(this, bd.playerData);
+        //player = new Player(this, bd.playerData);
 		foreach (BoardObjectData objData in bd.allObjectDatas) {
             System.Type type = objData.GetType();
             if (type == typeof(BeamGoalData)) {
@@ -106,6 +118,12 @@ public class Board {
             }
             else if (type == typeof(ExitSpotData)) {
                 AddExitSpot (objData as ExitSpotData);
+            }
+            else if (type == typeof(PlayerData)) {
+                AddPlayer (objData as PlayerData);
+            }
+            else if (type == typeof(VoydData)) {
+                AddVoyd (objData as VoydData);
             }
             else {
                 Debug.LogError("PropData not recognized to add to Board: " + type);
@@ -142,11 +160,17 @@ public class Board {
         objectsAddedThisMove.Add(prop);
         NumExitSpots ++;
     }
-    //private void AddPlayer (PlayerData data) {
-    //    Player prop = new Player (this, data);
-    //    allObjects.Add (prop);
-    //    objectsAddedThisMove.Add(prop);
-    //}
+    private void AddPlayer (PlayerData data) {
+        Player prop = new Player (this, data);
+        allObjects.Add (prop);
+        players.Add(prop);
+        objectsAddedThisMove.Add(prop);
+    }
+    private void AddVoyd (VoydData data) {
+        Voyd prop = new Voyd (this, data);
+        allObjects.Add (prop);
+        objectsAddedThisMove.Add(prop);
+    }
 
 
 	// ----------------------------------------------------------------
@@ -164,12 +188,12 @@ public class Board {
 	//  Makin' Moves
 	// ----------------------------------------------------------------
     private bool MayExecuteMove(Vector2Int dir) {
-        if (player.IsDead) { return false; }
+        if (IsEveryPlayerDead()) { return false; }
         //if (AreGoalsSatisfied) { return false; } // We can't execute after we've won.
-        return BoardUtils.MayMoveOccupant(this, player.ColRow, dir); // Ok, now just check if it's legal!
+        return BoardUtils.MayMovePlayers(this, players, dir); // Ok, now just check if it's legal!
     }
     private bool GetAreGoalsSatisfied() {
-        if (player.IsDead) { return false; } // Player is kaput? Nah, we need 'em alive.
+        if (IsEveryPlayerDead()) { return false; } // Players are all kaput? Nah, we need at least one alive.
         if (goalObjects.Count == 0) { return true; } // If there's NO criteria, then sure, we're satisfied! For levels that're just about getting to the exit.
         for (int i=0; i<goalObjects.Count; i++) {
             if (!goalObjects[i].IsOn) { return false; } // return false if any of these guys aren't on.
@@ -185,7 +209,7 @@ public class Board {
             // Reset PrevMoveDelta.
             ResetOccupantsPrevMoveDelta();
             // Move Player!
-            BoardUtils.MoveOccupant(this, player.ColRow, dir);
+            BoardUtils.MovePlayers(this, players, dir);
             // Tell all other Occupants!
             for (int i=0; i<allObjects.Count; i++) { allObjects[i].OnPlayerMoved(); }
             // Call OnMoveComplete!
@@ -197,7 +221,7 @@ public class Board {
         // Just redundantly remake all the beams.
         RemakeAllBeams();
         // Check if the player's in a toaster oven!
-        UpdatePlayerIsDead();
+        UpdatePlayersIsDead();
         // Update Goals!
         foreach (IGoalObject igo in goalObjects) { igo.UpdateIsOn (); }
         AreGoalsSatisfied = GetAreGoalsSatisfied();
@@ -207,15 +231,18 @@ public class Board {
 
 
     private void ResetOccupantsPrevMoveDelta() {
-        player.ResetPrevMoveDelta();
+        //player.ResetPrevMoveDelta();
         for (int i=0; i<allObjects.Count; i++) { allObjects[i].ResetPrevMoveDelta(); }
     }
     private void RemakeAllBeams () {
         foreach (BeamSource bs in beamSources) { bs.Beam.RemakeBeam (); }
     }
-    private void UpdatePlayerIsDead() {
-        if (player.MySpace.IsLethalBeamOverMe()) {
-            player.Die();
+    private void UpdatePlayersIsDead() {
+        foreach (Player p in players) {
+            if (p.IsDead) { continue; } // Already dead? Skip 'em.
+            if (p.MySpace.IsLethalBeamOverMe()) {
+                p.Die();
+            }
         }
     }
     //private bool UpdateAreGoalsSatisfied() {
@@ -233,7 +260,7 @@ public class Board {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  Debug
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    private void Debug_PrintBoardLayout() {
+    public void Debug_PrintSomeBoardLayout() {
         string str = "";
         for (int row=0; row<NumRows; row++) {
             for (int col=0; col<NumCols; col++) {

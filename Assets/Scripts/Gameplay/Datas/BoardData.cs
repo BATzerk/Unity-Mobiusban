@@ -11,7 +11,7 @@ public class BoardData {
     public int numCols,numRows;
     public WrapTypes wrapH,wrapV;
     // BoardObjects
-    public PlayerData playerData;// { get; private set; }
+    public List<PlayerData> playerDatas;// { get; private set; }
     public BoardSpaceData[,] spaceDatas { get; private set; }
     public List<BoardObjectData> allObjectDatas;
     private BoardObjectData[,] objectsInBoard; // this is SOLELY so we can go easily back and modify properties of an object we've already announced.
@@ -80,8 +80,10 @@ public class BoardData {
                     case '~': GetSpaceData (col,row).isPlayable = false; break;
                     // ExitSpot!
                     case '$': AddExitSpotData (col,row); break;
-					// Player!
-					case '@': SetPlayerData(col,row); break;
+                    // Player!
+                    case '@': AddPlayerData(col,row); break;
+                    // Void!
+                    case 'V': AddVoydData(col,row); break;
                     // Beams!
                     case 't': AddBeamGoalData (col,row, Sides.T, 0); break;
                     case 'y': AddBeamGoalData (col,row, Sides.R, 0); break;
@@ -132,7 +134,7 @@ public class BoardData {
 		}
         
         // Safety check.
-        if (playerData == null) { SetPlayerData(0,0); }
+        if (playerDatas.Count == 0) { AddPlayerData(0,0); }
 
 		// We can empty out those lists now.
 		objectsInBoard = null;
@@ -147,7 +149,7 @@ public class BoardData {
 	}
 
 	private void MakeEmptyLists () {
-        playerData = null;
+        playerDatas = new List<PlayerData>();
 		allObjectDatas = new List<BoardObjectData>();
 		objectsInBoard = new BoardObjectData[numCols,numRows];
 	}
@@ -166,11 +168,17 @@ public class BoardData {
 
 
     
-    void SetPlayerData(int col,int row) {
-        if (playerData != null) { Debug.LogError("Whoa! Two players defined in Level XML layout."); return; } // Safety check.
-        playerData = new PlayerData(new BoardPos(col,row), false);
-        //allObjectDatas.Add (playerData);
-        SetOccupantInBoard (playerData);
+    //void SetPlayerData(int col,int row) {
+    //    if (playerData != null) { Debug.LogError("Whoa! Two players defined in Level XML layout."); return; } // Safety check.
+    //    playerData = new PlayerData(new BoardPos(col,row), false);
+    //    //allObjectDatas.Add (playerData);
+    //    SetOccupantInBoard (playerData);
+    //}
+    void AddPlayerData(int col,int row) {
+        PlayerData data = new PlayerData(new BoardPos(col,row), false);
+        playerDatas.Add(data);
+        allObjectDatas.Add (data);
+        SetOccupantInBoard (data);
     }
     
     void AddCrateData (int col,int row, int dimpleCorner, bool doAutoMove) {
@@ -185,6 +193,11 @@ public class BoardData {
     //    allObjectDatas.Add (newData);
     //    SetOccupantInBoard (newData);
     //}
+    void AddVoydData(int col,int row) {
+        VoydData newData = new VoydData(new BoardPos(col,row));
+        allObjectDatas.Add (newData);
+        SetOccupantInBoard (newData);
+    }
     void AddExitSpotData (int col,int row) {
         ExitSpotData newData = new ExitSpotData (new BoardPos(col,row));
         allObjectDatas.Add (newData);
