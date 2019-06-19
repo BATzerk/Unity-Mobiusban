@@ -72,9 +72,13 @@ public class PlayerData : BoardOccupantData {
         this.isDead = isDead;
     }
 }
-public class VoydData : BoardObjectData {
-    public VoydData(BoardPos boardPos) {
+public class VoydData : BoardOccupantData {
+    public bool doTogFromUsage;
+    public bool isOn;
+    public VoydData(BoardPos boardPos, bool isOn, bool doTogFromUsage) {
         this.boardPos = boardPos;
+        this.isOn = isOn;
+        this.doTogFromUsage = doTogFromUsage;
     }
 }
 //public class WallData : BoardObjectData {

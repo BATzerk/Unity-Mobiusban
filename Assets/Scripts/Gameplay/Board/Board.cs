@@ -254,6 +254,17 @@ public class Board {
     //    AreGoalsSatisfied = areSatisfied;
     //}
     
+    public void ToggleVoydsIsOn() {
+        // Togga da vayds.
+        for (int i=0; i<allObjects.Count; i++) {
+            if (allObjects[i] is Voyd) {
+                (allObjects[i] as Voyd).ToggleIsOn();
+            }
+        }
+        // Merve der plurer(s).
+        MovePlayerAttempt(Vector2Int.zero);
+    }
+    
     
     
     

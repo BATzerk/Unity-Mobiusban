@@ -227,6 +227,8 @@ public class Level : MonoBehaviour {
             else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) { MovePlayerAttempt(Vector2Int.T); }
             // SPACE = Advance time
             else if (Input.GetKeyDown(KeyCode.Space)) { MovePlayerAttempt(Vector2Int.zero); }
+            // SHIFT = Toggle Voyds
+            else if (Input.GetKeyDown(KeyCode.LeftShift)) { Board.ToggleVoydsIsOn(); }
         }
         
         // C = Zoom OUT

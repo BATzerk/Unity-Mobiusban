@@ -84,7 +84,8 @@ public static class BoardUtils {
         }
         // Voyd? Recurse!!
         Voyd voyd = GetOccupant(b, to) as Voyd;
-        if (voyd != null) {
+        if (voyd != null && voyd.IsOn) {
+            voyd.OnPassedThrough();
             return GetTranslationInfo(b, to, dirOut); // TODO: Keep the whole "from" thing.
         }
         

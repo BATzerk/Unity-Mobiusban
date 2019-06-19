@@ -83,7 +83,8 @@ public class BoardData {
                     // Player!
                     case '@': AddPlayerData(col,row); break;
                     // Void!
-                    case 'V': AddVoydData(col,row); break;
+                    case 'V': AddVoydData(col,row, false); break;
+                    case 'v': AddVoydData(col,row, true); break;
                     // Beams!
                     case 't': AddBeamGoalData (col,row, Sides.T, 0); break;
                     case 'y': AddBeamGoalData (col,row, Sides.R, 0); break;
@@ -193,8 +194,8 @@ public class BoardData {
     //    allObjectDatas.Add (newData);
     //    SetOccupantInBoard (newData);
     //}
-    void AddVoydData(int col,int row) {
-        VoydData newData = new VoydData(new BoardPos(col,row));
+    void AddVoydData(int col,int row, bool doTogFromUsage) {
+        VoydData newData = new VoydData(new BoardPos(col,row), true, doTogFromUsage);
         allObjectDatas.Add (newData);
         SetOccupantInBoard (newData);
     }
